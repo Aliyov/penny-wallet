@@ -1,7 +1,10 @@
 package com.penny.wallet.ui.home
 
+import androidx.compose.ui.graphics.drawscope.Stroke
+import androidx.compose.ui.graphics.Path
+import androidx.compose.ui.graphics.graphicsLayer
+import androidx.compose.ui.draw.drawWithCache
 import androidx.compose.animation.animateContentSize
-import androidx.compose.foundation.Canvas
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -62,24 +65,26 @@ fun HomeHero(state: HomeState, modifier: Modifier = Modifier) {
 private fun HeroBackdrop(modifier: Modifier, glowColor: Color, grid: Boolean) {
     val glowAlpha = Penny.motion.glowAlpha
     val line = Penny.colors.hairline
-    Canvas(modifier) {
-        val center = Offset(size.width * 0.3f, size.height * 0.6f)
-        val radius = hypot(size.width, size.height) * 0.6f
-        if (glowAlpha > 0f) {
-            drawCircle(
-                Brush.radialGradient(listOf(glowColor.copy(alpha = 0.35f * glowAlpha), Color.Transparent), center, radius),
-                radius, center,
-            )
-        }
-        if (grid) {
-            val step = 24.dp.toPx()
-            val stroke = 0.5.dp.toPx()
-            // Each line fades out radially from the centre by drawing it with a radial brush.
+    // Brushes and the grid path are built once per size (drawWithCache); graphicsLayer gives the backdrop its own
+    // layer so the counting hero number above it doesn't force a redraw.
+    Spacer(
+        modifier.graphicsLayer().drawWithCache {
+            val center = Offset(size.width * 0.3f, size.height * 0.6f)
+            val radius = hypot(size.width, size.height) * 0.6f
+            val glowBrush = Brush.radialGradient(listOf(glowColor.copy(alpha = 0.35f * glowAlpha), Color.Transparent), center, radius)
             val fade = Brush.radialGradient(listOf(line, line.copy(alpha = 0f)), center, radius * 0.9f)
-            var x = (center.x % step)
-            while (x < size.width) { drawLine(fade, Offset(x, 0f), Offset(x, size.height), stroke); x += step }
-            var y = (center.y % step)
-            while (y < size.height) { drawLine(fade, Offset(0f, y), Offset(size.width, y), stroke); y += step }
-        }
-    }
+            val step = 24.dp.toPx()
+            val gridPath = Path().apply {
+                var x = center.x % step
+                while (x < size.width) { moveTo(x, 0f); lineTo(x, size.height); x += step }
+                var y = center.y % step
+                while (y < size.height) { moveTo(0f, y); lineTo(size.width, y); y += step }
+            }
+            val stroke = Stroke(0.5.dp.toPx())
+            onDrawBehind {
+                if (glowAlpha > 0f) drawCircle(glowBrush, radius, center)
+                if (grid) drawPath(gridPath, fade, style = stroke)
+            }
+        },
+    )
 }

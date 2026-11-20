@@ -1,5 +1,7 @@
 package com.penny.wallet.ui.home
 
+import kotlinx.coroutines.flow.flowOn
+import kotlinx.coroutines.Dispatchers
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.penny.wallet.AppContainer
@@ -62,7 +64,7 @@ class HomeViewModel(private val c: AppContainer) : ViewModel() {
             recent = TxRows.build(txs.take(prefs.recentCount.coerceIn(3, 10)), accounts, cats, goals),
             backupWarning = prefs.seeded && (lastBackup == null || System.currentTimeMillis() - lastBackup > 10L * 86_400_000L),
         )
-    }.stateIn(viewModelScope, SharingStarted.WhileSubscribed(5_000), HomeState())
+    }.flowOn(Dispatchers.Default).stateIn(viewModelScope, SharingStarted.WhileSubscribed(5_000), HomeState())
 
     fun delete(t: Transaction, onDeleted: (Transaction) -> Unit) = viewModelScope.launch {
         c.transactions.delete(t); onDeleted(t)

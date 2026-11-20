@@ -1,5 +1,7 @@
 package com.penny.wallet.ui.recurring
 
+import kotlinx.coroutines.flow.flowOn
+import kotlinx.coroutines.Dispatchers
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.penny.wallet.AppContainer
@@ -63,7 +65,7 @@ class RecurringViewModel(private val c: AppContainer) : ViewModel() {
             when (it.frequency) { Frequency.MONTHLY -> it.amountCents; Frequency.WEEKLY -> it.amountCents * 52 / 12; Frequency.YEARLY -> it.amountCents / 12 }
         }
         RecurringState(rows, monthly, cats.filterNot { it.archived }, accounts.filterNot { it.archived }, prefs.defaultRemindDaysBefore)
-    }.stateIn(viewModelScope, SharingStarted.WhileSubscribed(5_000), RecurringState())
+    }.flowOn(Dispatchers.Default).stateIn(viewModelScope, SharingStarted.WhileSubscribed(5_000), RecurringState())
 
     /**
      * Saves a draft. For a new rule — or when the schedule changed — nextDueDate becomes the first occurrence on/after today.

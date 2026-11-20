@@ -1,5 +1,7 @@
 package com.penny.wallet.ui.settings
 
+import kotlinx.coroutines.flow.flowOn
+import kotlinx.coroutines.Dispatchers
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.penny.wallet.AppContainer
@@ -42,7 +44,7 @@ class ManageViewModel(private val c: AppContainer) : ViewModel() {
             cats.map { cat -> byCat[cat.id].orEmpty().let { CategoryItem(cat, it.size, it.sumOf { t -> t.amountCents }) } },
             accounts.map { AccountItem(it, s.account(it.id), txCount[it.id] ?: 0) },
         )
-    }.stateIn(viewModelScope, SharingStarted.WhileSubscribed(5_000), ManageState())
+    }.flowOn(Dispatchers.Default).stateIn(viewModelScope, SharingStarted.WhileSubscribed(5_000), ManageState())
 
     // ---- categories
     fun addCategory(name: String, icon: String, color: Long) = viewModelScope.launch { if (name.isNotBlank()) c.categories.add(name, icon, color) }

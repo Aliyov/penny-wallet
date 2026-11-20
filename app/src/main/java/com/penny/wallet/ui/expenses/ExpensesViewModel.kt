@@ -1,5 +1,7 @@
 package com.penny.wallet.ui.expenses
 
+import kotlinx.coroutines.flow.flowOn
+import kotlinx.coroutines.Dispatchers
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.penny.wallet.AppContainer
@@ -66,7 +68,7 @@ class ExpensesViewModel(private val c: AppContainer) : ViewModel() {
         val rows = TxRows.build(expenses, accounts, cats, emptyList())
         val days = rows.groupBy { it.tx.date }.map { (d, r) -> DayGroup(d, r.sumOf { it.tx.amountCents }, r) }.sortedByDescending { it.date }
         ExpensesState(period, period.label == current.label, total, slices, history, days, f.category, f.query, prefs.defaultChart)
-    }.stateIn(viewModelScope, SharingStarted.WhileSubscribed(5_000), ExpensesState())
+    }.flowOn(Dispatchers.Default).stateIn(viewModelScope, SharingStarted.WhileSubscribed(5_000), ExpensesState())
 
     fun prevMonth() = shift(-1)
     fun nextMonth() = shift(1)

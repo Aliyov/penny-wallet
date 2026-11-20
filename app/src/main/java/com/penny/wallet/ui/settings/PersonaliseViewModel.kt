@@ -1,5 +1,7 @@
 package com.penny.wallet.ui.settings
 
+import kotlinx.coroutines.flow.flowOn
+import kotlinx.coroutines.Dispatchers
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.penny.wallet.AppContainer
@@ -13,7 +15,7 @@ import kotlinx.coroutines.launch
 /** Every §7a option goes through [set]; changes apply live via SettingsStore's StateFlow. */
 class PersonaliseViewModel(private val c: AppContainer) : ViewModel() {
     val prefs: StateFlow<UserPrefs> = c.settings.prefs
-    val accounts: StateFlow<List<Account>> = c.accounts.observe().stateIn(viewModelScope, SharingStarted.WhileSubscribed(5_000), emptyList())
+    val accounts: StateFlow<List<Account>> = c.accounts.observe().flowOn(Dispatchers.Default).stateIn(viewModelScope, SharingStarted.WhileSubscribed(5_000), emptyList())
     val defaults = UserPrefs()
 
     fun set(transform: (UserPrefs) -> UserPrefs) = viewModelScope.launch { c.settings.update(transform) }

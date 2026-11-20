@@ -1,5 +1,7 @@
 package com.penny.wallet.ui.quickadd
 
+import kotlinx.coroutines.flow.flowOn
+import kotlinx.coroutines.Dispatchers
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.penny.wallet.AppContainer
@@ -80,7 +82,7 @@ class QuickAddViewModel(private val c: AppContainer) : ViewModel() {
         val summary = MoneyCalculator.summary(accounts, goals, txs)
         QuickData(live, ordered, goals.filterNot { it.archived }, summary.perAccount.mapValues { it.value.available },
             prefs.saveOnChipTap, prefs.showNoteField)
-    }.stateIn(viewModelScope, SharingStarted.Eagerly, QuickData())
+    }.flowOn(Dispatchers.Default).stateIn(viewModelScope, SharingStarted.WhileSubscribed(5_000), QuickData())
 
     /** Resets the form for a new entry with defaults from settings (account: fixed or last used). */
     fun startNew(type: QuickType? = null) = viewModelScope.launch {

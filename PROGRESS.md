@@ -108,8 +108,17 @@
 
 - Notifications are tinted with the user's accent colour.
 
+## Performance pass (after first phone test: "kinda laggy")
+- **Release build**: R8 minify + resource shrinking (APK 26.6 MB → 4.5 MB), versionCode 2 / 1.1. Signed with the local debug key, so `penny-wallet-release.apk` installs over the debug app and keeps all data (signatures verified identical).
+- `androidx.profileinstaller`: ships Compose/AndroidX baseline profiles (`assets/dexopt/baseline.prof`) so a sideloaded APK gets ahead-of-time compiled hot paths.
+- All 10 ViewModels: ledger maths / row building moved off the main thread (`flowOn(Dispatchers.Default)`).
+- Quick add data flow is `WhileSubscribed` (was Eagerly: recomputed the ledger on every write even with the sheet closed).
+- `Modifier.glow`: Paint + BlurMaskFilter cached via `drawWithCache` (was rebuilt every frame on the FAB/buttons).
+- Home hero backdrop: brushes + grid path cached, drawn in its own graphics layer.
+- R8 rules keep serializers and enum names (persisted in Room, backups and settings JSON).
+
 ## How to use / what's configurable
-**Install:** connect the phone with USB debugging on, then `./gradlew installDebug` (or copy `app/build/outputs/apk/debug/penny-wallet-debug.apk`). First launch seeds demo data (2 accounts, 6 categories, 2 goals, ~40 transactions, 2 recurring rules). Clear it any time: Settings → Reset all data.
+**Install:** connect the phone with USB debugging on, then `./gradlew installRelease` (or copy `app/build/outputs/apk/release/penny-wallet-release.apk`, the fast optimised build; the debug APK is only for development). First launch seeds demo data (2 accounts, 6 categories, 2 goals, ~40 transactions, 2 recurring rules). Clear it any time: Settings → Reset all data.
 
 **Daily use**
 - `+` → type the amount on the numpad → tap a category chip: saved (3 taps). Switch to Income / Save / Transfer at the top; account, date, note and "Make recurring" sit above the numpad.

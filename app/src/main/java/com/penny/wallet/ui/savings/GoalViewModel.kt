@@ -1,5 +1,7 @@
 package com.penny.wallet.ui.savings
 
+import kotlinx.coroutines.flow.flowOn
+import kotlinx.coroutines.Dispatchers
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.penny.wallet.AppContainer
@@ -48,7 +50,7 @@ class GoalViewModel(private val c: AppContainer, private val id: String) : ViewM
             suggestedBack = choices.maxByOrNull { it.inGoal }?.takeIf { it.inGoal > 0 }?.account?.id ?: choices.firstOrNull()?.account?.id,
             rows = TxRows.build(mine, accounts, cats, goals),
         )
-    }.stateIn(viewModelScope, SharingStarted.WhileSubscribed(5_000), GoalState())
+    }.flowOn(Dispatchers.Default).stateIn(viewModelScope, SharingStarted.WhileSubscribed(5_000), GoalState())
 
     /** Earmark money. Fails with a readable message if more than the account's available. */
     fun addMoney(amount: Long, accountId: String, done: (String?, Boolean) -> Unit) = viewModelScope.launch {

@@ -16,14 +16,19 @@ android {
         applicationId = "com.penny.wallet"
         minSdk = 26
         targetSdk = 35
-        versionCode = 1
-        versionName = "1.0"
+        versionCode = 2
+        versionName = "1.1"
     }
 
     buildTypes {
         release {
-            isMinifyEnabled = false
+            // R8 optimisation + resource shrinking: the main speed win over the debug build.
+            isMinifyEnabled = true
+            isShrinkResources = true
             proguardFiles(getDefaultProguardFile("proguard-android-optimize.txt"), "proguard-rules.pro")
+            // Personal sideloaded app: sign with the local debug key so the release APK installs over the
+            // debug one (same signature) and keeps all data.
+            signingConfig = signingConfigs.getByName("debug")
         }
     }
     compileOptions {
@@ -81,6 +86,8 @@ dependencies {
     implementation(libs.androidx.appcompat)
     implementation(libs.androidx.documentfile)
     implementation(libs.reorderable)
+    // Installs the Compose/AndroidX baseline profiles at install time, even for sideloaded APKs.
+    implementation(libs.androidx.profileinstaller)
 
     testImplementation(libs.junit)
 }

@@ -1,5 +1,7 @@
 package com.penny.wallet.ui.account
 
+import kotlinx.coroutines.flow.flowOn
+import kotlinx.coroutines.Dispatchers
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.penny.wallet.AppContainer
@@ -40,7 +42,7 @@ class AccountViewModel(private val c: AppContainer, private val id: String) : Vi
             others = accounts.filter { !it.archived && it.id != id },
             rows = TxRows.build(mine, accounts, cats, goals, perspective = id),
         )
-    }.stateIn(viewModelScope, SharingStarted.WhileSubscribed(5_000), AccountState())
+    }.flowOn(Dispatchers.Default).stateIn(viewModelScope, SharingStarted.WhileSubscribed(5_000), AccountState())
 
     /**
      * Runs one of the account actions. [amount] is cents (for SET_BALANCE: the new balance, may be 0 or negative).

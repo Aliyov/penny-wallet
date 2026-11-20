@@ -1,5 +1,7 @@
 package com.penny.wallet.ui.settings
 
+import kotlinx.coroutines.flow.flowOn
+import kotlinx.coroutines.Dispatchers
 import android.net.Uri
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
@@ -37,7 +39,7 @@ class BackupViewModel(private val c: AppContainer) : ViewModel() {
     val state: StateFlow<BackupUi> = combine(c.settings.prefs, transient) { p, t ->
         t.copy(folderUri = p.backupFolderUri, folderOk = c.backup.hasFolderAccess(p), lastBackupAt = p.lastBackupAt,
             frequency = p.backupFrequency, keep = p.backupKeep)
-    }.stateIn(viewModelScope, SharingStarted.WhileSubscribed(5_000), BackupUi())
+    }.flowOn(Dispatchers.Default).stateIn(viewModelScope, SharingStarted.WhileSubscribed(5_000), BackupUi())
 
     val csvFileName: String get() = "penny-wallet-transactions-${LocalDate.now()}.csv"
 

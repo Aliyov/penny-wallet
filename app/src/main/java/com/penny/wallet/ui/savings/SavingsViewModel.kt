@@ -1,5 +1,7 @@
 package com.penny.wallet.ui.savings
 
+import kotlinx.coroutines.flow.flowOn
+import kotlinx.coroutines.Dispatchers
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.penny.wallet.AppContainer
@@ -52,7 +54,7 @@ class SavingsViewModel(private val c: AppContainer) : ViewModel() {
             GoalSort.DEADLINE -> cards.sortedWith(compareBy(nullsLast()) { it.goal.deadline })
         }
         SavingsState(false, s.totalSaved, cards.sumOf { it.goal.targetCents }, sorted, prefs.goalLayout)
-    }.stateIn(viewModelScope, SharingStarted.WhileSubscribed(5_000), SavingsState())
+    }.flowOn(Dispatchers.Default).stateIn(viewModelScope, SharingStarted.WhileSubscribed(5_000), SavingsState())
 
     fun create(name: String, icon: String, color: Long, targetCents: Long, deadline: LocalDate?, done: (String?) -> Unit) =
         viewModelScope.launch {
