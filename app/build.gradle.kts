@@ -70,7 +70,6 @@ dependencies {
     implementation(libs.datastore.preferences)
     implementation(libs.glance.appwidget)
     implementation(libs.glance.material3)
-    implementation(libs.vico.compose.m3)
     implementation(libs.kotlinx.serialization.json)
     implementation(libs.androidx.splashscreen)
     implementation(libs.androidx.biometric)

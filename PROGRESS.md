@@ -4,10 +4,10 @@
 - [x] 1 Scaffold
 - [x] 2 Domain
 - [x] 3 Home + accounts
-- [ ] 4 Quick add
-- [ ] 5 Expenses + charts
-- [ ] 6 Savings
-- [ ] 7 Recurring + notifications
+- [x] 4 Quick add
+- [x] 5 Expenses + charts
+- [x] 6 Savings
+- [x] 7 Recurring + notifications
 - [ ] 8 Backup / restore
 - [ ] 9 Customization
 - [ ] 10 Widgets
@@ -39,6 +39,24 @@
 - `QuickAddViewModel`: defaults (fixed or last-used account, default type), chip order (most used + last used first / manual / A–Z), save-on-chip-tap, edit mode, Make recurring, Undo.
 - Sheet UI: segmented control, big amount + numpad, chips, optional row (account · date · note · recurring).
 
+### 5 Expenses + charts
+- `ExpensesViewModel`: period switcher (respects month start day), category slices + shares, last-N-months history, day groups, category filter + note search.
+- Custom Canvas donut (tap to highlight), horizontal-bars alternative, tappable history bars.
+
+### 6 Savings
+- `SavingsViewModel` / `GoalViewModel`: goal cards (progress, remaining, €/month), sort per prefs, add money (≤ available), take back (≤ goal balance), delete returns money, celebration trigger at 100%.
+- ProgressRing, Celebration overlay, grid/list layouts, goal sheet (name, icon, colour, required target, optional deadline).
+
+### 7 Recurring + notifications
+- `Notifications` (channel "Reminders"; remind / due today + Mark as paid / paid automatically + Undo).
+- `DailyReminderWorker` (24 h periodic at reminder time, re-scheduled on change), auto-pay catch-up at app start and boot, `BootReceiver`, `MarkPaidReceiver`.
+- Recurring screen: list with due states, add/edit sheet (weekly/monthly/yearly), pause, delete + Undo, Pay now + Undo. POST_NOTIFICATIONS requested on first rule.
+
+### 8 Backup / restore
+- `BackupManager`: snapshot → JSON (schemaVersion 1), SAF folder with persisted permission, same-day overwrite, keep newest N, validate + summary, restore in one Room transaction, CSV export, reset all.
+- `WeeklyBackupWorker` (frequency from prefs, battery not low) shares the Back up now path.
+- Backup settings screen: folder, Back up now ✓ + time, last backup, frequency, keep N, Restore (summary + double confirm), Export CSV.
+
 ## Environment
 - JDK 25 system OpenJDK is a **JRE only (no javac)**. The build uses a **JDK 21 toolchain auto-downloaded by Gradle** (foojay resolver in `settings.gradle.kts`), so no sudo is needed. Alternative: `sudo dnf install java-25-openjdk-devel`.
 -  Android SDK at `~/Android/Sdk` (platforms 35/36/37 installed via sdkmanager, no sudo needed), adb at `~/Android/Sdk/platform-tools/adb` (not on PATH).
@@ -62,6 +80,16 @@
 - Account undo-after-delete calls the repo directly (the screen's ViewModel is already gone).
 - **Make recurring** (quick add) creates a MONTHLY rule on the expense's day of month, links the expense to it, and sets nextDueDate to the following month (this occurrence is already paid).
 - Editing a transaction keeps its type; withdrawals/adjustments/unsaves edit amount, date and note only.
+
+- **Charts are all custom Compose** (donut on Canvas, history bars as Compose boxes); Vico dropped. Reason: tapping a history bar switches the month, the look matches the theme exactly, and it's one dependency fewer.
+- Recurring "Pay now": early → dated today; due/overdue → dated on the due date (keeps it in the right month).
+- Resuming a paused rule whose date has passed jumps to the next occurrence from today (no backlog).
+- Notifications respect privacy mode (amounts shown as ••••) and quiet mode (none at all; auto-pay still records).
+- App start runs an auto-pay-only catch-up; reminders only come from the daily run at the user's time.
+
+- Restoring a backup also restores settings, except device-specific ones (backup folder, last backup time, permission flag).
+- Reset all data clears the ledger only; settings are kept and the seed isn't re-run.
+- Recurring sheet: first account preselected; category preselected only if exactly one exists.
 
 ## Notes
 - Icon registry `ui/components/PennyIcons.kt`: 102 icons; keys are persisted, so never rename. Stand-ins: piggy=Toll, revolut=Payment, tax=ReceiptLong.

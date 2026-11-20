@@ -2,6 +2,11 @@ package com.penny.wallet
 
 import android.app.Application
 import com.penny.wallet.data.db.Seed
+import com.penny.wallet.notify.Notifications
+import com.penny.wallet.work.Scheduler
+import kotlinx.coroutines.flow.distinctUntilChanged
+import kotlinx.coroutines.flow.drop
+import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.launch
 
 class PennyApp : Application() {
@@ -17,7 +22,26 @@ class PennyApp : Application() {
                 if (container.accounts.all().isEmpty()) Seed.run(container.db)
                 s.update { it.copy(seeded = true) }
             }
+            Notifications.ensureChannel(this@PennyApp)
+            val p = s.current()
+            Scheduler.scheduleDaily(this@PennyApp, p)
+            Scheduler.scheduleBackup(this@PennyApp, p)
+            Scheduler.catchUp(this@PennyApp)
+            watchScheduleSettings()
         }
+    }
+}
+
+/** Re-schedules workers when their settings change (reminder time, backup frequency/folder). */
+private fun PennyApp.watchScheduleSettings() {
+    val s = container.settings
+    container.appScope.launch {
+        s.prefs.map { it.reminderHour to it.reminderMinute }.distinctUntilChanged().drop(1)
+            .collect { Scheduler.scheduleDaily(this@watchScheduleSettings, s.current(), replace = true) }
+    }
+    container.appScope.launch {
+        s.prefs.map { Triple(it.backupFolderUri, it.backupFrequency, it.seeded) }.distinctUntilChanged().drop(1)
+            .collect { Scheduler.scheduleBackup(this@watchScheduleSettings, s.current(), replace = true) }
     }
 }
 

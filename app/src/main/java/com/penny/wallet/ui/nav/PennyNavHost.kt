@@ -11,7 +11,11 @@ import androidx.navigation.compose.composable
 import com.penny.wallet.AppContainer
 import com.penny.wallet.ui.PlaceholderScreen
 import com.penny.wallet.ui.account.AccountScreen
+import com.penny.wallet.ui.expenses.ExpensesScreen
 import com.penny.wallet.ui.home.HomeScreen
+import com.penny.wallet.ui.recurring.RecurringScreen
+import com.penny.wallet.ui.savings.GoalScreen
+import com.penny.wallet.ui.savings.SavingsScreen
 
 @Composable
 fun PennyNavHost(nav: NavHostController, container: AppContainer, root: RootState) {
@@ -25,8 +29,8 @@ fun PennyNavHost(nav: NavHostController, container: AppContainer, root: RootStat
                 onOpenBackup = { nav.navigate(Routes.BACKUP) },
             )
         }
-        composable(Routes.EXPENSES) { PlaceholderScreen("Expenses") }
-        composable(Routes.SAVINGS) { PlaceholderScreen("Savings") }
+        composable(Routes.EXPENSES) { ExpensesScreen(onOpenRecurring = { nav.navigate(Routes.RECURRING) }, onEditTransaction = editTx) }
+        composable(Routes.SAVINGS) { SavingsScreen(onOpenGoal = { nav.navigate(Routes.goal(it)) }) }
         composable(Routes.SETTINGS) { PlaceholderScreen("Settings") }
         composable(
             Routes.ACCOUNT,
@@ -35,7 +39,12 @@ fun PennyNavHost(nav: NavHostController, container: AppContainer, root: RootStat
         ) { e ->
             AccountScreen(e.arguments?.getString("id").orEmpty(), onBack = { nav.popBackStack() }, onEditTransaction = editTx)
         }
-        composable(Routes.RECURRING) { PlaceholderScreen("Recurring") }
+        composable(Routes.RECURRING, enterTransition = { slideInHorizontally { it / 3 } + fadeIn() }, popExitTransition = { slideOutHorizontally { it / 3 } + fadeOut() }) {
+            RecurringScreen(onBack = { nav.popBackStack() })
+        }
+        composable(Routes.GOAL, enterTransition = { slideInHorizontally { it / 3 } + fadeIn() }, popExitTransition = { slideOutHorizontally { it / 3 } + fadeOut() }) { e ->
+            GoalScreen(e.arguments?.getString("id").orEmpty(), onBack = { nav.popBackStack() })
+        }
         composable(Routes.BACKUP) { PlaceholderScreen("Backup") }
     }
 }
