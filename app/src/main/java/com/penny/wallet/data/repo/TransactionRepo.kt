@@ -1,0 +1,72 @@
+package com.penny.wallet.data.repo
+
+import com.penny.wallet.data.db.PennyDatabase
+import com.penny.wallet.data.db.entities.Transaction
+import com.penny.wallet.data.db.entities.TxType
+import com.penny.wallet.domain.MoneyCalculator
+import kotlinx.coroutines.flow.Flow
+import java.time.LocalDate
+
+class InsufficientAvailableException(val availableCents: Long) : IllegalArgumentException("Not enough available")
+
+class TransactionRepo(private val db: PennyDatabase, private val listener: ChangeListener) {
+    private val dao = db.transactions()
+
+    fun observe(): Flow<List<Transaction>> = dao.observeAll()
+    fun observeForAccount(id: String): Flow<List<Transaction>> = dao.observeForAccount(id)
+    suspend fun all() = dao.getAll()
+    suspend fun get(id: String) = dao.get(id)
+
+    private suspend fun insert(t: Transaction): Transaction { dao.insert(t); listener.onDataChanged(); return t }
+
+    private fun tx(type: TxType, amount: Long, account: String, date: LocalDate, note: String?, to: String? = null,
+                   category: String? = null, goal: String? = null, recurring: String? = null) =
+        Transaction(newId(), type, amount, account, to, category, goal, recurring, date, note?.takeIf { it.isNotBlank() }, now())
+
+    suspend fun addExpense(amount: Long, accountId: String, categoryId: String, date: LocalDate, note: String? = null, recurringId: String? = null) =
+        insert(tx(TxType.EXPENSE, requirePositive(amount), accountId, date, note, category = categoryId, recurring = recurringId))
+
+    suspend fun addIncome(amount: Long, accountId: String, date: LocalDate, note: String? = null) =
+        insert(tx(TxType.INCOME, requirePositive(amount), accountId, date, note))
+
+    suspend fun withdraw(amount: Long, accountId: String, date: LocalDate, note: String? = null) =
+        insert(tx(TxType.WITHDRAWAL, requirePositive(amount), accountId, date, note))
+
+    suspend fun transfer(amount: Long, from: String, to: String, date: LocalDate, note: String? = null): Transaction {
+        require(from != to) { "Pick two different accounts" }
+        return insert(tx(TxType.TRANSFER, requirePositive(amount), from, date, note, to = to))
+    }
+
+    /** Set balance to X → ADJUSTMENT of X − current. Returns null when already equal. */
+    suspend fun setBalance(accountId: String, target: Long, date: LocalDate): Transaction? {
+        val current = MoneyCalculator.accountBalance(accountId, dao.getForAccount(accountId))
+        val diff = MoneyCalculator.adjustmentFor(target, current)
+        if (diff == 0L) return null
+        return insert(tx(TxType.ADJUSTMENT, diff, accountId, date, "Balance set"))
+    }
+
+    /** Earmark money from an account into a goal. Can't exceed what's available in that account. */
+    suspend fun save(amount: Long, accountId: String, goalId: String, date: LocalDate): Transaction {
+        requirePositive(amount)
+        val available = MoneyCalculator.availableInAccount(accountId, dao.getAll())
+        if (amount > available) throw InsufficientAvailableException(available)
+        return insert(tx(TxType.SAVE, amount, accountId, date, null, goal = goalId))
+    }
+
+    /** Take money back from a goal to an account. Can't exceed the goal's balance. */
+    suspend fun unsave(amount: Long, accountId: String, goalId: String, date: LocalDate): Transaction {
+        requirePositive(amount)
+        val inGoal = MoneyCalculator.goalBalance(goalId, dao.getForGoal(goalId))
+        if (amount > inGoal) throw InsufficientAvailableException(inGoal)
+        return insert(tx(TxType.UNSAVE, amount, accountId, date, null, goal = goalId))
+    }
+
+    suspend fun update(t: Transaction) { dao.upsert(t); listener.onDataChanged() }
+
+    suspend fun delete(t: Transaction) { dao.delete(t); listener.onDataChanged() }
+
+    /** Undo of a delete: re-inserts the exact same row. */
+    suspend fun restore(t: Transaction) { dao.upsert(t); listener.onDataChanged() }
+
+    private fun requirePositive(a: Long): Long { require(a > 0) { "Amount must be greater than zero" }; return a }
+}
