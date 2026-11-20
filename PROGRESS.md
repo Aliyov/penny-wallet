@@ -8,10 +8,10 @@
 - [x] 5 Expenses + charts
 - [x] 6 Savings
 - [x] 7 Recurring + notifications
-- [ ] 8 Backup / restore
-- [ ] 9 Customization
-- [ ] 10 Widgets
-- [ ] 11 Polish
+- [x] 8 Backup / restore
+- [x] 9 Customization
+- [x] 10 Widgets
+- [x] 11 Polish
 
 ## Phase plans
 ### 1 Scaffold
@@ -57,6 +57,18 @@
 - `WeeklyBackupWorker` (frequency from prefs, battery not low) shares the Back up now path.
 - Backup settings screen: folder, Back up now ✓ + time, last backup, frequency, keep N, Restore (summary + double confirm), Export CSV.
 
+### 9 Customization
+- `UserPrefs` (all §7a options) already drives theme/motion/formatting/Home/Quick add/charts/savings since phase 1.
+- Settings hub, Categories (reorder, edit, archive, delete → move/archive), Accounts (reorder, archive, delete → archive offer), Personalise (every §7a option with per-row reset + Reset all), Reset all data (double confirm).
+
+### 10 Widgets
+- Glance `BalanceWidget` (responsive 2×1 → 4×2: available, spent this month, next recurring) and `QuickAddWidget` (1×1 / 2×1, deep link to Quick add).
+- `WidgetUpdater`: debounced `updateAll` on every repository write + widget-relevant settings; privacy mode respected.
+
+### 11 Polish
+- Splash screen (core-splashscreen) held until settings load, so the theme never flashes defaults.
+- Biometric / device-credential app lock with lock-after delay (ProcessLifecycleOwner); never locks out a phone without any lock method.
+
 ## Environment
 - JDK 25 system OpenJDK is a **JRE only (no javac)**. The build uses a **JDK 21 toolchain auto-downloaded by Gradle** (foojay resolver in `settings.gradle.kts`), so no sudo is needed. Alternative: `sudo dnf install java-25-openjdk-devel`.
 -  Android SDK at `~/Android/Sdk` (platforms 35/36/37 installed via sdkmanager, no sudo needed), adb at `~/Android/Sdk/platform-tools/adb` (not on PATH).
@@ -90,6 +102,25 @@
 - Restoring a backup also restores settings, except device-specific ones (backup folder, last backup time, permission flag).
 - Reset all data clears the ledger only; settings are kept and the seed isn't re-run.
 - Recurring sheet: first account preselected; category preselected only if exactly one exists.
+
+- App lock uses BIOMETRIC_WEAK or DEVICE_CREDENTIAL (PIN fallback). The lock screen waits for settings to load, so it can't be bypassed at cold start.
+- Quick add widget deep link: `MainActivity.ACTION_QUICK_ADD`; repeated taps are handled via a request counter (singleTask + onNewIntent).
+
+- Notifications are tinted with the user's accent colour.
+
+## How to use / what's configurable
+**Install:** connect the phone with USB debugging on, then `./gradlew installDebug` (or copy `app/build/outputs/apk/debug/app-debug.apk`). First launch seeds demo data (2 accounts, 6 categories, 2 goals, ~40 transactions, 2 recurring rules). Clear it any time: Settings → Reset all data.
+
+**Daily use**
+- `+` → type the amount on the numpad → tap a category chip: saved (3 taps). Switch to Income / Save / Transfer at the top; account, date, note and "Make recurring" sit above the numpad.
+- Home: available to spend (green; red when negative), month spending, accounts (tap for income / withdraw / set balance / transfer), upcoming recurring items, recent entries (swipe left to delete, tap to edit). Every delete has a 5-second Undo.
+- Expenses: switch months, tap donut slices, tap a category to filter, tap a history bar to jump to that month, search notes. Recurring rules are reached from here (or Settings).
+- Savings: goals with rings; Add money (only up to what's available in that account) / Take back. Deleting a goal returns its money.
+- Recurring: Auto-pay records the expense on the due day ("Paid automatically" + Undo); Manual sends "Due today" with Mark as paid. Reminders arrive N days before, at your reminder time.
+- Backup: Settings → Backup → Pick folder (choose one your Drive/Files app syncs for an off-phone copy). Runs automatically and keeps the last N files; Restore shows a summary and asks twice; CSV export.
+- Widgets: long-press the home screen → Widgets → "Penny balance" (resizable) and "Penny quick add".
+
+**Configurable (Settings → Personalise)**: accent colour (presets + hex), AMOLED / dark grey, glow, HUD grid, corners, text size, density, animations, haptics, cents, number format, € position, privacy mode; Home section order/visibility, hero metric, recent count; quick add defaults (type, account, chip order, save on chip tap, note field); default chart, history months, first day of week, month start day (payday); goal layout and sort; reminder time, default days before, overdue badge, quiet mode; backup frequency and files kept; biometric lock and lock delay. Every option has a reset, plus "Reset all".
 
 ## Notes
 - Icon registry `ui/components/PennyIcons.kt`: 102 icons; keys are persisted, so never rename. Stand-ins: piggy=Toll, revolut=Payment, tax=ReceiptLong.

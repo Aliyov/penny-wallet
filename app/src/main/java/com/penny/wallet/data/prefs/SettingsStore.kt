@@ -5,6 +5,7 @@ import androidx.datastore.preferences.core.edit
 import androidx.datastore.preferences.core.stringPreferencesKey
 import androidx.datastore.preferences.preferencesDataStore
 import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.first
@@ -22,7 +23,12 @@ class SettingsStore(private val context: Context, scope: CoroutineScope) {
     private val key = stringPreferencesKey("user_prefs_json")
     private val json = Json { ignoreUnknownKeys = true; encodeDefaults = true; coerceInputValues = true }
 
-    private val flow = context.dataStore.data.map { p -> p[key]?.let(::decode) ?: UserPrefs() }
+    private val _loaded = MutableStateFlow(false)
+    /** Becomes true once DataStore has been read (before that, [prefs] holds defaults). */
+    val loaded: StateFlow<Boolean> = _loaded
+    val isLoaded: Boolean get() = _loaded.value
+
+    private val flow = context.dataStore.data.map { p -> (p[key]?.let(::decode) ?: UserPrefs()).also { _loaded.value = true } }
 
     val prefs: StateFlow<UserPrefs> = flow.stateIn(scope, SharingStarted.Eagerly, UserPrefs())
 

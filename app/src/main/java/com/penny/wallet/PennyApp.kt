@@ -3,6 +3,8 @@ package com.penny.wallet
 import android.app.Application
 import com.penny.wallet.data.db.Seed
 import com.penny.wallet.notify.Notifications
+import com.penny.wallet.ui.lock.AppLock
+import com.penny.wallet.widget.WidgetUpdater
 import com.penny.wallet.work.Scheduler
 import kotlinx.coroutines.flow.distinctUntilChanged
 import kotlinx.coroutines.flow.drop
@@ -16,6 +18,8 @@ class PennyApp : Application() {
     override fun onCreate() {
         super.onCreate()
         container = AppContainer(this)
+        WidgetUpdater(this, container).start()
+        AppLock.install { container.settings.prefs.value }
         container.appScope.launch {
             val s = container.settings
             if (!s.current().seeded) {

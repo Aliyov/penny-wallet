@@ -23,7 +23,6 @@ import java.time.temporal.ChronoUnit
 /** Channel "Reminders" + the three notification kinds from SPEC §5. */
 object Notifications {
     const val CHANNEL = "reminders"
-    private const val ACCENT = 0xFF39FF88.toInt()
 
     fun ensureChannel(context: Context) {
         if (Build.VERSION.SDK_INT < 26) return
@@ -49,27 +48,28 @@ object Notifications {
     fun remind(context: Context, r: RecurringExpense, due: LocalDate, today: LocalDate, p: UserPrefs) {
         val days = ChronoUnit.DAYS.between(today, due)
         val whenText = if (days == 1L) "Tomorrow" else "In $days days"
-        post(context, r, base(context, "$whenText: ${r.name} ${amount(r, p)}", "Due ${Formatters.day(due, today)}"))
+        post(context, r, base(context, p, "$whenText: ${r.name} ${amount(r, p)}", "Due ${Formatters.day(due, today)}"))
     }
 
     fun dueToday(context: Context, r: RecurringExpense, due: LocalDate, p: UserPrefs) {
-        val b = base(context, "Due today: ${r.name} ${amount(r, p)}", "Tap Mark as paid once it's done")
+        val b = base(context, p, "Due today: ${r.name} ${amount(r, p)}", "Tap Mark as paid once it's done")
             .addAction(0, "Mark as paid", receiver(context, MarkPaidReceiver.ACTION_PAY, r.id, due, null))
         post(context, r, b)
     }
 
     fun autoPaid(context: Context, r: RecurringExpense, due: LocalDate, txId: String, p: UserPrefs) {
-        val b = base(context, "Paid automatically: ${r.name} ${amount(r, p)}", "Recorded for ${Formatters.day(due)}")
+        val b = base(context, p, "Paid automatically: ${r.name} ${amount(r, p)}", "Recorded for ${Formatters.day(due)}")
             .addAction(0, "Undo", receiver(context, MarkPaidReceiver.ACTION_UNDO, r.id, due, txId))
         post(context, r, b)
     }
 
     fun cancel(context: Context, ruleId: String) = NotificationManagerCompat.from(context).cancel(idFor(ruleId))
 
-    private fun base(context: Context, title: String, text: String) =
+    /** Tinted with the user's accent from settings. */
+    private fun base(context: Context, p: UserPrefs, title: String, text: String) =
         NotificationCompat.Builder(context, CHANNEL)
             .setSmallIcon(R.drawable.ic_stat_penny)
-            .setColor(ACCENT)
+            .setColor(p.accentArgb.toInt())
             .setContentTitle(title)
             .setContentText(text)
             .setAutoCancel(true)

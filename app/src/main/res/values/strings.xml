@@ -1,3 +1,5 @@
 <resources>
     <string name="app_name">Penny Wallet</string>
+    <string name="widget_balance_desc">Available to spend and this month\'s spending</string>
+    <string name="widget_quick_desc">Add an expense in one tap</string>
 </resources>

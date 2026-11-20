@@ -19,6 +19,7 @@
             android:name=".MainActivity"
             android:exported="true"
             android:launchMode="singleTask"
+            android:theme="@style/Theme.Penny.Starting"
             android:windowSoftInputMode="adjustResize">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -33,5 +34,14 @@
             </intent-filter>
         </receiver>
         <receiver android:name=".work.MarkPaidReceiver" android:exported="false" />
+
+        <receiver android:name=".widget.BalanceWidgetReceiver" android:exported="true" android:label="Penny balance">
+            <intent-filter><action android:name="android.appwidget.action.APPWIDGET_UPDATE" /></intent-filter>
+            <meta-data android:name="android.appwidget.provider" android:resource="@xml/balance_widget_info" />
+        </receiver>
+        <receiver android:name=".widget.QuickAddWidgetReceiver" android:exported="true" android:label="Penny quick add">
+            <intent-filter><action android:name="android.appwidget.action.APPWIDGET_UPDATE" /></intent-filter>
+            <meta-data android:name="android.appwidget.provider" android:resource="@xml/quick_add_widget_info" />
+        </receiver>
     </application>
 </manifest>

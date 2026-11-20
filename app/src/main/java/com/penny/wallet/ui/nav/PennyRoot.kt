@@ -15,7 +15,9 @@ import androidx.compose.material3.SnackbarHost
 import androidx.compose.material3.SnackbarHostState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.CompositionLocalProvider
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
@@ -69,14 +71,16 @@ class RootState {
 }
 
 @Composable
-fun PennyRoot(container: AppContainer, startWithQuickAdd: Boolean = false) {
+fun PennyRoot(container: AppContainer, quickAddRequest: Int = 0) {
     val nav = rememberNavController()
     val host = remember { SnackbarHostState() }
     val scope = rememberCoroutineScope()
     val snack = remember { Snack(host, scope) }
     val root = remember { RootState() }
-    var consumedStart by rememberSaveable { mutableStateOf(false) }
-    if (startWithQuickAdd && !consumedStart) { consumedStart = true; root.openNew() }
+    var handledRequest by rememberSaveable { mutableIntStateOf(0) }
+    LaunchedEffect(quickAddRequest) {
+        if (quickAddRequest > handledRequest) { handledRequest = quickAddRequest; root.openNew() }
+    }
 
     val entry by nav.currentBackStackEntryAsState()
     val route = entry?.destination?.route
