@@ -10,6 +10,7 @@ import com.penny.wallet.ui.components.LocalSnack
 import com.penny.wallet.ui.pennyViewModel
 import com.penny.wallet.ui.quickadd.QuickAddSheet
 import com.penny.wallet.ui.quickadd.QuickAddViewModel
+import com.penny.wallet.ui.quickadd.rememberReceiptLaunchers
 
 /** Hosts the Quick add sheet above every screen (FAB, edit taps, widget deep link). */
 @Composable
@@ -17,6 +18,8 @@ fun QuickAddHost(root: RootState) {
     val vm = pennyViewModel { QuickAddViewModel(it) }
     val snack = LocalSnack.current
     val permission = rememberLauncherForActivityResult(ActivityResultContracts.RequestPermission()) { }
+    // Registered here (always composed) so a camera result is delivered even if the activity was recreated.
+    val receipt = rememberReceiptLaunchers(vm)
 
     LaunchedEffect(root.quickAddOpen, root.editTxId) {
         if (root.quickAddOpen) root.editTxId?.let { vm.startEdit(it) } ?: vm.startNew()
@@ -25,8 +28,10 @@ fun QuickAddHost(root: RootState) {
 
     QuickAddSheet(
         vm = vm,
-        onDismiss = { root.close() },
+        receipt = receipt,
+        onDismiss = { vm.closeScan(); root.close() },
         onResult = { r ->
+            vm.closeScan()
             root.close()
             val undo = r.undo
             if (undo != null) snack.undo(r.message) { vm.undoNew(undo) } else snack.show(r.message)

@@ -106,6 +106,46 @@ class QuickAddViewModel(private val c: AppContainer) : ViewModel() {
 
     fun edit(f: (QuickForm) -> QuickForm) = _form.update(f)
 
+    // ---- Receipt scan: photo → on-device OCR → confirm dialog → amount ----
+    private val _scan = MutableStateFlow<ScanState>(ScanState.Idle)
+    val scan: StateFlow<ScanState> = _scan
+    private var scanJob: kotlinx.coroutines.Job? = null
+
+    fun newReceiptPhotoUri(): android.net.Uri = c.receipts.newPhotoUri()
+
+    fun readReceipt(uri: android.net.Uri) {
+        scanJob?.cancel()
+        _scan.value = ScanState.Reading
+        scanJob = viewModelScope.launch {
+            _scan.value = runCatching { c.receipts.read(uri) }.fold(
+                { r -> if (r.totalCents == null) ScanState.NothingFound else ScanState.Found(r) },
+                { e -> if (e is kotlinx.coroutines.CancellationException) throw e else ScanState.Failed("Couldn't read this photo") },
+            )
+            c.receipts.discardPhoto()
+        }
+    }
+
+    /** Accepted amount goes into the form; the user still picks a category, then it saves as usual. */
+    fun acceptReceipt(cents: Long) {
+        if (cents > 0) _form.update { it.copy(digits = NumpadDigits.of(cents), type = QuickType.EXPENSE) }
+        closeScan()
+    }
+
+    fun scanFailed(message: String) {
+        _scan.value = ScanState.Failed(message)
+    }
+
+    fun closeScan() {
+        scanJob?.cancel()
+        scanJob = null
+        _scan.value = ScanState.Idle
+        c.receipts.discardPhoto()
+    }
+
+    override fun onCleared() {
+        c.receipts.discardPhoto()
+    }
+
     /** Category chip tap: selects it, and saves immediately when that's enabled and an amount is entered. */
     fun onCategory(id: String, done: (QuickResult) -> Unit) {
         _form.update { it.copy(categoryId = id) }

@@ -3,6 +3,7 @@ package com.penny.wallet
 import android.content.Context
 import com.penny.wallet.data.backup.BackupManager
 import com.penny.wallet.data.db.PennyDatabase
+import com.penny.wallet.data.ocr.ReceiptReader
 import com.penny.wallet.data.prefs.SettingsStore
 import com.penny.wallet.data.repo.AccountRepo
 import com.penny.wallet.data.repo.CategoryRepo
@@ -30,4 +31,5 @@ class AppContainer(val context: Context) {
     val transactions = TransactionRepo(db, listener)
     val recurring = RecurringRepo(db, listener)
     val backup = BackupManager(context, db, settings, listener)
+    val receipts = ReceiptReader(context)
 }

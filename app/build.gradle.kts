@@ -15,9 +15,11 @@ android {
     defaultConfig {
         applicationId = "com.penny.wallet"
         minSdk = 26
+        // Real phones are ARM; dropping x86 (emulator-only) ML Kit native libs roughly halves the APK.
+        ndk { abiFilters += listOf("arm64-v8a", "armeabi-v7a") }
         targetSdk = 35
-        versionCode = 3
-        versionName = "1.2"
+        versionCode = 4
+        versionName = "1.3"
     }
 
     buildTypes {
@@ -88,6 +90,8 @@ dependencies {
     implementation(libs.reorderable)
     // Installs the Compose/AndroidX baseline profiles at install time, even for sideloaded APKs.
     implementation(libs.androidx.profileinstaller)
+    // On-device receipt OCR, Latin model bundled in the APK: works offline, no Play Services download.
+    implementation(libs.mlkit.text.recognition)
 
     testImplementation(libs.junit)
 }

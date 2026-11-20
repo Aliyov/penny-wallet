@@ -44,6 +44,7 @@ private val LABELS = listOf("Expense", "Income", "Save", "Transfer")
 @Composable
 fun QuickAddSheet(
     vm: QuickAddViewModel,
+    receipt: ReceiptLaunchers,
     onDismiss: () -> Unit,
     onResult: (QuickResult.Saved) -> Unit,
     onDeleted: (Transaction) -> Unit,
@@ -67,6 +68,8 @@ fun QuickAddSheet(
     val editing = form.editing
     // Withdrawal / adjustment / unsave edits: amount, date, note only.
     val simpleEdit = editing != null && editing.type !in setOf(TxType.EXPENSE, TxType.INCOME, TxType.TRANSFER, TxType.SAVE)
+
+    ReceiptScanDialog(vm, receipt)
 
     PennySheet(onDismiss = onDismiss) {
         if (editing == null) {
@@ -95,17 +98,18 @@ fun QuickAddSheet(
         )
         ErrorLine(error, errorTick)
 
-        val showSaveButton = simpleEdit || form.type != QuickType.EXPENSE || !data.saveOnChipTap || editing != null
         Column(Modifier.fillMaxWidth(), verticalArrangement = Arrangement.spacedBy(8.dp)) {
             if (!simpleEdit) ContextRow(form, data, vm, handle)
-            OptionalRow(form, data, vm::edit)
+            OptionalRow(form, data, vm::edit) {
+                if (form.type == QuickType.EXPENSE && editing == null) ReceiptChip(receipt)
+            }
         }
         Spacer(Modifier.height(10.dp))
         Numpad(form.digits, { d -> vm.edit { it.copy(digits = d) } }, keyHeight = 56)
-        if (showSaveButton) {
-            Spacer(Modifier.height(10.dp))
-            PennyButton(if (editing != null) "Save changes" else "Save", { vm.save(handle) }, Modifier.fillMaxWidth(), enabled = cents > 0)
-        }
+        // Always visible: with save-on-chip-tap a category tap is just a shortcut. Hiding the button left the
+        // user stuck when they picked the category before typing the amount.
+        Spacer(Modifier.height(10.dp))
+        PennyButton(if (editing != null) "Save changes" else "Save", { vm.save(handle) }, Modifier.fillMaxWidth(), enabled = cents > 0)
     }
 }
 

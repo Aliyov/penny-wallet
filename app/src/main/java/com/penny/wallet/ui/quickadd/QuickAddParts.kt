@@ -105,14 +105,15 @@ internal fun AccountChips(accounts: List<Account>, selectedId: String?, onTap: (
     }
 }
 
-/** Compact optional row: account · date · note · make recurring. */
+/** Compact optional row: [leading] (scan receipt) · account · date · note · make recurring. */
 @Composable
-internal fun OptionalRow(form: QuickForm, data: QuickData, edit: ((QuickForm) -> QuickForm) -> Unit) {
+internal fun OptionalRow(form: QuickForm, data: QuickData, edit: ((QuickForm) -> QuickForm) -> Unit, leading: @Composable () -> Unit = {}) {
     val c = Penny.colors
     Row(
         Modifier.fillMaxWidth().horizontalScroll(rememberScrollState()),
         verticalAlignment = Alignment.CenterVertically, horizontalArrangement = Arrangement.spacedBy(8.dp),
     ) {
+        leading()
         AccountPicker(form, data.accounts) { id -> edit { f -> f.copy(accountId = id, toAccountId = if (f.toAccountId == id) null else f.toAccountId) } }
         DatePickerRow(form.date, { d -> edit { it.copy(date = d) } })
         if (data.showNote && form.type != QuickType.SAVE) NoteChip(form.note) { n -> edit { it.copy(note = n) } }

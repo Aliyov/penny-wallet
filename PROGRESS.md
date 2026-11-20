@@ -12,6 +12,7 @@
 - [x] 9 Customization
 - [x] 10 Widgets
 - [x] 11 Polish
+- [x] 12 Save-button fix + receipt scan (1.3)
 
 ## Phase plans
 ### 1 Scaffold
@@ -69,6 +70,16 @@
 - Splash screen (core-splashscreen) held until settings load, so the theme never flashes defaults.
 - Biometric / device-credential app lock with lock-after delay (ProcessLifecycleOwner); never locks out a phone without any lock method.
 
+### 12 Save-button fix + receipt scan (1.3)
+- Bug: with "Save on chip tap" on (default) the expense Save button was hidden, so picking the category before typing the amount left no way to save. The Save button is now always shown; a chip tap still saves instantly when an amount is already typed.
+- Receipt scan: "Scan receipt" chip (expense, new entries) → Take photo (system camera app via FileProvider, no CAMERA permission) or Choose from gallery (photo picker).
+- `data/ocr/ReceiptReader`: ML Kit Text Recognition (bundled Latin model, offline), image decoded upright and capped at 3000 px; temp photo deleted after reading.
+- `domain/receipt` (pure Kotlin, unit-tested): `AmountExtractor` (all number formats, ignores dates/%/weights/negatives, fixes O→0), `ReceiptKeywords` (multilingual total / card / subtotal / tax / cash / change / tip / discount vocabulary), `ReceiptParser` (deskewed row grouping, labelled-row voting, largest-amount fallback).
+- 130 parser unit tests (157 total): amount formats, multilingual receipts, tilted/split OCR geometry, edge cases. Fixed from them: US suggested-tip tables ("18% = … (Total …)"), "5, 5O" OCR slips, "-£0.75" discounts, "Saving"/"Uw voordeel" lines, "2,99 €/kg" unit prices.
+- Release APK limited to arm64-v8a + armeabi-v7a (ML Kit native libs): 47 MB → 24 MB. versionCode 4 / 1.3.
+- Not smoke-tested on a device: no phone connected and the local emulator segfaults at boot. R8 mapping checked: ML Kit registrars are kept.
+- Confirm dialog: "Add €X to expense?", editable amount, other amounts as chips, Decline · Retake · Accept. Accept fills the amount; the user still picks the category.
+
 ## Environment
 - JDK 25 system OpenJDK is a **JRE only (no javac)**. The build uses a **JDK 21 toolchain auto-downloaded by Gradle** (foojay resolver in `settings.gradle.kts`), so no sudo is needed. Alternative: `sudo dnf install java-25-openjdk-devel`.
 -  Android SDK at `~/Android/Sdk` (platforms 35/36/37 installed via sdkmanager, no sudo needed), adb at `~/Android/Sdk/platform-tools/adb` (not on PATH).
@@ -109,6 +120,9 @@
 
 - Notifications are tinted with the user's accent colour.
 
+- **Receipt OCR = ML Kit bundled model** (free, on-device, no network). INTERNET / ACCESS_NETWORK_STATE that ML Kit's logging library adds are stripped with `tools:node="remove"`, so the app stays offline. Only Latin-script words are recognised (digits work everywhere); Cyrillic/Greek receipts fall back to the largest amount. Receipt photos are never stored, so the data model and backups are unchanged.
+- No §7a setting for the scanner (not in the spec); the chip just sits first in the optional row.
+
 ## Performance pass (after first phone test: "kinda laggy")
 - **Release build**: R8 minify + resource shrinking (APK 26.6 MB → 4.5 MB), versionCode 3 / 1.2. Signed with the local debug key, so `penny-wallet-release.apk` installs over the debug app and keeps all data (signatures verified identical).
 - `androidx.profileinstaller`: ships Compose/AndroidX baseline profiles (`assets/dexopt/baseline.prof`) so a sideloaded APK gets ahead-of-time compiled hot paths.
@@ -122,7 +136,8 @@
 **Install:** connect the phone with USB debugging on, then `./gradlew installRelease` (or copy `app/build/outputs/apk/release/penny-wallet-release.apk`, the fast optimised build; the debug APK is only for development). First launch seeds demo data (2 accounts, 6 categories, 2 goals, ~40 transactions, 2 recurring rules). Clear it any time: Settings → Reset all data.
 
 **Daily use**
-- `+` → type the amount on the numpad → tap a category chip: saved (3 taps). Switch to Income / Save / Transfer at the top; account, date, note and "Make recurring" sit above the numpad.
+- `+` → type the amount on the numpad → tap a category chip: saved (3 taps), or tap **Save**.
+- **Scan receipt** (first chip above the numpad, expenses): Take photo / Choose from gallery → "Add €X to expense?" → edit the number or tap another amount found, then Accept (fills the amount), Retake or Decline. Pick the category to save. Works offline; photos aren't kept. Switch to Income / Save / Transfer at the top; account, date, note and "Make recurring" sit above the numpad.
 - Home: available to spend (green; red when negative), month spending, accounts (tap for income / withdraw / set balance / transfer), upcoming recurring items, recent entries (swipe left to delete, tap to edit). Every delete has a 5-second Undo.
 - Expenses: switch months, tap donut slices, tap a category to filter, tap a history bar to jump to that month, search notes. Recurring rules are reached from here (or Settings).
 - Savings: goals with rings; Add money (only up to what's available in that account) / Take back. Deleting a goal returns its money.
