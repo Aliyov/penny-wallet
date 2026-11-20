@@ -42,6 +42,11 @@ kotlin {
     }
 }
 
+// Distinct APK name (penny-wallet-debug.apk) so it can't be confused with other projects' app-debug.apk.
+base {
+    archivesName.set("penny-wallet")
+}
+
 room {
     schemaDirectory("$projectDir/schemas")
 }

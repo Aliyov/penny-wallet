@@ -109,7 +109,7 @@
 - Notifications are tinted with the user's accent colour.
 
 ## How to use / what's configurable
-**Install:** connect the phone with USB debugging on, then `./gradlew installDebug` (or copy `app/build/outputs/apk/debug/app-debug.apk`). First launch seeds demo data (2 accounts, 6 categories, 2 goals, ~40 transactions, 2 recurring rules). Clear it any time: Settings → Reset all data.
+**Install:** connect the phone with USB debugging on, then `./gradlew installDebug` (or copy `app/build/outputs/apk/debug/penny-wallet-debug.apk`). First launch seeds demo data (2 accounts, 6 categories, 2 goals, ~40 transactions, 2 recurring rules). Clear it any time: Settings → Reset all data.
 
 **Daily use**
 - `+` → type the amount on the numpad → tap a category chip: saved (3 taps). Switch to Income / Save / Transfer at the top; account, date, note and "Make recurring" sit above the numpad.
