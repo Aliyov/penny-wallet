@@ -1,0 +1,120 @@
+package com.penny.wallet.ui.home
+
+import androidx.compose.animation.animateContentSize
+import androidx.compose.foundation.background
+import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.PaddingValues
+import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.statusBarsPadding
+import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.items
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.rounded.Warning
+import androidx.compose.material3.Icon
+import androidx.compose.material3.Text
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.saveable.rememberSaveable
+import androidx.compose.runtime.setValue
+import androidx.compose.ui.Alignment
+import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
+import androidx.compose.ui.unit.dp
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import com.penny.wallet.data.prefs.HomeSection
+import com.penny.wallet.ui.common.TxRowItem
+import com.penny.wallet.ui.components.LocalSnack
+import com.penny.wallet.ui.components.SectionLabel
+import com.penny.wallet.ui.components.clickableNoRipple
+import com.penny.wallet.ui.pennyViewModel
+import com.penny.wallet.ui.theme.Penny
+
+@Composable
+fun HomeScreen(
+    onOpenAccount: (String) -> Unit,
+    onOpenRecurring: () -> Unit,
+    onEditTransaction: (String) -> Unit,
+    onOpenBackup: () -> Unit,
+) {
+    val vm = pennyViewModel { HomeViewModel(it) }
+    val state by vm.state.collectAsStateWithLifecycle()
+    val prefs = Penny.prefs
+    val snack = LocalSnack.current
+    var addAccount by rememberSaveable { mutableStateOf(false) }
+    val sections = remember(prefs.homeSections, prefs.hiddenHomeSections) {
+        prefs.homeSections.filterNot { it in prefs.hiddenHomeSections }
+    }
+    val gutter = Penny.dims.gutter
+
+    LazyColumn(
+        Modifier.fillMaxSize().statusBarsPadding(),
+        contentPadding = PaddingValues(bottom = 120.dp),
+        verticalArrangement = Arrangement.spacedBy(Penny.dims.gap),
+    ) {
+        if (state.backupWarning) {
+            item(key = "backup") { BackupBanner(onOpenBackup, Modifier.padding(horizontal = gutter, vertical = 4.dp)) }
+        }
+        sections.forEach { section ->
+            when (section) {
+                HomeSection.HERO -> item(key = "hero") { HomeHero(state, Modifier.padding(horizontal = gutter)) }
+                HomeSection.MONTH -> item(key = "month") { MonthCard(state, Modifier.padding(horizontal = gutter)) }
+                HomeSection.ACCOUNTS -> item(key = "accounts") {
+                    AccountCarousel(state.accounts, onOpenAccount, onAdd = { addAccount = true })
+                }
+                HomeSection.UPCOMING -> if (state.upcoming.isNotEmpty()) item(key = "upcoming") {
+                    UpcomingStrip(state.upcoming, state.overdueCount, onOpenRecurring)
+                }
+                HomeSection.RECENT -> {
+                    item(key = "recent_label") { SectionLabel("Recent", Modifier.padding(horizontal = gutter)) }
+                    if (state.recent.isEmpty() && !state.loading) {
+                        item(key = "recent_empty") {
+                            Text(
+                                "No transactions yet. Tap + to add your first one.",
+                                style = Penny.type.body, color = Penny.colors.textSecondary,
+                                modifier = Modifier.padding(horizontal = gutter, vertical = 12.dp),
+                            )
+                        }
+                    }
+                    items(state.recent, key = { "tx_" + it.tx.id }) { row ->
+                        TxRowItem(
+                            row,
+                            Modifier.padding(horizontal = gutter).animateItem(),
+                            onClick = { onEditTransaction(row.tx.id) },
+                            onDelete = { vm.delete(row.tx) { t -> snack.undo("Deleted") { vm.restore(t) } } },
+                        )
+                    }
+                }
+            }
+        }
+    }
+
+    if (addAccount) {
+        AddAccountSheet(
+            onDismiss = { addAccount = false },
+            onSave = { name, icon, cents -> vm.addAccount(name, icon, cents); addAccount = false },
+        )
+    }
+}
+
+@Composable
+private fun BackupBanner(onClick: () -> Unit, modifier: Modifier = Modifier) {
+    val c = Penny.colors
+    Row(
+        modifier.fillMaxWidth().clip(Penny.dims.smallShape).background(c.warning.copy(alpha = 0.12f))
+            .clickableNoRipple(onClick).padding(horizontal = 14.dp, vertical = 10.dp).animateContentSize(sizeSpec()),
+        verticalAlignment = Alignment.CenterVertically,
+    ) {
+        Icon(Icons.Rounded.Warning, null, tint = c.warning, modifier = Modifier.size(18.dp))
+        Spacer(Modifier.width(10.dp))
+        Text("No backup in over 10 days", style = Penny.type.label, color = c.warning, modifier = Modifier.weight(1f))
+        Text("Back up", style = Penny.type.label, color = c.warning)
+    }
+}

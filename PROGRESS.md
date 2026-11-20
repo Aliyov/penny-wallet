@@ -3,7 +3,7 @@
 ## Phases
 - [x] 1 Scaffold
 - [x] 2 Domain
-- [ ] 3 Home + accounts
+- [x] 3 Home + accounts
 - [ ] 4 Quick add
 - [ ] 5 Expenses + charts
 - [ ] 6 Savings
@@ -28,6 +28,17 @@
 - `Formatters`: EU/US, symbol position, hidden cents, parsing.
 - 26 JUnit tests: all passing.
 
+### 3 Home + accounts
+- `HomeViewModel` / `AccountViewModel` combine Room flows + prefs and run `MoneyCalculator`; UI gets ready-made state.
+- `TxRows` builds display rows (title, icon, colour, signed amount, tone) once for every list.
+- Shared components: AnimatedAmount, MoneyText (privacy mode), Numpad, PennySheet, PennyButton, IconBadge, AmountSheet, DatePickerRow, swipeable TxRowItem.
+- Home: hero (metric from prefs) + glow + HUD grid, month card, account carousel + add account, upcoming strip, recent; sections ordered/hidden from prefs; backup-warning banner.
+- Account detail: balance/available/in goals, Add income · Withdraw · Set balance · Transfer, rename/icon, archive, delete (→ archive offer), history grouped by day.
+
+### 4 Quick add
+- `QuickAddViewModel`: defaults (fixed or last-used account, default type), chip order (most used + last used first / manual / A–Z), save-on-chip-tap, edit mode, Make recurring, Undo.
+- Sheet UI: segmented control, big amount + numpad, chips, optional row (account · date · note · recurring).
+
 ## Environment
 - JDK 25 system OpenJDK is a **JRE only (no javac)**. The build uses a **JDK 21 toolchain auto-downloaded by Gradle** (foojay resolver in `settings.gradle.kts`), so no sudo is needed. Alternative: `sudo dnf install java-25-openjdk-devel`.
 -  Android SDK at `~/Android/Sdk` (platforms 35/36/37 installed via sdkmanager, no sudo needed), adb at `~/Android/Sdk/platform-tools/adb` (not on PATH).
@@ -46,6 +57,11 @@
 - `monthsUntil(deadline)` rounds partial months up, minimum 1; "€X/month" rounds up to the cent.
 - Hidden cents round to the nearest euro (12,60 € → 13 €).
 - Bottom nav "blur": a real backdrop blur isn't possible in Compose without a third-party library, so the bar is a translucent (82%) raised surface on API 31+ and solid below.
+
+- **Archive an account** is blocked while it has money earmarked in goals (it'd make available-to-spend wrong); the user is told to take it back first.
+- Account undo-after-delete calls the repo directly (the screen's ViewModel is already gone).
+- **Make recurring** (quick add) creates a MONTHLY rule on the expense's day of month, links the expense to it, and sets nextDueDate to the following month (this occurrence is already paid).
+- Editing a transaction keeps its type; withdrawals/adjustments/unsaves edit amount, date and note only.
 
 ## Notes
 - Icon registry `ui/components/PennyIcons.kt`: 102 icons; keys are persisted, so never rename. Stand-ins: piggy=Toll, revolut=Payment, tax=ReceiptLong.

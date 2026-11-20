@@ -119,6 +119,7 @@ object PennyIcons {
         // Misc
         "other" to Icons.Rounded.Category,
         "more" to Icons.Rounded.MoreHoriz,
+        "transfer" to Icons.Rounded.SwapHoriz,
     )
 
     private val map: Map<String, ImageVector> = all.toMap()

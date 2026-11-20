@@ -1,6 +1,6 @@
 package com.penny.wallet.ui.theme
 
-import androidx.compose.animation.core.AnimationSpec
+import androidx.compose.animation.core.FiniteAnimationSpec
 import androidx.compose.animation.core.Spring
 import androidx.compose.animation.core.snap
 import androidx.compose.animation.core.spring
@@ -37,7 +37,7 @@ data class PennyDims(
 data class PennyMotion(val level: AnimationLevel, val haptics: Boolean, val glow: GlowLevel, val hudGrid: Boolean) {
     val enabled get() = level != AnimationLevel.OFF
     /** Default spring for the app; snaps when animations are off. */
-    fun <T> spec(stiffness: Float = Spring.StiffnessMediumLow): AnimationSpec<T> = when (level) {
+    fun <T> spec(stiffness: Float = Spring.StiffnessMediumLow): FiniteAnimationSpec<T> = when (level) {
         AnimationLevel.FULL -> spring(Spring.DampingRatioMediumBouncy, stiffness)
         AnimationLevel.REDUCED -> spring(Spring.DampingRatioNoBouncy, Spring.StiffnessMedium)
         AnimationLevel.OFF -> snap()

@@ -61,6 +61,11 @@ private val tabs = listOf(
 /** Global UI state: quick add sheet requests (FAB, widget deep link). */
 class RootState {
     var quickAddOpen by mutableStateOf(false)
+    /** Transaction being edited in the quick add sheet, or null for a new entry. */
+    var editTxId by mutableStateOf<String?>(null)
+    fun openNew() { editTxId = null; quickAddOpen = true }
+    fun openEdit(id: String) { editTxId = id; quickAddOpen = true }
+    fun close() { quickAddOpen = false; editTxId = null }
 }
 
 @Composable
@@ -71,7 +76,7 @@ fun PennyRoot(container: AppContainer, startWithQuickAdd: Boolean = false) {
     val snack = remember { Snack(host, scope) }
     val root = remember { RootState() }
     var consumedStart by rememberSaveable { mutableStateOf(false) }
-    if (startWithQuickAdd && !consumedStart) { consumedStart = true; root.quickAddOpen = true }
+    if (startWithQuickAdd && !consumedStart) { consumedStart = true; root.openNew() }
 
     val entry by nav.currentBackStackEntryAsState()
     val route = entry?.destination?.route
@@ -83,7 +88,7 @@ fun PennyRoot(container: AppContainer, startWithQuickAdd: Boolean = false) {
             if (showBar) {
                 PennyBottomBar(tabs, route, onSelect = { nav.switchTab(it) }, modifier = Modifier.align(Alignment.BottomCenter))
                 PennyFab(
-                    onClick = { root.quickAddOpen = true },
+                    onClick = { root.openNew() },
                     modifier = Modifier.align(Alignment.BottomCenter).navigationBarsPadding().padding(bottom = 10.dp),
                 )
             }
