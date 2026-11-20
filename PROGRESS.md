@@ -110,7 +110,7 @@
 - Notifications are tinted with the user's accent colour.
 
 ## Performance pass (after first phone test: "kinda laggy")
-- **Release build**: R8 minify + resource shrinking (APK 26.6 MB → 4.5 MB), versionCode 2 / 1.1. Signed with the local debug key, so `penny-wallet-release.apk` installs over the debug app and keeps all data (signatures verified identical).
+- **Release build**: R8 minify + resource shrinking (APK 26.6 MB → 4.5 MB), versionCode 3 / 1.2. Signed with the local debug key, so `penny-wallet-release.apk` installs over the debug app and keeps all data (signatures verified identical).
 - `androidx.profileinstaller`: ships Compose/AndroidX baseline profiles (`assets/dexopt/baseline.prof`) so a sideloaded APK gets ahead-of-time compiled hot paths.
 - All 10 ViewModels: ledger maths / row building moved off the main thread (`flowOn(Dispatchers.Default)`).
 - Quick add data flow is `WhileSubscribed` (was Eagerly: recomputed the ledger on every write even with the sheet closed).
