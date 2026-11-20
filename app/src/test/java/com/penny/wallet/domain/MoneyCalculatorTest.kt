@@ -116,4 +116,17 @@ class MoneyCalculatorTest {
         val hist = MoneyCalculator.spentHistory(txs, p, 3, 1)
         assertEquals(listOf(0L, 999L, 400L), hist.map { it.second })
     }
+
+    @Test fun externalSave_addsToGoalWithoutTouchingBalances() {
+        val ext = MoneyCalculator.EXTERNAL
+        val txs = ledger + t(SAVE, 40_000, ext, goal = "g1") + t(UNSAVE, 10_000, ext, goal = "g1")
+        val before = MoneyCalculator.summary(listOf(bank, cash), listOf(phone), ledger)
+        val after = MoneyCalculator.summary(listOf(bank, cash), listOf(phone), txs)
+        assertEquals(before.goal("g1") + 30_000, after.goal("g1"))
+        assertEquals(before.totalBalance, after.totalBalance)
+        assertEquals(before.availableToSpend, after.availableToSpend)
+        assertEquals(before.account("bank"), after.account("bank"))
+        assertEquals(30_000L, after.externalSaved)
+        assertEquals(mapOf("bank" to 25_000L, ext to 30_000L), MoneyCalculator.unsaveSplit("g1", txs))
+    }
 }

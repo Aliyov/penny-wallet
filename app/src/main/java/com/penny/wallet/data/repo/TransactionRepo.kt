@@ -45,9 +45,13 @@ class TransactionRepo(private val db: PennyDatabase, private val listener: Chang
         return insert(tx(TxType.ADJUSTMENT, diff, accountId, date, "Balance set"))
     }
 
-    /** Earmark money from an account into a goal. Can't exceed what's available in that account. */
+    /**
+     * Earmark money from an account into a goal. Can't exceed what's available in that account.
+     * With [MoneyCalculator.EXTERNAL] the money comes from outside, so no balance is touched or checked.
+     */
     suspend fun save(amount: Long, accountId: String, goalId: String, date: LocalDate): Transaction {
         requirePositive(amount)
+        if (accountId == MoneyCalculator.EXTERNAL) return insert(tx(TxType.SAVE, amount, accountId, date, null, goal = goalId))
         val available = MoneyCalculator.availableInAccount(accountId, dao.getAll())
         if (amount > available) throw InsufficientAvailableException(available)
         return insert(tx(TxType.SAVE, amount, accountId, date, null, goal = goalId))

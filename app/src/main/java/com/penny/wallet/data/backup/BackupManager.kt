@@ -5,6 +5,7 @@ import android.content.Intent
 import android.net.Uri
 import androidx.documentfile.provider.DocumentFile
 import androidx.room.withTransaction
+import com.penny.wallet.domain.MoneyCalculator
 import com.penny.wallet.data.db.PennyDatabase
 import com.penny.wallet.data.prefs.SettingsStore
 import com.penny.wallet.data.prefs.UserPrefs
@@ -102,7 +103,7 @@ class BackupManager(
     }
 
     fun summarize(b: Backup): BackupSummary {
-        val acc = b.accounts.map { it.id }.toSet()
+        val acc = b.accounts.map { it.id }.toSet() + MoneyCalculator.EXTERNAL
         val cat = b.categories.map { it.id }.toSet()
         val goal = b.goals.map { it.id }.toSet()
         val dangling = b.transactions.count { t ->

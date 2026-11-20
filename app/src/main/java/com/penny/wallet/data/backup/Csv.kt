@@ -14,7 +14,7 @@ object Csv {
     }
 
     fun transactions(b: Backup): String {
-        val acc = b.accounts.associate { it.id to it.name }
+        val acc = b.accounts.associate { it.id to it.name } + (com.penny.wallet.domain.MoneyCalculator.EXTERNAL to "Outside")
         val cat = b.categories.associate { it.id to it.name }
         val goal = b.goals.associate { it.id to it.name }
         val sb = StringBuilder("date,type,amount_eur,account,to_account,category,goal,note\r\n")

@@ -76,7 +76,7 @@ fun GoalScreen(id: String, onBack: () -> Unit) {
 
     when (dialog) {
         GoalDialog.ADD -> GoalMoneySheet(
-            title = "Add money", confirm = "Add to goal", accounts = state.accounts, initialAccount = state.suggestedFrom,
+            title = "Add money", confirm = "Add to goal", accounts = state.accounts, outside = state.outside, initialAccount = state.suggestedFrom,
             showAvailable = true, onDismiss = { dialog = null },
         ) { cents, accountId ->
             dialog = null
@@ -85,7 +85,7 @@ fun GoalScreen(id: String, onBack: () -> Unit) {
             }
         }
         GoalDialog.TAKE_BACK -> GoalMoneySheet(
-            title = "Take back", confirm = "Take back", accounts = state.accounts, initialAccount = state.suggestedBack,
+            title = "Take back", confirm = "Take back", accounts = state.accounts, outside = state.outside, initialAccount = state.suggestedBack,
             showAvailable = false, onDismiss = { dialog = null },
         ) { cents, accountId ->
             dialog = null

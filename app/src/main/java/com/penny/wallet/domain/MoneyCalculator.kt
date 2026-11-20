@@ -17,8 +17,10 @@ data class MoneySummary(
     val perGoal: Map<String, Long>,
     val totalBalance: Long,
     val totalSaved: Long,
+    /** Part of [totalSaved] added from outside the accounts (not earmarked from any balance). */
+    val externalSaved: Long = 0,
 ) {
-    val availableToSpend: Long get() = totalBalance - totalSaved
+    val availableToSpend: Long get() = totalBalance - (totalSaved - externalSaved)
     fun account(id: String) = perAccount[id] ?: AccountMoney(0, 0)
     fun goal(id: String) = perGoal[id] ?: 0L
 }
@@ -35,6 +37,12 @@ data class Period(val label: YearMonth, val start: LocalDate, val end: LocalDate
  * Pure Kotlin, no Android dependencies, so it is unit-tested directly.
  */
 object MoneyCalculator {
+
+    /**
+     * Pseudo account id for SAVE/UNSAVE rows whose money comes from (or goes) outside the
+     * tracked accounts. It never matches a real account, so balances and availability ignore it.
+     */
+    const val EXTERNAL = "external"
 
     /** Signed effect of one transaction on account [accountId]'s balance. */
     fun effectOn(t: Transaction, accountId: String): Long {
@@ -101,6 +109,7 @@ object MoneyCalculator {
             perGoal = goals.associate { it.id to (goal[it.id] ?: 0L) },
             totalBalance = accounts.filterNot { it.archived }.sumOf { per.getValue(it.id).balance },
             totalSaved = goals.sumOf { goal[it.id] ?: 0L },
+            externalSaved = alloc[EXTERNAL] ?: 0L,
         )
     }
 

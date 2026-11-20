@@ -33,7 +33,7 @@ object TxRows {
         val acc = accounts.associateBy { it.id }
         val cat = categories.associateBy { it.id }
         val goal = goals.associateBy { it.id }
-        fun an(id: String?) = id?.let { acc[it]?.name } ?: "—"
+        fun an(id: String?) = if (id == MoneyCalculator.EXTERNAL) "outside" else id?.let { acc[it]?.name } ?: "—"
         return txs.map { t ->
             val note = t.note?.takeIf { it.isNotBlank() }
             when (t.type) {

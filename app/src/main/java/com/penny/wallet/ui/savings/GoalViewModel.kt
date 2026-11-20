@@ -26,6 +26,8 @@ data class AccountChoice(val account: Account, val available: Long, /** this goa
 data class GoalState(
     val card: GoalCard? = null,
     val accounts: List<AccountChoice> = emptyList(),
+    /** This goal's money that came from outside the accounts. */
+    val outside: Long = 0,
     /** Suggested account for Add money (most available) and Take back (largest contributor). */
     val suggestedFrom: String? = null,
     val suggestedBack: String? = null,
@@ -46,8 +48,9 @@ class GoalViewModel(private val c: AppContainer, private val id: String) : ViewM
         GoalState(
             card = goalCard(g, s.goal(id)),
             accounts = choices,
-            suggestedFrom = choices.maxByOrNull { it.available }?.account?.id,
-            suggestedBack = choices.maxByOrNull { it.inGoal }?.takeIf { it.inGoal > 0 }?.account?.id ?: choices.firstOrNull()?.account?.id,
+            outside = inGoal[MoneyCalculator.EXTERNAL] ?: 0,
+            suggestedFrom = choices.maxByOrNull { it.available }?.account?.id ?: MoneyCalculator.EXTERNAL,
+            suggestedBack = choices.maxByOrNull { it.inGoal }?.takeIf { it.inGoal > 0 }?.account?.id ?: if ((inGoal[MoneyCalculator.EXTERNAL] ?: 0) > 0) MoneyCalculator.EXTERNAL else choices.firstOrNull()?.account?.id,
             rows = TxRows.build(mine, accounts, cats, goals),
         )
     }.flowOn(Dispatchers.Default).stateIn(viewModelScope, SharingStarted.WhileSubscribed(5_000), GoalState())

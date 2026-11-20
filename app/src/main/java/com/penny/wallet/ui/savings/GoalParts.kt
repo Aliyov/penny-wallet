@@ -29,6 +29,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import com.penny.wallet.domain.Formatters
+import com.penny.wallet.domain.MoneyCalculator
 import com.penny.wallet.ui.components.AmountSheet
 import com.penny.wallet.ui.components.AnimatedAmount
 import com.penny.wallet.ui.components.ButtonKind
@@ -93,7 +94,7 @@ internal fun GoalActions(onAdd: () -> Unit, onTakeBack: () -> Unit, canTakeBack:
 /** Amount sheet with account chips. Shows each account's available (add) or its money in this goal (take back). */
 @Composable
 internal fun GoalMoneySheet(
-    title: String, confirm: String, accounts: List<AccountChoice>, initialAccount: String?, showAvailable: Boolean,
+    title: String, confirm: String, accounts: List<AccountChoice>, outside: Long, initialAccount: String?, showAvailable: Boolean,
     onDismiss: () -> Unit, onConfirm: (cents: Long, accountId: String) -> Unit,
 ) {
     var accountId by rememberSaveable { mutableStateOf(initialAccount) }
@@ -102,12 +103,14 @@ internal fun GoalMoneySheet(
         title = title, onDismiss = onDismiss, confirmLabel = confirm,
         extra = {
             Text(if (showAvailable) "From" else "Back to", style = Penny.type.label, color = c.textSecondary)
-            if (accounts.isEmpty()) Text("Add an account first", style = Penny.type.body, color = c.textSecondary)
             FlowRow(horizontalArrangement = Arrangement.spacedBy(8.dp), verticalArrangement = Arrangement.spacedBy(8.dp)) {
                 accounts.forEach { a ->
                     val amount = if (showAvailable) a.available else a.inGoal
                     PennyChip("${a.account.name} · ${money(amount)}", accountId == a.account.id, { accountId = a.account.id })
                 }
+                // Money from outside the tracked accounts: doesn't touch any balance.
+                val ext = MoneyCalculator.EXTERNAL
+                PennyChip(if (showAvailable) "Outside (not from balance)" else "Outside · ${money(outside)}", accountId == ext, { accountId = ext })
             }
         },
     ) { cents ->
