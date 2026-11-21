@@ -157,10 +157,11 @@ Composable  →  ViewModel  →  Repository  →  Room / DataStore / ML Kit / Bi
 ## 10. Support Penny (tips)
 
 - The app is completely free. Settings → **Support Penny** shows a short thank-you text and three one-off tips (small / medium / large coffee).
-- Implemented with **Google Play Billing** consumable in-app products, behind a `TipRepository` interface in `data/billing`. Play's payments policy allows external tip links only when 100% reaches the developer, which tip platforms with fees do not guarantee. Play Billing is the clearly compliant option.
+- **Decided:** tips use **Google Play Billing** only (consumable in-app products), behind a `TipRepository` interface in `data/billing`. One tap plus fingerprint for the user, local currency and VAT handled by Google, no policy risk.
+- **No external tip links in any build** (no Buy Me a Coffee, Ko-fi or similar), including the APKs published on GitHub.
 - A tip unlocks nothing: no badges, no features. A thank-you message is shown after purchase.
 - No prompts or reminders to tip anywhere else in the app.
-- If Play Billing is unavailable (e.g. no Play Store), the screen explains that tips need Google Play and nothing else changes.
+- If Play Billing is unavailable (e.g. an APK installed from GitHub or a phone without the Play Store), the screen explains that tips need the Play Store version and nothing else changes.
 - The merged manifest is checked to confirm Billing adds no network permission. If it does, the decision is revisited before release.
 
 ---

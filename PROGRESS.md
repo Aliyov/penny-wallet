@@ -107,7 +107,7 @@
 -  Android SDK at `~/Android/Sdk` (platforms 35/36/37 installed via sdkmanager, no sudo needed), adb at `~/Android/Sdk/platform-tools/adb` (not on PATH).
 
 ## Decisions
-- **Production direction (2026-11-21):** free app, personal Play developer account, languages EN/DE/IT, tips via Play Billing consumables (policy: external tip links need 100% to reach the developer). Architecture rules in `docs/ARCHITECTURE.md`.
+- **Production direction (2026-11-21):** free app, personal Play developer account, languages EN/DE/IT, tips via Play Billing consumables only, confirmed by the user; no external tip links in any build, GitHub APKs included. Architecture rules in `docs/ARCHITECTURE.md`.
 - Savings "Outside (not from balance)": SAVE/UNSAVE rows use the pseudo account id `external` (MoneyCalculator.EXTERNAL). Adds to the goal without reducing any account or Available to spend. No schema change, so old backups still restore.
 - **compileSdk 37.1** (`release(37) { minorApiLevel = 1 }`; Compose 1.13 requires it), targetSdk 35, minSdk 26.
 - **LocalDate stored as epoch day** (Long) in Room so month ranges are integer comparisons. Enums stored by name.
