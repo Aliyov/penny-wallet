@@ -117,7 +117,7 @@ class QuickAddViewModel(private val c: AppContainer) : ViewModel() {
         scanJob?.cancel()
         _scan.value = ScanState.Reading
         scanJob = viewModelScope.launch {
-            _scan.value = runCatching { c.receipts.read(uri) }.fold(
+            _scan.value = runCatching { c.receipts.read(uri).inMinorUnits(Formatters.fractionDigits(c.settings.current().currencyCode)) }.fold(
                 { r -> if (r.totalCents == null) ScanState.NothingFound else ScanState.Found(r) },
                 { e ->
                     if (e is kotlinx.coroutines.CancellationException) throw e

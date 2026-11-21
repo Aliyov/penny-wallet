@@ -1,75 +1,102 @@
 package com.penny.wallet.core.money
 
 import com.penny.wallet.data.prefs.NumberFormatStyle
+import com.penny.wallet.data.prefs.SymbolPosition
 import com.penny.wallet.data.prefs.UserPrefs
-import java.time.LocalDate
-import java.time.YearMonth
-import java.time.format.DateTimeFormatter
-import java.time.format.TextStyle
+import java.text.DecimalFormat
+import java.text.DecimalFormatSymbols
+import java.text.NumberFormat
+import java.util.Currency
 import java.util.Locale
 import kotlin.math.abs
 
-/** The only place money becomes text. EUR only. */
+/** The only place money becomes text. Amounts are minor units of the user's single currency. */
 object Formatters {
     const val HIDDEN = "••••"
+    const val DEFAULT_CURRENCY = "EUR"
 
-    data class MoneyFormat(val showCents: Boolean = true, val style: NumberFormatStyle = NumberFormatStyle.EU, val symbolBefore: Boolean = false)
+    data class MoneyFormat(
+        val currencyCode: String = DEFAULT_CURRENCY,
+        val showCents: Boolean = true,
+        val style: NumberFormatStyle = NumberFormatStyle.AUTO,
+        val symbolPosition: SymbolPosition = SymbolPosition.AUTO,
+        val locale: Locale = Locale.ROOT,
+    )
 
-    fun of(p: UserPrefs) = MoneyFormat(p.showCents, p.numberFormat, p.symbolBefore)
+    fun of(p: UserPrefs, locale: Locale = Locale.getDefault()) = MoneyFormat(
+        currencyCode = p.currencyCode.ifEmpty { DEFAULT_CURRENCY },
+        showCents = p.showCents, style = p.numberFormat, symbolPosition = p.symbolPosition, locale = locale,
+    )
+
+    fun currency(code: String): Currency =
+        runCatching { Currency.getInstance(code) }.getOrElse { Currency.getInstance(DEFAULT_CURRENCY) }
+
+    /** EUR 2, JPY 0, BHD 3; pseudo-currencies without minor units count as 2. */
+    fun fractionDigits(code: String): Int = currency(code).defaultFractionDigits.let { if (it < 0) 2 else it }
+
+    /** The currency of the device region, or EUR when the region has none. */
+    fun suggestedCurrency(locale: Locale): String =
+        runCatching { Currency.getInstance(locale).currencyCode }.getOrNull() ?: DEFAULT_CURRENCY
+
+    fun symbol(code: String, locale: Locale): String = currency(code).getSymbol(locale)
 
     fun money(amount: Long, f: MoneyFormat = MoneyFormat(), signed: Boolean = false, forceCents: Boolean = false): String {
-        val neg = amount < 0
+        val digits = fractionDigits(f.currencyCode)
+        val unit = pow10(digits)
         val a = abs(amount)
-        val (group, dec) = if (f.style == NumberFormatStyle.EU) '.' to ',' else ',' to '.'
-        val cents = f.showCents || forceCents
-        val euros = if (cents) a / 100 else (a + 50) / 100 // round when cents are hidden
-        val whole = euros.toString().reversed().chunked(3).joinToString(group.toString()).reversed()
-        val num = if (cents) "$whole$dec${(a % 100).toString().padStart(2, '0')}" else whole
-        val body = if (f.symbolBefore) "€$num" else "$num €"
-        val sign = when { neg && a > 0 -> "−"; signed && !neg && a > 0 -> "+"; else -> "" }
+        val (group, dec) = separators(f)
+        val showFraction = digits > 0 && (f.showCents || forceCents)
+        val major = if (showFraction) a / unit else (a + unit / 2) / unit
+        val whole = major.toString().reversed().chunked(3).joinToString(group.toString()).reversed()
+        val num = if (showFraction) "$whole$dec${(a % unit).toString().padStart(digits, '0')}" else whole
+        val sym = symbol(f.currencyCode, f.locale)
+        val body = if (symbolBefore(f)) sym + (if (sym.last().isLetter()) " " else "") + num else "$num $sym"
+        val sign = when { amount < 0 -> "−"; signed && amount > 0 -> "+"; else -> "" }
         return sign + body
     }
 
-    /** Digits typed on the numpad ("1234" = 12,34 €) → cents. */
+    /** Digits typed on the numpad are minor units ("1234" = 12,34 € or 1234 ¥). */
     fun digitsToCents(digits: String): Long = digits.toLongOrNull() ?: 0L
 
-    /** Parses user text like "1.234,56", "1234.5", "12" into cents; null if invalid. */
-    fun parseCents(text: String): Long? {
-        val t = text.trim().replace("€", "").replace(" ", "").replace("−", "-")
-        if (t.isEmpty()) return null
-        val lastSep = maxOf(t.lastIndexOf(','), t.lastIndexOf('.'))
-        val (intPart, frac) = if (lastSep >= 0 && t.length - lastSep - 1 in 1..2) {
-            t.substring(0, lastSep) to t.substring(lastSep + 1)
-        } else t to ""
-        val i = intPart.replace(".", "").replace(",", "")
-        val neg = i.startsWith("-")
-        val digits = i.removePrefix("-").ifEmpty { "0" }
-        if (!digits.all(Char::isDigit) || !frac.all(Char::isDigit)) return null
-        val cents = digits.toLong() * 100 + frac.padEnd(2, '0').toLong()
-        return if (neg) -cents else cents
+    /**
+     * Parses user text like "1.234,56", "1234.5", "€ 12" into minor units; null if invalid. The last separator
+     * is the decimal one when at most [fractionDigits] digits follow it, so both EU and US input work.
+     */
+    fun parseCents(text: String, fractionDigits: Int = 2): Long? {
+        val t = text.trim().replace('−', '-').filter { it.isDigit() || it == ',' || it == '.' || it == '-' }
+        if (t.isEmpty() || t.none(Char::isDigit)) return null
+        val neg = t.startsWith("-")
+        val body = t.removePrefix("-")
+        if ('-' in body) return null
+        val lastSep = maxOf(body.lastIndexOf(','), body.lastIndexOf('.'))
+        val fracLen = body.length - lastSep - 1
+        val (intPart, frac) = if (lastSep >= 0 && fractionDigits > 0 && fracLen in 1..fractionDigits) {
+            body.substring(0, lastSep) to body.substring(lastSep + 1)
+        } else body to ""
+        val intDigits = intPart.filter(Char::isDigit).ifEmpty { "0" }
+        if (intDigits.length > 15) return null
+        val minor = intDigits.toLong() * pow10(fractionDigits) + frac.padEnd(fractionDigits, '0').ifEmpty { "0" }.toLong()
+        return if (neg) -minor else minor
     }
 
-    private val dayFmt = DateTimeFormatter.ofPattern("EEE d MMM", Locale.ENGLISH)
-    private val shortFmt = DateTimeFormatter.ofPattern("d MMM", Locale.ENGLISH)
-    private val fullFmt = DateTimeFormatter.ofPattern("d MMM yyyy", Locale.ENGLISH)
-
-    fun day(d: LocalDate, today: LocalDate = LocalDate.now()): String = when (d) {
-        today -> "Today"
-        today.minusDays(1) -> "Yesterday"
-        today.plusDays(1) -> "Tomorrow"
-        else -> if (d.year == today.year) dayFmt.format(d) else fullFmt.format(d)
+    fun percent(share: Float, locale: Locale = Locale.ROOT): String {
+        val pf = NumberFormat.getPercentInstance(locale)
+        val p = share * 100
+        return if (p in 0.01f..0.99f) "<" + pf.format(0.01) else pf.format(Math.round(p) / 100.0)
     }
 
-    fun shortDate(d: LocalDate): String = shortFmt.format(d)
-    fun fullDate(d: LocalDate): String = fullFmt.format(d)
-
-    fun month(ym: YearMonth): String = "${ym.month.getDisplayName(TextStyle.FULL, Locale.ENGLISH)} ${ym.year}"
-    fun monthShort(ym: YearMonth): String = ym.month.getDisplayName(TextStyle.SHORT, Locale.ENGLISH)
-
-    fun percent(share: Float): String = "${(share * 100).let { if (it in 0.01f..0.99f) "<1" else Math.round(it).toString() }}%"
-
-    fun relativeDays(fromMillis: Long, nowMillis: Long = System.currentTimeMillis()): String {
-        val days = (nowMillis - fromMillis) / 86_400_000L
-        return when { days <= 0 -> "today"; days == 1L -> "yesterday"; else -> "$days days ago" }
+    private fun separators(f: MoneyFormat): Pair<Char, Char> = when (f.style) {
+        NumberFormatStyle.EU -> '.' to ','
+        NumberFormatStyle.US -> ',' to '.'
+        NumberFormatStyle.AUTO -> DecimalFormatSymbols.getInstance(f.locale).let { it.groupingSeparator to it.decimalSeparator }
     }
+
+    private fun symbolBefore(f: MoneyFormat): Boolean = when (f.symbolPosition) {
+        SymbolPosition.BEFORE -> true
+        SymbolPosition.AFTER -> false
+        SymbolPosition.AUTO -> (NumberFormat.getCurrencyInstance(f.locale) as? DecimalFormat)
+            ?.toPattern()?.trimStart()?.startsWith('¤') ?: false
+    }
+
+    private fun pow10(n: Int): Long { var r = 1L; repeat(n) { r *= 10 }; return r }
 }

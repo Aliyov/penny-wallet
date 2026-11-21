@@ -27,7 +27,9 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
+import com.penny.wallet.R
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.penny.wallet.data.prefs.HomeSection
 import com.penny.wallet.core.ui.common.TxRowItem
@@ -49,6 +51,7 @@ fun HomeScreen(
     val prefs = Penny.prefs
     val snack = LocalSnack.current
     var addAccount by rememberSaveable { mutableStateOf(false) }
+    var confirmRemoveSample by rememberSaveable { mutableStateOf(false) }
     val sections = remember(prefs.homeSections, prefs.hiddenHomeSections) {
         prefs.homeSections.filterNot { it in prefs.hiddenHomeSections }
     }
@@ -59,10 +62,21 @@ fun HomeScreen(
         contentPadding = PaddingValues(bottom = 120.dp),
         verticalArrangement = Arrangement.spacedBy(Penny.dims.gap),
     ) {
+        if (state.firstRun && !state.loading) {
+            item(key = "welcome") {
+                WelcomeCard(
+                    onAddAccount = { addAccount = true }, onTrySample = vm::addSampleData,
+                    modifier = Modifier.padding(horizontal = gutter, vertical = 24.dp),
+                )
+            }
+        }
+        if (state.hasSampleData) {
+            item(key = "sample") { SampleBanner({ confirmRemoveSample = true }, Modifier.padding(horizontal = gutter, vertical = 4.dp)) }
+        }
         if (state.backupWarning) {
             item(key = "backup") { BackupBanner(onOpenBackup, Modifier.padding(horizontal = gutter, vertical = 4.dp)) }
         }
-        sections.forEach { section ->
+        if (!state.firstRun) sections.forEach { section ->
             when (section) {
                 HomeSection.HERO -> item(key = "hero") { HomeHero(state, Modifier.padding(horizontal = gutter)) }
                 HomeSection.MONTH -> item(key = "month") { MonthCard(state, Modifier.padding(horizontal = gutter)) }
@@ -99,7 +113,18 @@ fun HomeScreen(
     if (addAccount) {
         AddAccountSheet(
             onDismiss = { addAccount = false },
+            currencyCode = state.currencyCode.takeIf { state.firstRun },
+            onCurrencyChange = vm::setCurrency,
             onSave = { name, icon, cents -> vm.addAccount(name, icon, cents); addAccount = false },
+        )
+    }
+
+    if (confirmRemoveSample) {
+        ConfirmDialog(
+            stringResource(R.string.sample_remove_title), stringResource(R.string.sample_remove_body),
+            stringResource(R.string.sample_remove), danger = true,
+            onDismiss = { confirmRemoveSample = false },
+            onConfirm = { vm.removeSampleData(); confirmRemoveSample = false },
         )
     }
 }

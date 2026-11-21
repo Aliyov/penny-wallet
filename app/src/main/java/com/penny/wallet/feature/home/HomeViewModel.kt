@@ -39,13 +39,16 @@ data class HomeState(
     val overdueCount: Int = 0,
     val recent: List<TxRow> = emptyList(),
     val backupWarning: Boolean = false,
+    val firstRun: Boolean = false,
+    val hasSampleData: Boolean = false,
+    val currencyCode: String = "",
 )
 
 class HomeViewModel(private val c: AppContainer) : ViewModel() {
     val state: StateFlow<HomeState> = combine(
         c.accounts.observe(), c.categories.observe(), c.goals.observe(), c.transactions.observe(),
-        combine(c.recurring.observe(), c.settings.prefs, ::Pair),
-    ) { accounts, cats, goals, txs, (rules, prefs) ->
+        combine(c.recurring.observe(), c.settings.prefs, c.setup.hasSampleData, ::Triple),
+    ) { accounts, cats, goals, txs, (rules, prefs, hasSample) ->
         val today = LocalDate.now()
         val summary = MoneyCalculator.summary(accounts, goals, txs)
         val period = MoneyCalculator.periodOf(today, prefs.monthStartDay)
@@ -62,7 +65,11 @@ class HomeViewModel(private val c: AppContainer) : ViewModel() {
             upcoming = upcoming,
             overdueCount = upcoming.count { it.state == DueState.OVERDUE },
             recent = TxRows.build(txs.take(prefs.recentCount.coerceIn(3, 10)), accounts, cats, goals),
-            backupWarning = prefs.seeded && (lastBackup == null || System.currentTimeMillis() - lastBackup > 10L * 86_400_000L),
+            backupWarning = txs.isNotEmpty() && !hasSample &&
+                (lastBackup == null || System.currentTimeMillis() - lastBackup > 10L * 86_400_000L),
+            firstRun = accounts.isEmpty(),
+            hasSampleData = hasSample,
+            currencyCode = prefs.currencyCode,
         )
     }.flowOn(Dispatchers.Default).stateIn(viewModelScope, SharingStarted.WhileSubscribed(5_000), HomeState())
 
@@ -75,6 +82,12 @@ class HomeViewModel(private val c: AppContainer) : ViewModel() {
         val a = c.accounts.add(name, icon)
         if (openingBalance != 0L) c.transactions.setBalance(a.id, openingBalance, LocalDate.now())
     }
+
+    fun setCurrency(code: String) = viewModelScope.launch { c.settings.update { it.copy(currencyCode = code) } }
+
+    fun addSampleData() = viewModelScope.launch { c.setup.addSampleData() }
+
+    fun removeSampleData() = viewModelScope.launch { c.setup.removeSampleData() }
 
     fun restore(t: Transaction) = viewModelScope.launch { c.transactions.restore(t) }
 }

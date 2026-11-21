@@ -17,6 +17,8 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import kotlinx.coroutines.flow.map
 import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -60,10 +62,8 @@ private val tabs = listOf(
     NavItem(Routes.SETTINGS, "Settings", Icons.Rounded.Tune),
 )
 
-/** Global UI state: quick add sheet requests (FAB, widget deep link). */
 class RootState {
     var quickAddOpen by mutableStateOf(false)
-    /** Transaction being edited in the quick add sheet, or null for a new entry. */
     var editTxId by mutableStateOf<String?>(null)
     fun openNew() { editTxId = null; quickAddOpen = true }
     fun openEdit(id: String) { editTxId = id; quickAddOpen = true }
@@ -79,19 +79,24 @@ fun PennyRoot(container: AppContainer, quickAddRequest: Int = 0) {
     val root = remember { RootState() }
     var handledRequest by rememberSaveable { mutableIntStateOf(0) }
     LaunchedEffect(quickAddRequest) {
-        if (quickAddRequest > handledRequest) { handledRequest = quickAddRequest; root.openNew() }
+        if (quickAddRequest > handledRequest) {
+            handledRequest = quickAddRequest
+            if (container.accounts.all().isNotEmpty()) root.openNew()
+        }
     }
 
     val entry by nav.currentBackStackEntryAsState()
     val route = entry?.destination?.route
     val showBar = route in tabs.map { it.route }
+    val hasAccounts by remember { container.accounts.observe().map { it.isNotEmpty() } }.collectAsStateWithLifecycle(true)
 
     CompositionLocalProvider(LocalSnack provides snack) {
         Box(Modifier.fillMaxSize().background(Penny.colors.background)) {
             PennyNavHost(nav, container, root)
             if (showBar) {
                 PennyBottomBar(tabs, route, onSelect = { nav.switchTab(it) }, modifier = Modifier.align(Alignment.BottomCenter))
-                PennyFab(
+                // Before the first account exists, Home's welcome card is the only action.
+                if (hasAccounts) PennyFab(
                     onClick = { root.openNew() },
                     modifier = Modifier.align(Alignment.BottomCenter).navigationBarsPadding().padding(bottom = 10.dp),
                 )

@@ -1,5 +1,6 @@
 package com.penny.wallet.feature.settings
 
+import com.penny.wallet.core.util.dateText
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
@@ -78,7 +79,7 @@ fun SettingsScreen(onOpen: (String) -> Unit) {
             val sub = when {
                 backup.folderUri == null -> "Not set up"
                 last == null -> "Never backed up"
-                else -> "Last backup: ${Formatters.relativeDays(last)}"
+                else -> "Last backup: ${dateText().relativeDays(last)}"
             }
             SettingsRow(Icons.Rounded.Backup, "Backup", { onOpen("backup") }, sub, tint = if (backup.folderUri != null && !backup.folderOk) c.warning else Color(ItemPalette[7]))
             RowDivider()

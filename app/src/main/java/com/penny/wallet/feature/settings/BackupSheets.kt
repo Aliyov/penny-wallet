@@ -1,5 +1,7 @@
 package com.penny.wallet.feature.settings
 
+import com.penny.wallet.core.util.DateText
+import com.penny.wallet.core.util.dateText
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
@@ -22,16 +24,17 @@ import java.time.ZoneId
 @Composable
 internal fun RestoreSummarySheet(sum: BackupSummary, onDismiss: () -> Unit, onReplace: () -> Unit) {
     val c = Penny.colors
+    val dates = dateText()
     PennySheet(onDismiss = onDismiss, title = "Restore backup") {
         PennyCard(Modifier.fillMaxWidth()) {
-            SummaryLine("Exported", isoToDate(sum.exportedAt))
+            SummaryLine("Exported", isoToDate(sum.exportedAt, dates))
             SummaryLine("Accounts", sum.accounts.toString())
             SummaryLine("Categories", sum.categories.toString())
             SummaryLine("Goals", sum.goals.toString())
             SummaryLine("Transactions", sum.transactions.toString())
             SummaryLine("Recurring", sum.recurring.toString())
             if (sum.firstDate != null && sum.lastDate != null) {
-                SummaryLine("Date range", "${isoToDate(sum.firstDate)} – ${isoToDate(sum.lastDate)}")
+                SummaryLine("Date range", "${isoToDate(sum.firstDate, dates)} – ${isoToDate(sum.lastDate, dates)}")
             }
         }
         if (sum.danglingRefs > 0) {
@@ -59,7 +62,7 @@ private fun SummaryLine(label: String, value: String) {
 }
 
 /** Accepts an ISO instant or ISO date; falls back to the raw text. */
-private fun isoToDate(s: String): String =
-    runCatching { Formatters.fullDate(Instant.parse(s).atZone(ZoneId.systemDefault()).toLocalDate()) }
-        .recoverCatching { Formatters.fullDate(LocalDate.parse(s.take(10))) }
+private fun isoToDate(s: String, dates: DateText): String =
+    runCatching { dates.fullDate(Instant.parse(s).atZone(ZoneId.systemDefault()).toLocalDate()) }
+        .recoverCatching { dates.fullDate(LocalDate.parse(s.take(10))) }
         .getOrDefault(s)

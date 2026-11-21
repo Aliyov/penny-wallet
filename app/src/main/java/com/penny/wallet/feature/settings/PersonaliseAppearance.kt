@@ -39,12 +39,24 @@ import com.penny.wallet.data.prefs.GlowLevel
 import com.penny.wallet.data.prefs.NumberFormatStyle
 import com.penny.wallet.data.prefs.TextSize
 import com.penny.wallet.core.money.Formatters
+import com.penny.wallet.core.util.currentLocale
 import com.penny.wallet.feature.home.pennyFieldColors
 import com.penny.wallet.core.ui.components.ChoiceRow
 import com.penny.wallet.core.ui.components.PennyButton
 import com.penny.wallet.core.ui.components.PennySheet
 import com.penny.wallet.core.ui.components.SwitchRow
 import com.penny.wallet.core.ui.theme.AccentPresets
+import com.penny.wallet.core.ui.theme.onColor
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.saveable.rememberSaveable
+import androidx.compose.runtime.setValue
+import androidx.compose.ui.res.stringResource
+import com.penny.wallet.R
+import com.penny.wallet.data.prefs.SymbolPosition
+import com.penny.wallet.data.prefs.ThemeMode
+import com.penny.wallet.core.ui.components.CurrencyPickerSheet
+import com.penny.wallet.core.ui.components.NavRow
 import com.penny.wallet.core.ui.theme.Penny
 
 internal fun LazyListScope.appearanceSection(x: PrefsCtx) {
@@ -52,10 +64,21 @@ internal fun LazyListScope.appearanceSection(x: PrefsCtx) {
     val d = x.d
     item("preview") { PreviewCard(x) }
     settingsCard("appearance", "Appearance") {
-        AccentPicker(x)
         ChoiceRow(
-            "Background", listOf(BackgroundStyle.AMOLED to "AMOLED black", BackgroundStyle.DARK_GREY to "Dark grey"), p.background,
-            { v -> x.set { it.copy(background = v) } }, onReset = x.reset(p.background, d.background) { it.copy(background = d.background) },
+            stringResource(R.string.theme_title),
+            listOf(
+                ThemeMode.SYSTEM to stringResource(R.string.theme_system), ThemeMode.LIGHT to stringResource(R.string.theme_light),
+                ThemeMode.DARK to stringResource(R.string.theme_dark),
+            ),
+            p.themeMode, { v -> x.set { it.copy(themeMode = v) } },
+            onReset = x.reset(p.themeMode, d.themeMode) { it.copy(themeMode = d.themeMode) },
+        )
+        AccentPicker(x)
+        SwitchRow(
+            stringResource(R.string.theme_pure_black), p.background == BackgroundStyle.AMOLED,
+            { v -> x.set { it.copy(background = if (v) BackgroundStyle.AMOLED else BackgroundStyle.DARK_GREY) } },
+            subtitle = stringResource(R.string.theme_pure_black_hint),
+            onReset = x.reset(p.background, d.background) { it.copy(background = d.background) },
         )
         ChoiceRow(
             "Glow", listOf(GlowLevel.OFF to "Off", GlowLevel.SUBTLE to "Subtle", GlowLevel.STRONG to "Strong"), p.glow,
@@ -89,17 +112,36 @@ internal fun LazyListScope.appearanceSection(x: PrefsCtx) {
             "Show cents", p.showCents, { v -> x.set { it.copy(showCents = v) } },
             onReset = x.reset(p.showCents, d.showCents) { it.copy(showCents = d.showCents) },
         )
+        CurrencySetting(x)
         ChoiceRow(
-            "Number format", listOf(NumberFormatStyle.EU to "1.234,56", NumberFormatStyle.US to "1,234.56"), p.numberFormat,
+            "Number format", listOf(NumberFormatStyle.AUTO to stringResource(R.string.format_auto), NumberFormatStyle.EU to "1.234,56", NumberFormatStyle.US to "1,234.56"), p.numberFormat,
             { v -> x.set { it.copy(numberFormat = v) } }, onReset = x.reset(p.numberFormat, d.numberFormat) { it.copy(numberFormat = d.numberFormat) },
         )
         ChoiceRow(
-            "Currency symbol", listOf(true to "Before (€12)", false to "After (12 €)"), p.symbolBefore,
-            { v -> x.set { it.copy(symbolBefore = v) } }, onReset = x.reset(p.symbolBefore, d.symbolBefore) { it.copy(symbolBefore = d.symbolBefore) },
+            stringResource(R.string.symbol_position),
+            listOf(
+                SymbolPosition.AUTO to stringResource(R.string.format_auto), SymbolPosition.BEFORE to stringResource(R.string.symbol_before),
+                SymbolPosition.AFTER to stringResource(R.string.symbol_after),
+            ),
+            p.symbolPosition, { v -> x.set { it.copy(symbolPosition = v) } },
+            onReset = x.reset(p.symbolPosition, d.symbolPosition) { it.copy(symbolPosition = d.symbolPosition) },
         )
         SwitchRow(
             "Hide amounts", p.hideAmounts, { v -> x.set { it.copy(hideAmounts = v) } }, subtitle = "Privacy mode: shows •••• until tapped",
             onReset = x.reset(p.hideAmounts, d.hideAmounts) { it.copy(hideAmounts = d.hideAmounts) },
+        )
+    }
+}
+
+@Composable
+private fun CurrencySetting(x: PrefsCtx) {
+    var open by rememberSaveable { mutableStateOf(false) }
+    val code = x.p.currencyCode.ifEmpty { Formatters.DEFAULT_CURRENCY }
+    NavRow(stringResource(R.string.currency_title), code, { open = true })
+    if (open) {
+        CurrencyPickerSheet(
+            code, { open = false }, { v -> x.set { it.copy(currencyCode = v) }; open = false },
+            note = stringResource(R.string.currency_change_note),
         )
     }
 }
@@ -113,7 +155,7 @@ private fun PreviewCard(x: PrefsCtx) {
         verticalArrangement = Arrangement.spacedBy(4.dp),
     ) {
         Text("Preview", style = Penny.type.caption, color = c.textSecondary)
-        Text(Formatters.money(123456, Formatters.of(x.p)), style = Penny.type.amountLarge, color = c.accent)
+        Text(Formatters.money(123456, Formatters.of(x.p, currentLocale())), style = Penny.type.amountLarge, color = c.accent)
         Text("Available to spend", style = Penny.type.label, color = c.textSecondary)
     }
 }
@@ -151,8 +193,8 @@ private fun Swatch(color: Color, desc: String, selected: Boolean, custom: Boolea
         contentAlignment = Alignment.Center,
     ) {
         when {
-            custom -> Icon(Icons.Rounded.Edit, desc, tint = if (selected) Color.Black else c.textSecondary, modifier = Modifier.size(18.dp))
-            selected -> Icon(Icons.Rounded.Check, desc, tint = Color.Black, modifier = Modifier.size(18.dp))
+            custom -> Icon(Icons.Rounded.Edit, desc, tint = if (selected) onColor(color) else c.textSecondary, modifier = Modifier.size(18.dp))
+            selected -> Icon(Icons.Rounded.Check, desc, tint = onColor(color), modifier = Modifier.size(18.dp))
         }
     }
 }

@@ -23,6 +23,7 @@ interface AccountDao {
     @Upsert suspend fun upsertAll(a: List<Account>)
     @Delete suspend fun delete(a: Account)
     @Query("DELETE FROM accounts") suspend fun clear()
+    @Query("DELETE FROM accounts WHERE id LIKE 'sample-%'") suspend fun deleteSample()
 }
 
 @Dao
@@ -34,6 +35,11 @@ interface CategoryDao {
     @Upsert suspend fun upsertAll(c: List<Category>)
     @Delete suspend fun delete(c: Category)
     @Query("DELETE FROM categories") suspend fun clear()
+    @Query(
+        "DELETE FROM categories WHERE id LIKE 'sample-%' AND id NOT IN (SELECT categoryId FROM transactions WHERE categoryId IS NOT NULL) " +
+            "AND id NOT IN (SELECT categoryId FROM recurring)"
+    )
+    suspend fun deleteUnusedSample()
 }
 
 @Dao
@@ -45,6 +51,7 @@ interface GoalDao {
     @Upsert suspend fun upsertAll(g: List<Goal>)
     @Delete suspend fun delete(g: Goal)
     @Query("DELETE FROM goals") suspend fun clear()
+    @Query("DELETE FROM goals WHERE id LIKE 'sample-%'") suspend fun deleteSample()
 }
 
 @Dao
@@ -67,6 +74,11 @@ interface TransactionDao {
     @Delete suspend fun delete(t: Transaction)
     @Query("DELETE FROM transactions WHERE id IN (:ids)") suspend fun deleteIds(ids: List<String>)
     @Query("DELETE FROM transactions") suspend fun clear()
+    @Query(
+        "DELETE FROM transactions WHERE id LIKE 'sample-%' OR accountId LIKE 'sample-%' OR toAccountId LIKE 'sample-%' " +
+            "OR goalId LIKE 'sample-%' OR recurringId LIKE 'sample-%'"
+    )
+    suspend fun deleteSample()
 }
 
 @Dao
@@ -78,4 +90,5 @@ interface RecurringDao {
     @Upsert suspend fun upsertAll(r: List<RecurringExpense>)
     @Delete suspend fun delete(r: RecurringExpense)
     @Query("DELETE FROM recurring") suspend fun clear()
+    @Query("DELETE FROM recurring WHERE id LIKE 'sample-%' OR accountId LIKE 'sample-%'") suspend fun deleteSample()
 }

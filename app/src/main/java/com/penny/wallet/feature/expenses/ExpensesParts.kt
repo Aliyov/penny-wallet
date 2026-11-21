@@ -1,5 +1,6 @@
 package com.penny.wallet.feature.expenses
 
+import com.penny.wallet.core.util.dateText
 import androidx.compose.animation.core.animateFloatAsState
 import androidx.compose.animation.animateColorAsState
 import androidx.compose.foundation.background
@@ -65,7 +66,7 @@ internal fun HistoryChart(bars: List<MonthBar>, onSelect: (YearMonth) -> Unit, m
     PennyCard(modifier.fillMaxWidth()) {
         val sel = bars.firstOrNull { it.selected }
         if (sel != null) {
-            Text(Formatters.month(sel.label), style = Penny.type.label, color = c.textSecondary)
+            Text(dateText().month(sel.label), style = Penny.type.label, color = c.textSecondary)
             MoneyText(sel.amount, Penny.type.amount, c.textPrimary)
             Spacer(Modifier.height(12.dp))
         }
@@ -85,7 +86,7 @@ internal fun HistoryChart(bars: List<MonthBar>, onSelect: (YearMonth) -> Unit, m
                         )
                     }
                     Spacer(Modifier.height(6.dp))
-                    Text(Formatters.monthShort(b.label), style = Penny.type.caption, color = if (b.selected) c.textPrimary else c.textSecondary, maxLines = 1)
+                    Text(dateText().monthShort(b.label), style = Penny.type.caption, color = if (b.selected) c.textPrimary else c.textSecondary, maxLines = 1)
                 }
             }
         }
@@ -124,7 +125,7 @@ internal fun CategoryFilterChip(name: String, color: Color, onClear: () -> Unit,
 internal fun DayHeader(date: LocalDate, total: Long, modifier: Modifier = Modifier) {
     val c = Penny.colors
     Row(modifier.fillMaxWidth().padding(top = 12.dp, bottom = 2.dp), verticalAlignment = Alignment.CenterVertically) {
-        Text(Formatters.day(date).uppercase(), style = Penny.type.caption, color = c.textSecondary, modifier = Modifier.weight(1f))
+        Text(dateText().day(date).uppercase(), style = Penny.type.caption, color = c.textSecondary, modifier = Modifier.weight(1f))
         MoneyText(total, Penny.type.caption, c.textSecondary)
     }
 }

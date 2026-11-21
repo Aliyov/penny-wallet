@@ -24,6 +24,16 @@ data class ReceiptResult(
     val candidates: List<Long>,
     val confident: Boolean,
 ) {
+    /** The parser reads amounts with 2 decimals; currencies with other minor units (JPY 0, BHD 3) are rescaled. */
+    fun inMinorUnits(fractionDigits: Int): ReceiptResult {
+        if (fractionDigits == 2) return this
+        fun scale(c: Long): Long = when {
+            fractionDigits < 2 -> { var d = 1L; repeat(2 - fractionDigits) { d *= 10 }; (c + d / 2) / d }
+            else -> { var m = 1L; repeat(fractionDigits - 2) { m *= 10 }; c * m }
+        }
+        return ReceiptResult(totalCents?.let(::scale), candidates.map(::scale).distinct(), confident)
+    }
+
     companion object {
         val EMPTY = ReceiptResult(null, emptyList(), false)
     }

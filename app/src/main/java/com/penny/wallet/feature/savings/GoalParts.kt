@@ -1,5 +1,7 @@
 package com.penny.wallet.feature.savings
 
+import com.penny.wallet.core.util.currentLocale
+import com.penny.wallet.core.util.dateText
 import androidx.compose.animation.animateContentSize
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -66,7 +68,7 @@ internal fun GoalHero(card: GoalCard) {
     ) {
         ProgressRing(card.ring, color, Modifier.size(220.dp), stroke = 18.dp) {
             Column(horizontalAlignment = Alignment.CenterHorizontally) {
-                Text(Formatters.percent(card.progress), style = Penny.type.title, color = color)
+                Text(Formatters.percent(card.progress, currentLocale()), style = Penny.type.title, color = color)
                 AnimatedAmount(card.balance, Penny.type.amountLarge, c.textPrimary)
                 Text("of ${money(card.goal.targetCents)}", style = Penny.type.label, color = c.textSecondary)
             }
@@ -79,7 +81,7 @@ internal fun GoalHero(card: GoalCard) {
         card.monthlyNeeded?.takeIf { it > 0 }?.let { m ->
             Text("${money(m)}/month to hit the deadline", style = Penny.type.label, color = c.textSecondary)
         }
-        card.goal.deadline?.let { d -> Text("Deadline ${Formatters.fullDate(d)}", style = Penny.type.label, color = c.textSecondary) }
+        card.goal.deadline?.let { d -> Text("Deadline ${dateText().fullDate(d)}", style = Penny.type.label, color = c.textSecondary) }
     }
 }
 

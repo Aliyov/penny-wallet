@@ -6,6 +6,7 @@ import android.net.Uri
 import androidx.documentfile.provider.DocumentFile
 import androidx.room.withTransaction
 import com.penny.wallet.domain.MoneyCalculator
+import com.penny.wallet.core.money.Formatters
 import com.penny.wallet.data.db.PennyDatabase
 import com.penny.wallet.data.prefs.SettingsStore
 import com.penny.wallet.data.prefs.UserPrefs
@@ -131,6 +132,7 @@ class BackupManager(
         b.settings?.let { restored ->
             settings.update { cur ->
                 restored.copy(
+                    currencyCode = restored.currencyCode.ifEmpty { Formatters.DEFAULT_CURRENCY },
                     backupFolderUri = cur.backupFolderUri, lastBackupAt = cur.lastBackupAt,
                     notificationPermissionAsked = cur.notificationPermissionAsked, seeded = true,
                 )

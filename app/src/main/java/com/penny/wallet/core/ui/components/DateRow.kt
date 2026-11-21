@@ -1,5 +1,6 @@
 package com.penny.wallet.core.ui.components
 
+import com.penny.wallet.core.util.dateText
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
@@ -45,7 +46,7 @@ fun DatePickerRow(date: LocalDate, onChange: (LocalDate) -> Unit, modifier: Modi
         verticalAlignment = Alignment.CenterVertically, horizontalArrangement = Arrangement.spacedBy(10.dp),
     ) {
         Icon(Icons.Rounded.CalendarMonth, null, tint = c.textSecondary, modifier = Modifier.size(20.dp))
-        Text(Formatters.day(date), style = Penny.type.body, color = c.textPrimary)
+        Text(dateText().day(date), style = Penny.type.body, color = c.textPrimary)
     }
     if (!open) return
     val state = rememberDatePickerState(initialSelectedDateMillis = date.atStartOfDay(ZoneOffset.UTC).toInstant().toEpochMilli())

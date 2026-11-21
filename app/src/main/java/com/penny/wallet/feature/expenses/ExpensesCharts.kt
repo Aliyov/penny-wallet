@@ -1,5 +1,6 @@
 package com.penny.wallet.feature.expenses
 
+import com.penny.wallet.core.util.currentLocale
 import androidx.compose.animation.AnimatedContent
 import androidx.compose.animation.core.animateFloatAsState
 import androidx.compose.animation.fadeIn
@@ -29,6 +30,7 @@ import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import com.penny.wallet.data.prefs.ChartStyle
 import com.penny.wallet.core.money.Formatters
+import com.penny.wallet.core.util.dateText
 import com.penny.wallet.core.ui.components.Donut
 import com.penny.wallet.core.ui.components.DonutSlice
 import com.penny.wallet.core.ui.components.IconBadge
@@ -76,7 +78,7 @@ private fun DonutChart(state: ExpensesState, selected: Int?, onSelect: (Int?) ->
                 } else {
                     Text(s.name, style = Penny.type.label, color = Color(s.color), maxLines = 1, overflow = TextOverflow.Ellipsis)
                     MoneyText(s.amount, Penny.type.amountLarge, c.textPrimary)
-                    Text(Formatters.percent(s.share), style = Penny.type.label, color = c.textSecondary)
+                    Text(Formatters.percent(s.share, currentLocale()), style = Penny.type.label, color = c.textSecondary)
                 }
             }
         }
@@ -94,7 +96,7 @@ private fun CategoryBars(slices: List<CategorySlice>, onTap: (Int) -> Unit, sele
             Column(Modifier.fillMaxWidth().clickableNoRipple { onTap(i) }) {
                 Row(verticalAlignment = Alignment.CenterVertically) {
                     Text(s.name, style = Penny.type.label, color = if (dim) c.textSecondary else c.textPrimary, modifier = Modifier.weight(1f), maxLines = 1)
-                    Text(Formatters.percent(s.share), style = Penny.type.label, color = c.textSecondary)
+                    Text(Formatters.percent(s.share, currentLocale()), style = Penny.type.label, color = c.textSecondary)
                 }
                 Spacer(Modifier.height(6.dp))
                 Box(Modifier.fillMaxWidth().height(12.dp).clip(RoundedCornerShape(50)).background(c.hairline)) {
@@ -133,7 +135,7 @@ internal fun CategoryRow(slice: CategorySlice, active: Boolean, dimmed: Boolean,
                     Box(Modifier.fillMaxWidth(fraction.coerceIn(0.01f, 1f)).fillMaxHeight().background(color))
                 }
                 Spacer(Modifier.width(10.dp))
-                Text(Formatters.percent(slice.share), style = Penny.type.caption, color = c.textSecondary)
+                Text(Formatters.percent(slice.share, currentLocale()), style = Penny.type.caption, color = c.textSecondary)
             }
         }
     }
@@ -143,11 +145,12 @@ internal fun CategoryRow(slice: CategorySlice, active: Boolean, dimmed: Boolean,
 @Composable
 internal fun MonthSwitcher(state: ExpensesState, onPrev: () -> Unit, onNext: () -> Unit, modifier: Modifier = Modifier) {
     val c = Penny.colors
+    val dates = dateText()
     Row(modifier.fillMaxWidth(), verticalAlignment = Alignment.CenterVertically) {
         Text("‹", style = Penny.type.title, color = c.textPrimary, modifier = Modifier.clickableNoRipple(onPrev).padding(horizontal = 16.dp, vertical = 8.dp))
         AnimatedContent(state.period?.label, modifier = Modifier.weight(1f), label = "month",
             transitionSpec = { fadeIn() togetherWith fadeOut() }) { ym ->
-            Text(ym?.let(Formatters::month) ?: "", style = Penny.type.title, color = c.textPrimary, textAlign = TextAlign.Center, modifier = Modifier.fillMaxWidth())
+            Text(ym?.let(dates::month) ?: "", style = Penny.type.title, color = c.textPrimary, textAlign = TextAlign.Center, modifier = Modifier.fillMaxWidth())
         }
         Text(
             "›", style = Penny.type.title, color = if (state.isCurrent) c.textSecondary.copy(alpha = 0.3f) else c.textPrimary,

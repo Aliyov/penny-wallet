@@ -1,5 +1,6 @@
 package com.penny.wallet.platform.notify
 
+import com.penny.wallet.core.util.DateText
 import android.Manifest
 import android.app.NotificationChannel
 import android.app.NotificationManager
@@ -42,23 +43,23 @@ object Notifications {
     /** Stable id per rule so a newer notification replaces the older one. */
     fun idFor(ruleId: String) = ruleId.hashCode()
 
-    private fun amount(r: RecurringExpense, p: UserPrefs) =
-        if (p.hideAmounts) Formatters.HIDDEN else Formatters.money(r.amountCents, Formatters.of(p))
+    private fun amount(context: Context, r: RecurringExpense, p: UserPrefs) =
+        if (p.hideAmounts) Formatters.HIDDEN else Formatters.money(r.amountCents, Formatters.of(p, DateText.of(context).locale))
 
     fun remind(context: Context, r: RecurringExpense, due: LocalDate, today: LocalDate, p: UserPrefs) {
         val days = ChronoUnit.DAYS.between(today, due)
         val whenText = if (days == 1L) "Tomorrow" else "In $days days"
-        post(context, r, base(context, p, "$whenText: ${r.name} ${amount(r, p)}", "Due ${Formatters.day(due, today)}"))
+        post(context, r, base(context, p, "$whenText: ${r.name} ${amount(context, r, p)}", "Due ${DateText.of(context).day(due, today)}"))
     }
 
     fun dueToday(context: Context, r: RecurringExpense, due: LocalDate, p: UserPrefs) {
-        val b = base(context, p, "Due today: ${r.name} ${amount(r, p)}", "Tap Mark as paid once it's done")
+        val b = base(context, p, "Due today: ${r.name} ${amount(context, r, p)}", "Tap Mark as paid once it's done")
             .addAction(0, "Mark as paid", receiver(context, MarkPaidReceiver.ACTION_PAY, r.id, due, null))
         post(context, r, b)
     }
 
     fun autoPaid(context: Context, r: RecurringExpense, due: LocalDate, txId: String, p: UserPrefs) {
-        val b = base(context, p, "Paid automatically: ${r.name} ${amount(r, p)}", "Recorded for ${Formatters.day(due)}")
+        val b = base(context, p, "Paid automatically: ${r.name} ${amount(context, r, p)}", "Recorded for ${DateText.of(context).day(due)}")
             .addAction(0, "Undo", receiver(context, MarkPaidReceiver.ACTION_UNDO, r.id, due, txId))
         post(context, r, b)
     }

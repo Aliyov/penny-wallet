@@ -1,5 +1,6 @@
 package com.penny.wallet.feature.settings
 
+import com.penny.wallet.core.util.dateText
 import android.net.Uri
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
@@ -126,7 +127,7 @@ private fun StatusCard(s: BackupUi) {
             Text("Folder access was lost. Pick the folder again.", style = Penny.type.caption, color = c.warning, modifier = Modifier.padding(top = 6.dp))
         }
         Text(
-            "Last backup: " + (s.lastBackupAt?.let { Formatters.relativeDays(it) } ?: "Never"),
+            "Last backup: " + (s.lastBackupAt?.let { dateText().relativeDays(it) } ?: "Never"),
             style = Penny.type.label, color = c.textSecondary, modifier = Modifier.padding(top = 10.dp),
         )
     }

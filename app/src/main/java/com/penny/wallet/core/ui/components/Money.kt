@@ -12,6 +12,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.TextStyle
 import com.penny.wallet.core.money.Formatters
 import com.penny.wallet.core.ui.theme.Penny
+import com.penny.wallet.core.util.currentLocale
 
 /** Privacy mode: amounts show •••• until the user taps one (reveals all until the app restarts / prefs change). */
 class PrivacyState { var revealed by mutableStateOf(false) }
@@ -22,7 +23,7 @@ val LocalPrivacy = staticCompositionLocalOf { PrivacyState() }
 fun money(cents: Long, signed: Boolean = false, ignorePrivacy: Boolean = false): String {
     val p = Penny.prefs
     if (p.hideAmounts && !ignorePrivacy && !LocalPrivacy.current.revealed) return Formatters.HIDDEN
-    return Formatters.money(cents, Formatters.of(p), signed)
+    return Formatters.money(cents, Formatters.of(p, currentLocale()), signed)
 }
 
 @Composable

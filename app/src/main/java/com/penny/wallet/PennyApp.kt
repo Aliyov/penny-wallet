@@ -1,7 +1,6 @@
 package com.penny.wallet
 
 import android.app.Application
-import com.penny.wallet.data.db.Seed
 import com.penny.wallet.platform.notify.Notifications
 import com.penny.wallet.feature.lock.AppLock
 import com.penny.wallet.platform.widget.WidgetUpdater
@@ -22,10 +21,7 @@ class PennyApp : Application() {
         AppLock.install { container.settings.prefs.value }
         container.appScope.launch {
             val s = container.settings
-            if (!s.current().seeded) {
-                if (container.accounts.all().isEmpty()) Seed.run(container.db)
-                s.update { it.copy(seeded = true) }
-            }
+            container.setup.ensureInitialised()
             Notifications.ensureChannel(this@PennyApp)
             val p = s.current()
             Scheduler.scheduleDaily(this@PennyApp, p)
@@ -36,7 +32,6 @@ class PennyApp : Application() {
     }
 }
 
-/** Re-schedules workers when their settings change (reminder time, backup frequency/folder). */
 private fun PennyApp.watchScheduleSettings() {
     val s = container.settings
     container.appScope.launch {

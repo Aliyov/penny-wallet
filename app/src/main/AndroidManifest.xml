@@ -39,11 +39,11 @@
         </receiver>
         <receiver android:name=".platform.work.MarkPaidReceiver" android:exported="false" />
 
-        <receiver android:name=".platform.widget.BalanceWidgetReceiver" android:exported="true" android:label="Penny balance">
+        <receiver android:name=".platform.widget.BalanceWidgetReceiver" android:exported="true" android:label="@string/widget_balance_label">
             <intent-filter><action android:name="android.appwidget.action.APPWIDGET_UPDATE" /></intent-filter>
             <meta-data android:name="android.appwidget.provider" android:resource="@xml/balance_widget_info" />
         </receiver>
-        <receiver android:name=".platform.widget.QuickAddWidgetReceiver" android:exported="true" android:label="Penny quick add">
+        <receiver android:name=".platform.widget.QuickAddWidgetReceiver" android:exported="true" android:label="@string/widget_quick_label">
             <intent-filter><action android:name="android.appwidget.action.APPWIDGET_UPDATE" /></intent-filter>
             <meta-data android:name="android.appwidget.provider" android:resource="@xml/quick_add_widget_info" />
         </receiver>

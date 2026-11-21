@@ -1,5 +1,6 @@
 package com.penny.wallet.feature.home
 
+import com.penny.wallet.core.util.dateText
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -66,7 +67,7 @@ private fun UpcomingChip(item: UpcomingItem, showBadge: Boolean, modifier: Modif
         Spacer(Modifier.height(10.dp))
         Text(item.rule.name, style = Penny.type.bodyStrong, color = c.textPrimary, maxLines = 1)
         Text(
-            Formatters.day(item.rule.nextDueDate), style = Penny.type.caption,
+            dateText().day(item.rule.nextDueDate), style = Penny.type.caption,
             color = if (overdue) c.danger else c.textSecondary, maxLines = 1,
         )
         Spacer(Modifier.height(6.dp))

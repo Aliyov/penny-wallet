@@ -6,7 +6,9 @@ import androidx.compose.animation.core.snap
 import androidx.compose.animation.core.spring
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.material3.darkColorScheme
+import androidx.compose.material3.lightColorScheme
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.runtime.Immutable
@@ -19,6 +21,7 @@ import com.penny.wallet.data.prefs.AnimationLevel
 import com.penny.wallet.data.prefs.BackgroundStyle
 import com.penny.wallet.data.prefs.Density
 import com.penny.wallet.data.prefs.GlowLevel
+import com.penny.wallet.data.prefs.ThemeMode
 import com.penny.wallet.data.prefs.UserPrefs
 
 @Immutable
@@ -36,7 +39,6 @@ data class PennyDims(
 @Immutable
 data class PennyMotion(val level: AnimationLevel, val haptics: Boolean, val glow: GlowLevel, val hudGrid: Boolean) {
     val enabled get() = level != AnimationLevel.OFF
-    /** Default spring for the app; snaps when animations are off. */
     fun <T> spec(stiffness: Float = Spring.StiffnessMediumLow): FiniteAnimationSpec<T> = when (level) {
         AnimationLevel.FULL -> spring(Spring.DampingRatioMediumBouncy, stiffness)
         AnimationLevel.REDUCED -> spring(Spring.DampingRatioNoBouncy, Spring.StiffnessMedium)
@@ -45,7 +47,7 @@ data class PennyMotion(val level: AnimationLevel, val haptics: Boolean, val glow
     val glowAlpha get() = when (glow) { GlowLevel.OFF -> 0f; GlowLevel.SUBTLE -> 0.35f; GlowLevel.STRONG -> 0.6f }
 }
 
-val LocalPennyColors = staticCompositionLocalOf { pennyColors(0xFF39FF88, false) }
+val LocalPennyColors = staticCompositionLocalOf { pennyColors(0xFF39FF88, dark = true, pureBlack = false) }
 val LocalPennyType = staticCompositionLocalOf { pennyType(1f) }
 val LocalPennyDims = staticCompositionLocalOf { PennyDims(28.dp, 16.dp, 20.dp, 12.dp, 20.dp) }
 val LocalPennyMotion = staticCompositionLocalOf { PennyMotion(AnimationLevel.FULL, true, GlowLevel.SUBTLE, true) }
@@ -61,8 +63,9 @@ object Penny {
 
 @Composable
 fun PennyTheme(prefs: UserPrefs, content: @Composable () -> Unit) {
-    val colors = remember(prefs.accentArgb, prefs.background) {
-        pennyColors(prefs.accentArgb, prefs.background == BackgroundStyle.DARK_GREY)
+    val dark = isDarkTheme(prefs.themeMode)
+    val colors = remember(prefs.accentArgb, prefs.background, dark) {
+        pennyColors(prefs.accentArgb, dark, pureBlack = prefs.background == BackgroundStyle.AMOLED)
     }
     val type = remember(prefs.textSize) { pennyType(prefs.textSize.scale) }
     val compact = prefs.density == Density.COMPACT
@@ -77,8 +80,9 @@ fun PennyTheme(prefs: UserPrefs, content: @Composable () -> Unit) {
     val motion = remember(prefs.animations, prefs.haptics, prefs.glow, prefs.hudGrid) {
         PennyMotion(prefs.animations, prefs.haptics, prefs.glow, prefs.hudGrid)
     }
-    // Material You dynamic colour is intentionally NOT used.
-    val scheme = darkColorScheme(
+    // Penny's own palette, not Material You dynamic colour, so the brand accent stays.
+    val base = if (dark) darkColorScheme() else lightColorScheme()
+    val scheme = base.copy(
         primary = colors.accent, onPrimary = colors.onAccent, secondary = colors.accent,
         background = colors.background, onBackground = colors.textPrimary,
         surface = colors.surface1, onSurface = colors.textPrimary,
@@ -93,4 +97,11 @@ fun PennyTheme(prefs: UserPrefs, content: @Composable () -> Unit) {
     ) {
         MaterialTheme(colorScheme = scheme, typography = materialTypography(type), content = content)
     }
+}
+
+@Composable
+fun isDarkTheme(mode: ThemeMode): Boolean = when (mode) {
+    ThemeMode.SYSTEM -> isSystemInDarkTheme()
+    ThemeMode.LIGHT -> false
+    ThemeMode.DARK -> true
 }

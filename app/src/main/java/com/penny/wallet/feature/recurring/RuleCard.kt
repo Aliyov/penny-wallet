@@ -1,5 +1,6 @@
 package com.penny.wallet.feature.recurring
 
+import com.penny.wallet.core.util.dateText
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
@@ -73,7 +74,7 @@ internal fun RuleCard(
             row.account?.let { Text(it.name, style = Penny.type.caption, color = c.textSecondary) }
             Row(Modifier.padding(top = 6.dp), verticalAlignment = Alignment.CenterVertically, horizontalArrangement = Arrangement.spacedBy(6.dp)) {
                 Text(
-                    if (paused) "Paused" else "Next: ${Formatters.day(r.nextDueDate)}",
+                    if (paused) "Paused" else "Next: ${dateText().day(r.nextDueDate)}",
                     style = Penny.type.label, color = c.textPrimary, modifier = Modifier.weight(1f, fill = false),
                 )
                 when (row.state) {

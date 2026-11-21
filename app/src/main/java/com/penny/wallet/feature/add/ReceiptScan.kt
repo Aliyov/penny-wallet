@@ -39,6 +39,7 @@ import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.penny.wallet.core.money.Formatters
+import com.penny.wallet.core.util.currentLocale
 import com.penny.wallet.domain.receipt.ReceiptResult
 import com.penny.wallet.core.ui.components.money
 import com.penny.wallet.core.ui.theme.Penny
@@ -127,10 +128,12 @@ fun ReceiptScanDialog(vm: QuickAddViewModel, launchers: ReceiptLaunchers) {
 private fun ConfirmAmount(result: ReceiptResult, vm: QuickAddViewModel, launchers: ReceiptLaunchers) {
     val c = Penny.colors
     val prefs = Penny.prefs
-    fun editable(cents: Long) = Formatters.money(cents, Formatters.of(prefs), forceCents = true)
+    val locale = currentLocale()
+    val digits = Formatters.fractionDigits(prefs.currencyCode)
+    fun editable(cents: Long) = Formatters.money(cents, Formatters.of(prefs, locale), forceCents = true)
         .filter { it.isDigit() || it == ',' || it == '.' }
     var text by remember(result) { mutableStateOf(editable(result.totalCents ?: 0L)) }
-    val cents = Formatters.parseCents(text)?.takeIf { it in 1..MAX_CENTS }
+    val cents = Formatters.parseCents(text, digits)?.takeIf { it in 1..MAX_CENTS }
     ScanAlert(
         title = if (cents != null) "Add ${money(cents, ignorePrivacy = true)} to expense?" else "Add to expense?",
         onDismiss = vm::closeScan,

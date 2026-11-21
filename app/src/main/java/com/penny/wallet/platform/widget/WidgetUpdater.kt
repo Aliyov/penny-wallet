@@ -16,7 +16,7 @@ class WidgetUpdater(private val context: Context, private val c: AppContainer) {
     fun start() {
         c.onDataChanged = { request() }
         c.appScope.launch {
-            c.settings.prefs.map { listOf(it.accentArgb, it.hideAmounts, it.background, it.showCents, it.numberFormat, it.symbolBefore, it.monthStartDay) }
+            c.settings.prefs.map { listOf(it.accentArgb, it.hideAmounts, it.background, it.showCents, it.numberFormat, it.symbolPosition, it.currencyCode, it.monthStartDay) }
                 .distinctUntilChanged().collect { request() }
         }
     }

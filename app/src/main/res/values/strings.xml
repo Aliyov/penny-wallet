@@ -1,5 +1,77 @@
 <resources>
-    <string name="app_name">Penny Wallet</string>
+    <string name="app_name" translatable="false">Penny Wallet</string>
     <string name="widget_balance_desc">Available to spend and this month\'s spending</string>
     <string name="widget_quick_desc">Add an expense in one tap</string>
+    <string name="widget_balance_label">Penny balance</string>
+    <string name="widget_quick_label">Penny quick add</string>
+    <string name="widget_available">Available</string>
+    <string name="widget_spent_month">Spent this month %1$s</string>
+    <string name="widget_next">Next: %1$s · %2$s</string>
+    <string name="widget_add_expense">Add expense</string>
+
+    <string name="date_today">Today</string>
+    <string name="date_yesterday">Yesterday</string>
+    <string name="date_tomorrow">Tomorrow</string>
+    <string name="date_today_lower">today</string>
+    <string name="date_yesterday_lower">yesterday</string>
+    <plurals name="date_days_ago">
+        <item quantity="one">%d day ago</item>
+        <item quantity="other">%d days ago</item>
+    </plurals>
+
+    <string name="category_groceries">Groceries</string>
+    <string name="category_rent">Rent</string>
+    <string name="category_eating_out">Eating out</string>
+    <string name="category_transport">Transport</string>
+    <string name="category_subscriptions">Subscriptions</string>
+    <string name="category_shopping">Shopping</string>
+    <string name="category_health">Health</string>
+    <string name="category_fun">Fun</string>
+
+    <string name="sample_bank">Bank</string>
+    <string name="sample_cash">Cash</string>
+    <string name="sample_goal_phone">New phone</string>
+    <string name="sample_goal_vacation">Holiday</string>
+    <string name="sample_phone_credit">Phone plan</string>
+    <string name="sample_streaming">Streaming</string>
+    <string name="sample_note_supermarket">Supermarket</string>
+    <string name="sample_note_weekly_shop">Weekly shop</string>
+    <string name="sample_note_bakery">Bakery</string>
+    <string name="sample_note_market">Market</string>
+    <string name="sample_note_lunch">Lunch</string>
+    <string name="sample_note_coffee">Coffee and cake</string>
+    <string name="sample_note_dinner">Dinner out</string>
+    <string name="sample_note_fuel">Fuel</string>
+    <string name="sample_note_train">Train ticket</string>
+    <string name="sample_note_cinema">Cinema</string>
+    <string name="sample_note_concert">Concert</string>
+    <string name="sample_note_starting_cash">Starting cash</string>
+    <string name="sample_note_salary">Salary</string>
+    <string name="sample_note_atm">Cash machine</string>
+
+    <string name="currency_title">Currency</string>
+    <string name="currency_search">Search currency</string>
+    <string name="currency_change_note">Changing the currency only changes how amounts are shown. Amounts you already entered are not converted.</string>
+    <string name="a11y_selected">Selected</string>
+
+    <string name="welcome_title">Add your first account</string>
+    <string name="welcome_body">Start with where your money is, for example your bank account or cash, and how much is in it right now.</string>
+    <string name="welcome_add_account">Add account</string>
+    <string name="welcome_try_sample">Try with sample data</string>
+    <string name="sample_banner">You are looking at sample data</string>
+    <string name="sample_remove">Remove</string>
+    <string name="sample_remove_title">Remove sample data?</string>
+    <string name="sample_remove_body">Sample accounts, goals and entries are removed. Anything you added to a sample account or goal goes with it.</string>
+    <string name="action_cancel">Cancel</string>
+
+    <string name="theme_title">Theme</string>
+    <string name="theme_system">System</string>
+    <string name="theme_light">Light</string>
+    <string name="theme_dark">Dark</string>
+    <string name="theme_pure_black">Pure black</string>
+    <string name="theme_pure_black_hint">Dark theme with a black background, saves battery on OLED screens</string>
+    <string name="format_auto">Automatic</string>
+    <string name="symbol_position">Currency symbol</string>
+    <string name="symbol_before">Before</string>
+    <string name="symbol_after">After</string>
 </resources>

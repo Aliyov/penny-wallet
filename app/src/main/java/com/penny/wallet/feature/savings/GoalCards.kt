@@ -1,5 +1,7 @@
 package com.penny.wallet.feature.savings
 
+import com.penny.wallet.core.util.currentLocale
+import com.penny.wallet.core.util.dateText
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
@@ -70,11 +72,11 @@ private fun GoalDetails(card: GoalCard, color: Color) {
     val c = Penny.colors
     Text("${money(card.balance)} / ${money(card.goal.targetCents)}", style = Penny.type.label, color = c.textSecondary, maxLines = 1)
     Row(verticalAlignment = Alignment.CenterVertically, horizontalArrangement = Arrangement.spacedBy(8.dp)) {
-        Text(Formatters.percent(card.progress), style = Penny.type.bodyStrong, color = color)
+        Text(Formatters.percent(card.progress, currentLocale()), style = Penny.type.bodyStrong, color = color)
         if (card.reached) Text("Reached ✓", style = Penny.type.label, color = c.accent)
     }
     card.goal.deadline?.let { d ->
-        Text(Formatters.fullDate(d), style = Penny.type.caption, color = c.textSecondary, maxLines = 1)
+        Text(dateText().fullDate(d), style = Penny.type.caption, color = c.textSecondary, maxLines = 1)
     }
     card.monthlyNeeded?.takeIf { it > 0 }?.let { m ->
         Text("${money(m)}/month", style = Penny.type.caption, color = c.textPrimary, maxLines = 1)

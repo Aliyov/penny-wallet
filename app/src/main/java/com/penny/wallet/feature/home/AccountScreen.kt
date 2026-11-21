@@ -1,5 +1,6 @@
 package com.penny.wallet.feature.home
 
+import com.penny.wallet.core.util.dateText
 import androidx.compose.animation.animateContentSize
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
@@ -84,7 +85,7 @@ fun AccountScreen(id: String, onBack: () -> Unit, onEditTransaction: (String) ->
             }
             groups.forEach { (day, rows) ->
                 item("day-$day") {
-                    Text(Formatters.day(day), style = Penny.type.label, color = c.textSecondary, modifier = Modifier.padding(top = 12.dp, bottom = 4.dp))
+                    Text(dateText().day(day), style = Penny.type.label, color = c.textSecondary, modifier = Modifier.padding(top = 12.dp, bottom = 4.dp))
                 }
                 items(rows, key = { it.tx.id }) { row ->
                     TxRowItem(

@@ -28,9 +28,13 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.SolidColor
 import androidx.compose.ui.text.input.KeyboardCapitalization
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
+import com.penny.wallet.R
 import com.penny.wallet.core.money.Formatters
+import com.penny.wallet.core.ui.components.CurrencyPickerSheet
 import com.penny.wallet.core.ui.components.MoneyText
+import com.penny.wallet.core.ui.components.NavRow
 import com.penny.wallet.core.ui.components.Numpad
 import com.penny.wallet.core.ui.components.PennyButton
 import com.penny.wallet.core.ui.components.PennyIcons
@@ -38,19 +42,29 @@ import com.penny.wallet.core.ui.components.PennySheet
 import com.penny.wallet.core.ui.components.clickableNoRipple
 import com.penny.wallet.core.ui.theme.Penny
 
-/** New account: name, icon, opening balance (numpad, cash-register entry). */
+/** [currencyCode] is shown (and changeable) only for the very first account. */
 @Composable
-fun AddAccountSheet(onDismiss: () -> Unit, onSave: (name: String, icon: String, openingBalanceCents: Long) -> Unit) {
+fun AddAccountSheet(
+    onDismiss: () -> Unit,
+    onSave: (name: String, icon: String, openingBalanceCents: Long) -> Unit,
+    currencyCode: String? = null,
+    onCurrencyChange: (String) -> Unit = {},
+) {
     val c = Penny.colors
     var name by rememberSaveable { mutableStateOf("") }
     var icon by rememberSaveable { mutableStateOf(PennyIcons.accountKeys.first()) }
     var digits by rememberSaveable { mutableStateOf("") }
+    var pickCurrency by rememberSaveable { mutableStateOf(false) }
 
     PennySheet(onDismiss = onDismiss, title = "New account") {
         NameField(name, { name = it.take(40) })
         Spacer(Modifier.height(14.dp))
         IconGrid(icon) { icon = it }
         Spacer(Modifier.height(14.dp))
+        if (currencyCode != null) {
+            NavRow(stringResource(R.string.currency_title), currencyCode, { pickCurrency = true })
+            Spacer(Modifier.height(6.dp))
+        }
         Text("Opening balance", style = Penny.type.caption, color = c.textSecondary)
         MoneyText(
             Formatters.digitsToCents(digits), Penny.type.amountLarge,
@@ -63,6 +77,9 @@ fun AddAccountSheet(onDismiss: () -> Unit, onSave: (name: String, icon: String, 
             "Save", { onSave(name.trim(), icon, Formatters.digitsToCents(digits)) },
             Modifier.fillMaxWidth(), enabled = name.isNotBlank(),
         )
+    }
+    if (pickCurrency && currencyCode != null) {
+        CurrencyPickerSheet(currencyCode, { pickCurrency = false }, { onCurrencyChange(it); pickCurrency = false })
     }
 }
 
