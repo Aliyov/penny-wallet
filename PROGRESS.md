@@ -16,6 +16,14 @@
 - [x] 13 Receipt scan works in release + OCR-slip tolerance (1.4)
 - [x] 14 New app icon (1.5)
 
+## Production roadmap (see docs/ARCHITECTURE.md §14)
+- [ ] P1 Foundations: package move, comment cleanup, strings EN/DE/IT, light/dark/system theme, currency choice, clean first run (no demo data), CI
+- [ ] P2 Simplify: essential settings + More options, leaner Home, plain wording, empty states
+- [ ] P3 Features: monthly budget, "this month" insight, smarter receipt scan, category suggestions
+- [ ] P4 Support & trust: Support Penny (Play Billing tips), encrypted backups, crash report by email
+- [ ] P5 Play readiness: upload key + AAB, accessibility, store listing EN/DE/IT, privacy policy, Data safety
+- [ ] P6 Launch: closed test (12 testers / 14 days), production release
+
 ## Phase plans
 ### 1 Scaffold
 - Gradle wrapper 9.9.2, AGP 9.5.2 (built-in Kotlin), Kotlin 2.4.21, KSP 2.3.14, Compose BOM 2026.11.01, version catalog.
@@ -99,6 +107,7 @@
 -  Android SDK at `~/Android/Sdk` (platforms 35/36/37 installed via sdkmanager, no sudo needed), adb at `~/Android/Sdk/platform-tools/adb` (not on PATH).
 
 ## Decisions
+- **Production direction (2026-11-21):** free app, personal Play developer account, languages EN/DE/IT, tips via Play Billing consumables (policy: external tip links need 100% to reach the developer). Architecture rules in `docs/ARCHITECTURE.md`.
 - Savings "Outside (not from balance)": SAVE/UNSAVE rows use the pseudo account id `external` (MoneyCalculator.EXTERNAL). Adds to the goal without reducing any account or Available to spend. No schema change, so old backups still restore.
 - **compileSdk 37.1** (`release(37) { minorApiLevel = 1 }`; Compose 1.13 requires it), targetSdk 35, minSdk 26.
 - **LocalDate stored as epoch day** (Long) in Room so month ranges are integer comparisons. Enums stored by name.
