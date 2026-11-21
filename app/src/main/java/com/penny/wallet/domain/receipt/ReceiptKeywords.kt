@@ -8,6 +8,8 @@ internal enum class RowKind(val weight: Int) {
     TOTAL_STRONG(100),
     /** "Total / Summe / Totale / Toplam". */
     TOTAL(90),
+    /** A "total" word with an OCR slip, e.g. "TUTALE" (one letter off). */
+    TOTAL_FUZZY(70),
     /** "Betrag / Importe / Montant": an amount label, usually the total on short receipts. */
     AMOUNT(60),
     /** Card payment line: normally equals the total. */
@@ -79,7 +81,8 @@ internal object ReceiptKeywords {
         // tip
         "tip", "tips", "trinkgeld", "pourboire", "propina", "mancia", "gorjeta", "fooi", "napiwek", "bahsis", "gratuity",
         // discount / savings
-        "discount", "rabatt", "remise", "reduction", "descuento", "sconto", "desconto", "korting", "rabat", "indirim",
+        "discount", "discounts", "rabatt", "rabatte", "remise", "remises", "reduction", "descuento", "descuentos", "sconto", "sconti",
+        "desconto", "descontos", "korting", "kortingen", "rabat", "rabaty", "indirim", "indirimler",
         "sleva", "kedvezmeny", "popust", "coupon", "gutschein", "voucher", "ahorro", "risparmio", "ersparnis", "sie sparen",
         "you saved", "saved", "saving", "savings", "uw voordeel", "voordeel", "suggested", "tip guide", "economie", "economies", "besparing", "oszczednosc", "endirim", "скидка",
     )
@@ -124,7 +127,50 @@ internal object ReceiptKeywords {
             totalRx.containsMatchIn(n) -> RowKind.TOTAL
             amountRx.containsMatchIn(n) -> RowKind.AMOUNT
             cardRx.containsMatchIn(n) -> RowKind.CARD
+            else -> fuzzyKind(n)
+        }
+    }
+
+    /** Long label words that survive one OCR slip (two for 8+ letters): "TUTALE" → totale, "HASTERCARD" → mastercard. */
+    private val fuzzyTotal = listOf(
+        "total", "totale", "totaal", "summe", "gesamt", "razem", "toplam", "toplami", "summa", "totalt", "celkem",
+        "osszesen", "ukupno", "skupaj", "kokku", "zahlbetrag", "endbetrag", "endsumme", "gesamtsumme", "gesamtbetrag",
+        "rechnungsbetrag", "complessivo", "odenecek", "fizetendo", "yhteensa", "maksettava",
+    )
+    private val fuzzyCard = listOf("mastercard", "contactless", "kontaktlos", "girocard")
+    private val wordLike = Regex("""[\p{L}0-9]+""")
+
+    private fun fuzzyKind(n: String): RowKind {
+        // Letter/digit slips inside words: "T0TAL" → "total". Pure numbers are not words.
+        val words = wordLike.findAll(n).map { it.value }.filter { w -> w.any { it.isLetter() } }
+            .map { it.replace('0', 'o') }.filter { it.length >= 4 }.toList()
+        if (words.isEmpty()) return RowKind.PLAIN
+        fun near(list: List<String>) = words.any { w -> list.any { k -> closeTo(w, k) } }
+        return when {
+            near(fuzzyTotal) -> RowKind.TOTAL_FUZZY
+            near(fuzzyCard) -> RowKind.CARD
             else -> RowKind.PLAIN
         }
+    }
+
+    /** Edit distance ≤ 1 (≤ 2 when the keyword has 8+ letters); short keywords never match fuzzily. */
+    internal fun closeTo(word: String, key: String): Boolean {
+        if (key.length < 5) return false
+        val max = if (key.length >= 8) 2 else 1
+        if (kotlin.math.abs(word.length - key.length) > max || word == key) return word == key
+        var prev = IntArray(key.length + 1) { it }
+        for (i in 1..word.length) {
+            val cur = IntArray(key.length + 1)
+            cur[0] = i
+            var rowMin = cur[0]
+            for (j in 1..key.length) {
+                val cost = if (word[i - 1] == key[j - 1]) 0 else 1
+                cur[j] = minOf(prev[j] + 1, cur[j - 1] + 1, prev[j - 1] + cost)
+                rowMin = minOf(rowMin, cur[j])
+            }
+            if (rowMin > max) return false
+            prev = cur
+        }
+        return prev[key.length] <= max
     }
 }

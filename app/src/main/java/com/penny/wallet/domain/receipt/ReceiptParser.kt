@@ -9,6 +9,9 @@ package com.penny.wallet.domain.receipt
  * 3. Labelled rows (total, amount due, card payment) vote for their rightmost amount, or for the next
  *    row's amount when the label stands alone. The highest weight wins; an amount seen on several
  *    labelled rows (e.g. "TOTAL 5,50" and "VISA 5,50") gets a bonus; ties go to the larger amount.
+ *    OCR slips are tolerated: "TUTALE" counts as a fuzzy total, and a total row whose comma was lost
+ *    ("308") counts when 3,08 appears elsewhere (otherwise it is offered but not confident).
+ *    In unlabelled item rows a trailing VAT rate ("0,49 22,00") is not an amount.
  * 4. With no labelled row, the largest amount on a row that is not cash given / change / tax wins,
  *    and the result is marked not confident.
  */
@@ -23,7 +26,24 @@ object ReceiptParser {
 
     fun parse(lines: List<OcrLine>): ReceiptResult = parseRows(groupRows(lines).map(::row))
 
-    private fun row(text: String) = Row(text, ReceiptKeywords.classify(text), AmountExtractor.amounts(text))
+    /** Typical VAT rates in Europe, in cents ("22,00" in an "%Iva" column is a rate, not a price). */
+    private val VAT_RATES = setOf(400L, 500L, 550L, 600L, 700L, 800L, 900L, 1000L, 1200L, 1300L, 1400L, 1500L, 1600L,
+        1700L, 1800L, 1900L, 2000L, 2100L, 2200L, 2300L, 2400L, 2500L, 2700L)
+
+    /** A bare 3–6 digit number: a total whose decimal comma OCR lost ("3,08" read as "308"). */
+    private val bareNumber = Regex("""(?<![\d.,/:-])\d{3,6}(?![\d.,/:%-]|\s?%)""")
+
+    /** Weight of a lost-comma total nothing else on the receipt confirms: offered, never "confident". */
+    private const val UNVERIFIED = 30
+    private const val CONFIDENT = 45
+
+    private fun row(text: String): Row {
+        val kind = ReceiptKeywords.classify(text)
+        var amounts = AmountExtractor.amounts(text)
+        // Item row "0,49 22,00": price then VAT rate column. Drop the rate.
+        if (kind == RowKind.PLAIN && amounts.size >= 2 && amounts.last() in VAT_RATES) amounts = amounts.dropLast(1)
+        return Row(text, kind, amounts)
+    }
 
     /** Clusters OCR lines into rows by their deskewed vertical centre; each row's text reads left to right. */
     internal fun groupRows(lines: List<OcrLine>): List<String> {
@@ -50,19 +70,38 @@ object ReceiptParser {
     internal fun parseRows(rows: List<Row>): ReceiptResult {
         val votes = mutableMapOf<Long, Int>() // amount → best weight
         val hits = mutableMapOf<Long, Int>() // amount → number of labelled rows
+        val cardVotes = mutableSetOf<Long>()
+        val everywhere = rows.flatMap { it.amounts }.toSet()
+        fun vote(amount: Long, weight: Int) {
+            votes[amount] = maxOf(votes[amount] ?: 0, weight)
+            hits[amount] = (hits[amount] ?: 0) + 1
+        }
         rows.forEachIndexed { i, r ->
             if (r.kind.weight <= 0) return@forEachIndexed
-            val amount = r.amounts.lastOrNull() ?: labelOnlyAmount(rows, i) ?: return@forEachIndexed
-            votes[amount] = maxOf(votes[amount] ?: 0, r.kind.weight)
-            hits[amount] = (hits[amount] ?: 0) + 1
+            // A fuzzy label alone ("SUMMER SALE" banner) must not borrow the next item's price.
+            val amount = r.amounts.lastOrNull() ?: if (r.kind != RowKind.TOTAL_FUZZY) labelOnlyAmount(rows, i) else null
+            if (amount != null) {
+                if (r.kind == RowKind.CARD) cardVotes += amount
+                return@forEachIndexed vote(amount, r.kind.weight)
+            }
+            // "TOTALE 308": comma lost. Trust it fully only if 3,08 also appears elsewhere (e.g. the card line).
+            if (r.kind.weight >= RowKind.TOTAL_FUZZY.weight) {
+                val bare = bareNumber.findAll(r.text).lastOrNull()?.value?.toLongOrNull() ?: return@forEachIndexed
+                if (bare in 1..AmountExtractor.MAX_CENTS) vote(bare, if (bare in everywhere) r.kind.weight else UNVERIFIED)
+            }
         }
         val others = rows.filter { it.kind != RowKind.EXCLUDED }.flatMap { it.amounts }.distinct().sortedDescending()
 
         if (votes.isNotEmpty()) {
             fun score(a: Long) = votes.getValue(a) + REPEAT_BONUS * ((hits[a] ?: 1) - 1)
             val ranked = votes.keys.sortedWith(compareByDescending<Long> { score(it) }.thenByDescending { it })
-            val candidates = (ranked + others).distinct().take(MAX_CANDIDATES)
-            return ReceiptResult(ranked.first(), candidates, confident = true)
+            // Only a fuzzy word ("Summer Hat" ≈ summe) backs the leader, yet a card line paid another amount: trust the card.
+            val leader = ranked.first()
+            val best = if (votes.getValue(leader) <= RowKind.TOTAL_FUZZY.weight && leader !in cardVotes) {
+                ranked.firstOrNull { it in cardVotes } ?: leader
+            } else leader
+            val candidates = (listOf(best) + ranked + others).distinct().take(MAX_CANDIDATES)
+            return ReceiptResult(best, candidates, confident = votes.getValue(best) >= CONFIDENT)
         }
         if (others.isEmpty()) return ReceiptResult.EMPTY
         return ReceiptResult(others.first(), others.take(MAX_CANDIDATES), confident = false)

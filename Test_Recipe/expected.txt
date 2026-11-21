@@ -1,0 +1,2 @@
+# <photo file> <expected total in cents>
+recipe.jpg 308

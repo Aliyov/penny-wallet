@@ -12,3 +12,16 @@
 -keep class com.penny.wallet.data.db.entities.LocalDateSerializer { *; }
 # Enum names are persisted (Room converters, backup JSON, settings JSON): never rename them.
 -keepclassmembers enum com.penny.wallet.** { *; }
+
+# ML Kit text recognition (receipt scan). Its internals are wired together by reflection
+# (component registrars, lazy instance maps, logging/transport); with R8 full mode
+# InputImage.fromBitmap crashed with an NPE in release builds only. Keep it all intact.
+-keep class com.google.mlkit.** { *; }
+-keep class com.google.android.gms.internal.mlkit_** { *; }
+-keep class com.google.android.gms.common.** { *; }
+-keep class com.google.android.gms.tasks.** { *; }
+-keep class com.google.android.datatransport.** { *; }
+-keep class com.google.firebase.components.** { *; }
+-keep class com.google.firebase.encoders.** { *; }
+-dontwarn com.google.mlkit.**
+-dontwarn com.google.android.gms.**

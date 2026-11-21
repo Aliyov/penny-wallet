@@ -119,7 +119,11 @@ class QuickAddViewModel(private val c: AppContainer) : ViewModel() {
         scanJob = viewModelScope.launch {
             _scan.value = runCatching { c.receipts.read(uri) }.fold(
                 { r -> if (r.totalCents == null) ScanState.NothingFound else ScanState.Found(r) },
-                { e -> if (e is kotlinx.coroutines.CancellationException) throw e else ScanState.Failed("Couldn't read this photo") },
+                { e ->
+                    if (e is kotlinx.coroutines.CancellationException) throw e
+                    android.util.Log.w("PennyReceipt", "Receipt scan failed", e)
+                    ScanState.Failed("Couldn't read this photo")
+                },
             )
             c.receipts.discardPhoto()
         }

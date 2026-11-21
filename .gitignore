@@ -8,3 +8,7 @@ captures/
 .externalNativeBuild
 .cxx
 
+
+# Receipt photos for scripts/ocr-smoke.sh stay local (personal data); expected.txt is committed.
+Test_Recipe/*
+!Test_Recipe/expected.txt

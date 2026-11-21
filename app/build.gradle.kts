@@ -18,8 +18,8 @@ android {
         // Real phones are ARM; dropping x86 (emulator-only) ML Kit native libs roughly halves the APK.
         ndk { abiFilters += listOf("arm64-v8a", "armeabi-v7a") }
         targetSdk = 35
-        versionCode = 4
-        versionName = "1.3"
+        versionCode = 5
+        versionName = "1.4"
     }
 
     buildTypes {
@@ -31,6 +31,14 @@ android {
             // Personal sideloaded app: sign with the local debug key so the release APK installs over the
             // debug one (same signature) and keeps all data.
             signingConfig = signingConfigs.getByName("debug")
+        }
+        // Release build (same R8 shrinking) plus the OCR probe, installed as a separate app so on-phone
+        // receipt tests never touch the real app's data. Used by scripts/ocr-smoke.sh.
+        create("smoke") {
+            initWith(getByName("release"))
+            applicationIdSuffix = ".smoke"
+            versionNameSuffix = "-smoke"
+            matchingFallbacks += listOf("release")
         }
     }
     compileOptions {

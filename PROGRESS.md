@@ -13,6 +13,7 @@
 - [x] 10 Widgets
 - [x] 11 Polish
 - [x] 12 Save-button fix + receipt scan (1.3)
+- [x] 13 Receipt scan works in release + OCR-slip tolerance (1.4)
 
 ## Phase plans
 ### 1 Scaffold
@@ -77,8 +78,15 @@
 - `domain/receipt` (pure Kotlin, unit-tested): `AmountExtractor` (all number formats, ignores dates/%/weights/negatives, fixes O→0), `ReceiptKeywords` (multilingual total / card / subtotal / tax / cash / change / tip / discount vocabulary), `ReceiptParser` (deskewed row grouping, labelled-row voting, largest-amount fallback).
 - 130 parser unit tests (157 total): amount formats, multilingual receipts, tilted/split OCR geometry, edge cases. Fixed from them: US suggested-tip tables ("18% = … (Total …)"), "5, 5O" OCR slips, "-£0.75" discounts, "Saving"/"Uw voordeel" lines, "2,99 €/kg" unit prices.
 - Release APK limited to arm64-v8a + armeabi-v7a (ML Kit native libs): 47 MB → 24 MB. versionCode 4 / 1.3.
-- Not smoke-tested on a device: no phone connected and the local emulator segfaults at boot. R8 mapping checked: ML Kit registrars are kept.
+- Not smoke-tested on a device: no phone connected and the local emulator segfaults at boot. (This let the 1.3 R8 bug through: see phase 13.)
 - Confirm dialog: "Add €X to expense?", editable amount, other amounts as chips, Decline · Retake · Accept. Accept fills the amount; the user still picks the category.
+
+### 13 Receipt scan works in release + OCR-slip tolerance (1.4)
+- Root cause of "can't read the receipt" in 1.3: R8 broke ML Kit (NPE in `InputImage.fromBitmap`, release only). Fixed with keep rules in `proguard-rules.pro`; scan errors are now logged (tag PennyReceipt).
+- Found with an on-phone probe on a real Carrefour receipt: the condensed total line was read as "TUTALE OUPLKSO" / "308".
+- Parser: fuzzy "total" words (`TOTAL_FUZZY`, edit distance 1, 2 for 8+ letters, digit slips like T0TAL); a lost-comma total ("308") counts when the same amount appears elsewhere, otherwise it is offered but not confident; the trailing VAT rate is dropped in item rows ("0,49 22,00"); a fuzzy-only leader loses to a card line; plural discount words ("Sconti").
+- Tests: real phone capture as `RealReceiptRegressionTest` + 54 rule tests (211 total).
+- `smoke` build type (release + R8 + probe, separate app id `com.penny.wallet.smoke`) and `scripts/ocr-smoke.sh`: runs the real OCR on the connected phone against `Test_Recipe/*` and checks `Test_Recipe/expected.txt`. **Run it before every release that touches OCR.** Receipt photos are git-ignored (public repo).
 
 ## Environment
 - JDK 25 system OpenJDK is a **JRE only (no javac)**. The build uses a **JDK 21 toolchain auto-downloaded by Gradle** (foojay resolver in `settings.gradle.kts`), so no sudo is needed. Alternative: `sudo dnf install java-25-openjdk-devel`.
@@ -121,6 +129,7 @@
 - Notifications are tinted with the user's accent colour.
 
 - **Receipt OCR = ML Kit bundled model** (free, on-device, no network). INTERNET / ACCESS_NETWORK_STATE that ML Kit's logging library adds are stripped with `tools:node="remove"`, so the app stays offline. Only Latin-script words are recognised (digits work everywhere); Cyrillic/Greek receipts fall back to the largest amount. Receipt photos are never stored, so the data model and backups are unchanged.
+- **Release testing of OCR happens on the real phone** (`scripts/ocr-smoke.sh`), because unit tests can't catch R8/ML Kit problems and the emulator doesn't boot here. The smoke app is uninstalled afterwards; on MIUI it must be opened once before it accepts broadcasts (the script does this).
 - No §7a setting for the scanner (not in the spec); the chip just sits first in the optional row.
 
 ## Performance pass (after first phone test: "kinda laggy")

@@ -39,7 +39,10 @@ class ReceiptReader(private val context: Context) {
         dir.listFiles()?.forEach { it.delete() }
     }
 
-    suspend fun read(uri: Uri): ReceiptResult = withContext(Dispatchers.Default) {
+    suspend fun read(uri: Uri): ReceiptResult = ReceiptParser.parse(readLines(uri))
+
+    /** Raw OCR lines with their boxes (also used by the debug-only OCR probe). */
+    suspend fun readLines(uri: Uri): List<OcrLine> = withContext(Dispatchers.Default) {
         val image = load(uri)
         val recognizer = TextRecognition.getClient(TextRecognizerOptions.DEFAULT_OPTIONS)
         try {
@@ -52,7 +55,7 @@ class ReceiptReader(private val context: Context) {
                 } else 0f
                 OcrLine(line.text, box.left.toFloat(), box.top.toFloat(), box.right.toFloat(), box.bottom.toFloat(), slope)
             }
-            ReceiptParser.parse(lines)
+            lines
         } finally {
             recognizer.close()
         }
