@@ -1,5 +1,7 @@
 package com.penny.wallet.core.ui.components
 
+import com.penny.wallet.R
+import androidx.compose.ui.res.stringResource
 import androidx.compose.animation.core.animateFloatAsState
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
@@ -73,7 +75,7 @@ private fun NumKey(k: Char, modifier: Modifier, onLongPress: (() -> Unit)?, onCl
         contentAlignment = Alignment.Center,
     ) {
         when (k) {
-            '<' -> Icon(Icons.AutoMirrored.Rounded.Backspace, "Delete", tint = c.textSecondary, modifier = Modifier.size(24.dp))
+            '<' -> Icon(Icons.AutoMirrored.Rounded.Backspace, stringResource(R.string.ui_numpad_backspace), tint = c.textSecondary, modifier = Modifier.size(24.dp))
             'D' -> Text("00", style = Penny.type.title, color = c.textPrimary)
             else -> Text(k.toString(), style = Penny.type.title, color = c.textPrimary)
         }

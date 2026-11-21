@@ -1,5 +1,8 @@
 package com.penny.wallet.feature.savings
 
+import com.penny.wallet.core.ui.userMessage
+import com.penny.wallet.core.ui.moneyText
+import com.penny.wallet.R
 import kotlinx.coroutines.flow.flowOn
 import kotlinx.coroutines.Dispatchers
 import androidx.lifecycle.ViewModel
@@ -59,7 +62,6 @@ class GoalViewModel(private val c: AppContainer, private val id: String) : ViewM
     fun addMoney(amount: Long, accountId: String, done: (String?, Boolean) -> Unit) = viewModelScope.launch {
         val before = state.value.card?.reached ?: false
         val err = runCatching { c.transactions.save(amount, accountId, id, LocalDate.now()) }.exceptionOrNull()?.let(::message)
-        // second flag: this deposit made the goal reach 100% → celebrate
         val nowReached = err == null && (state.value.card?.let { it.balance + amount >= it.goal.targetCents } ?: false)
         done(err, !before && nowReached)
     }
@@ -69,13 +71,13 @@ class GoalViewModel(private val c: AppContainer, private val id: String) : ViewM
     }
 
     fun update(g: Goal, done: (String?) -> Unit) = viewModelScope.launch {
-        done(runCatching { require(g.name.isNotBlank()) { "Give it a name" }; require(g.targetCents > 0) { "Target must be above zero" }; c.goals.save(g) }
-            .exceptionOrNull()?.message)
+        done(runCatching { require(g.name.isNotBlank()) { c.context.getString(R.string.savings_error_name) }; require(g.targetCents > 0) { c.context.getString(R.string.savings_error_target) }; c.goals.save(g) }
+            .exceptionOrNull()?.let(c::userMessage))
     }
 
     /** Returns money to the source accounts and deletes; the caller offers Undo via the repo (VM may be gone). */
     fun delete(done: (DeletedGoal?) -> Unit) = viewModelScope.launch { done(c.goals.delete(id)) }
 
     private fun message(e: Throwable) =
-        if (e is InsufficientAvailableException) "Only ${Formatters.money(e.availableCents)} available" else e.message ?: "Something went wrong"
+        if (e is InsufficientAvailableException) c.context.getString(R.string.savings_error_only_available, c.moneyText(e.availableCents)) else c.userMessage(e)
 }

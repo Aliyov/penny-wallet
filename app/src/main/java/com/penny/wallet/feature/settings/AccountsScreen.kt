@@ -1,5 +1,6 @@
 package com.penny.wallet.feature.settings
 
+import androidx.compose.ui.platform.LocalResources
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -30,6 +31,10 @@ import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.hapticfeedback.HapticFeedbackType
+import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.res.pluralStringResource
+import androidx.compose.ui.res.stringResource
+import com.penny.wallet.R
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.penny.wallet.data.repo.AccountDeleteResult
@@ -47,7 +52,7 @@ import com.penny.wallet.core.ui.theme.Penny
 import sh.calvin.reorderable.ReorderableItem
 import sh.calvin.reorderable.rememberReorderableLazyListState
 
-/** Settings → Accounts: drag to reorder, add, archive, delete (only if empty, SPEC §4). */
+/** Accounts can only be deleted when empty; otherwise they are archived. */
 @Composable
 fun AccountsScreen(onBack: () -> Unit, onOpenAccount: (String) -> Unit) {
     val vm = pennyViewModel { ManageViewModel(it) }
@@ -55,6 +60,7 @@ fun AccountsScreen(onBack: () -> Unit, onOpenAccount: (String) -> Unit) {
     val snack = LocalSnack.current
     val haptic = rememberHaptic()
     val c = Penny.colors
+    val res = LocalResources.current
     var adding by remember { mutableStateOf(false) }
     var mustArchive by remember { mutableStateOf<AccountItem?>(null) }
 
@@ -75,22 +81,22 @@ fun AccountsScreen(onBack: () -> Unit, onOpenAccount: (String) -> Unit) {
     val commitOrder = { vm.reorderAccounts(order.map { it.account.id } + archived.map { it.account.id }) }
 
     val archive = { item: AccountItem, on: Boolean ->
-        vm.setAccountArchived(item, on) { err -> snack.show(err ?: if (on) "${item.account.name} archived" else "${item.account.name} restored") }
+        vm.setAccountArchived(item, on) { err -> snack.show(err ?: res.getString(if (on) R.string.manage_archived_msg else R.string.manage_restored_msg, item.account.name)) }
     }
     val delete = { item: AccountItem ->
         vm.deleteAccount(item.account.id) { r ->
             when (r) {
-                is AccountDeleteResult.Deleted -> snack.undo("${r.account.name} deleted") { vm.undoAccountDelete(r.account) }
+                is AccountDeleteResult.Deleted -> snack.undo(res.getString(R.string.manage_deleted_msg, r.account.name)) { vm.undoAccountDelete(r.account) }
                 AccountDeleteResult.MustArchive -> mustArchive = item
             }
         }
     }
 
     Column(Modifier.fillMaxSize().background(c.background).statusBarsPadding()) {
-        SettingsTopBar("Accounts", onBack, onAdd = { adding = true })
+        SettingsTopBar(stringResource(R.string.settings_accounts), onBack, onAdd = { adding = true })
         LazyColumn(state = listState, modifier = Modifier.fillMaxSize().padding(horizontal = Penny.dims.gutter).navigationBarsPadding()) {
             if (order.isEmpty()) item("empty") {
-                Text("No accounts yet. Tap + to add one.", style = Penny.type.body, color = c.textSecondary, modifier = Modifier.padding(vertical = 24.dp))
+                Text(stringResource(R.string.manage_accounts_empty), style = Penny.type.body, color = c.textSecondary, modifier = Modifier.padding(vertical = 24.dp))
             }
             items(order, key = { it.account.id }) { item ->
                 ReorderableItem(reorder, key = item.account.id) { dragging ->
@@ -107,7 +113,7 @@ fun AccountsScreen(onBack: () -> Unit, onOpenAccount: (String) -> Unit) {
                 }
             }
             if (archived.isNotEmpty()) {
-                item("archivedLabel") { SectionLabel("Archived", Modifier.padding(top = 16.dp)) }
+                item("archivedLabel") { SectionLabel(stringResource(R.string.manage_archived), Modifier.padding(top = 16.dp)) }
                 items(archived, key = { "a-" + it.account.id }) { item ->
                     ManageRow(
                         icon = item.account.icon, color = c.textSecondary, title = item.account.name,
@@ -127,8 +133,9 @@ fun AccountsScreen(onBack: () -> Unit, onOpenAccount: (String) -> Unit) {
     if (adding) AddAccountSheet(onDismiss = { adding = false }) { n, i -> vm.addAccount(n, i); adding = false }
     mustArchive?.let { item ->
         ConfirmDialog(
-            title = "Can't delete ${item.account.name}", text = "Only empty accounts without history can be deleted. Archive it instead?",
-            confirm = "Archive", danger = false, onDismiss = { mustArchive = null },
+            title = stringResource(R.string.manage_account_cant_delete_title, item.account.name),
+            text = stringResource(R.string.manage_account_cant_delete_body),
+            confirm = stringResource(R.string.action_archive), danger = false, onDismiss = { mustArchive = null },
         ) { mustArchive = null; archive(item, true) }
     }
 }
@@ -145,10 +152,10 @@ private fun RowMenu(archived: Boolean, onArchive: () -> Unit, onDelete: () -> Un
     val c = Penny.colors
     var open by remember { mutableStateOf(false) }
     Box {
-        IconButton(onClick = { open = true }) { Icon(Icons.Rounded.MoreVert, "More", tint = c.textSecondary) }
+        IconButton(onClick = { open = true }) { Icon(Icons.Rounded.MoreVert, stringResource(R.string.manage_more), tint = c.textSecondary) }
         DropdownMenu(expanded = open, onDismissRequest = { open = false }, containerColor = c.surface2) {
-            DropdownMenuItem(text = { Text(if (archived) "Unarchive" else "Archive", color = c.textPrimary) }, onClick = { open = false; onArchive() })
-            DropdownMenuItem(text = { Text("Delete", color = c.danger) }, onClick = { open = false; onDelete() })
+            DropdownMenuItem(text = { Text(stringResource(if (archived) R.string.manage_unarchive else R.string.action_archive), color = c.textPrimary) }, onClick = { open = false; onArchive() })
+            DropdownMenuItem(text = { Text(stringResource(R.string.action_delete), color = c.danger) }, onClick = { open = false; onDelete() })
         }
     }
 }
@@ -157,15 +164,16 @@ private fun RowMenu(archived: Boolean, onArchive: () -> Unit, onDelete: () -> Un
 private fun AddAccountSheet(onDismiss: () -> Unit, onSave: (String, String) -> Unit) {
     var name by rememberSaveable { mutableStateOf("") }
     var icon by rememberSaveable { mutableStateOf(PennyIcons.accountKeys.first()) }
-    PennySheet(onDismiss = onDismiss, title = "New account") {
+    PennySheet(onDismiss = onDismiss, title = stringResource(R.string.manage_new_account)) {
         OutlinedTextField(
-            name, { name = it }, Modifier.fillMaxWidth(), singleLine = true, label = { Text("Name") },
+            name, { name = it }, Modifier.fillMaxWidth(), singleLine = true, label = { Text(stringResource(R.string.label_name)) },
             textStyle = Penny.type.body, shape = Penny.dims.smallShape, colors = pennyFieldColors(),
         )
-        FieldLabel("Icon")
+        FieldLabel(stringResource(R.string.label_icon))
         IconPicker(PennyIcons.accountKeys, icon, Penny.colors.accent) { icon = it }
-        PennyButton("Add account", { onSave(name.trim(), icon) }, Modifier.fillMaxWidth().padding(top = 20.dp), enabled = name.isNotBlank())
+        PennyButton(stringResource(R.string.manage_add_account), { onSave(name.trim(), icon) }, Modifier.fillMaxWidth().padding(top = 20.dp), enabled = name.isNotBlank())
     }
 }
 
-private fun transactions(n: Int) = if (n == 1) "1 transaction" else "$n transactions"
+@Composable
+private fun transactions(n: Int) = pluralStringResource(R.plurals.manage_transactions, n, n)

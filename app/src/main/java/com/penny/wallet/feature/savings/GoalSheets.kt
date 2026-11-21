@@ -1,5 +1,7 @@
 package com.penny.wallet.feature.savings
 
+import com.penny.wallet.R
+import androidx.compose.ui.res.stringResource
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
@@ -45,7 +47,6 @@ import java.time.LocalDate
 /** Callback for saving a goal: values + `done(error)` that the sheet uses to show validation errors. */
 typealias GoalSave = (name: String, icon: String, color: Long, targetCents: Long, deadline: LocalDate?, done: (String?) -> Unit) -> Unit
 
-/** New / edit goal sheet (SPEC §8 Savings): name, icon, colour, required target, optional deadline. */
 @Composable
 internal fun GoalSheet(initial: Goal?, onDismiss: () -> Unit, onSave: GoalSave) {
     var name by rememberSaveable { mutableStateOf(initial?.name ?: "") }
@@ -59,32 +60,32 @@ internal fun GoalSheet(initial: Goal?, onDismiss: () -> Unit, onSave: GoalSave) 
     val c = Penny.colors
     val tint = Color(color)
 
-    PennySheet(onDismiss = onDismiss, title = if (initial == null) "New goal" else "Edit goal") {
+    PennySheet(onDismiss = onDismiss, title = stringResource(if (initial == null) R.string.savings_new_goal else R.string.savings_edit_goal)) {
         Column(Modifier.fillMaxWidth().verticalScroll(rememberScrollState())) {
             OutlinedTextField(
-                name, { name = it; error = null }, Modifier.fillMaxWidth(), singleLine = true, label = { Text("Name") },
+                name, { name = it; error = null }, Modifier.fillMaxWidth(), singleLine = true, label = { Text(stringResource(R.string.label_name)) },
                 textStyle = Penny.type.body, shape = Penny.dims.smallShape, colors = pennyFieldColors(),
             )
-            Label("Icon")
+            Label(stringResource(R.string.label_icon))
             IconGrid(icon, tint) { icon = it }
-            Label("Colour")
+            Label(stringResource(R.string.label_colour))
             ColourRow(color) { color = it }
-            Label("Target")
+            Label(stringResource(R.string.savings_target))
             AmountDisplay(target)
             Numpad(digits, { digits = it; error = null }, keyHeight = 52)
-            Label("Deadline (optional)")
+            Label(stringResource(R.string.savings_deadline_optional))
             val d = deadline
             if (d == null) {
-                PennyChip("+ Add deadline", false, { deadline = LocalDate.now().plusMonths(6) })
+                PennyChip(stringResource(R.string.savings_add_deadline), false, { deadline = LocalDate.now().plusMonths(6) })
             } else {
                 Row(verticalAlignment = Alignment.CenterVertically, horizontalArrangement = Arrangement.spacedBy(8.dp)) {
                     DatePickerRow(d, { deadline = it }, Modifier.weight(1f))
-                    PennyChip("Clear", false, { deadline = null })
+                    PennyChip(stringResource(R.string.savings_clear), false, { deadline = null })
                 }
             }
             error?.let { Text(it, style = Penny.type.label, color = c.danger, modifier = Modifier.padding(top = 12.dp)) }
             PennyButton(
-                if (initial == null) "Create goal" else "Save",
+                stringResource(if (initial == null) R.string.savings_create_goal else R.string.action_save),
                 onClick = {
                     busy = true
                     onSave(name.trim(), icon, color, target, deadline) { err -> busy = false; error = err }

@@ -34,6 +34,8 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.res.stringResource
+import com.penny.wallet.R
 import com.penny.wallet.core.ui.components.AmountSheet
 import com.penny.wallet.core.ui.components.DatePickerRow
 import com.penny.wallet.core.ui.components.PennyButton
@@ -48,17 +50,17 @@ internal fun AccountTopBar(name: String, archived: Boolean, onBack: () -> Unit, 
     val c = Penny.colors
     var menu by remember { mutableStateOf(false) }
     Row(Modifier.fillMaxWidth().padding(horizontal = 4.dp, vertical = 4.dp), verticalAlignment = Alignment.CenterVertically) {
-        IconButton(onClick = onBack) { Icon(Icons.AutoMirrored.Rounded.ArrowBack, "Back", tint = c.textPrimary) }
+        IconButton(onClick = onBack) { Icon(Icons.AutoMirrored.Rounded.ArrowBack, stringResource(R.string.action_back), tint = c.textPrimary) }
         Text(
-            name + if (archived) " (archived)" else "", style = Penny.type.title, color = c.textPrimary,
+            if (archived) stringResource(R.string.home_name_archived, name) else name, style = Penny.type.title, color = c.textPrimary,
             maxLines = 1, overflow = TextOverflow.Ellipsis, modifier = Modifier.weight(1f),
         )
         Box {
-            IconButton(onClick = { menu = true }) { Icon(Icons.Rounded.MoreVert, "More", tint = c.textPrimary) }
+            IconButton(onClick = { menu = true }) { Icon(Icons.Rounded.MoreVert, stringResource(R.string.home_more), tint = c.textPrimary) }
             DropdownMenu(expanded = menu, onDismissRequest = { menu = false }, containerColor = c.surface2) {
-                DropdownMenuItem(text = { Text("Rename / icon", color = c.textPrimary) }, onClick = { menu = false; onRename() })
-                DropdownMenuItem(text = { Text(if (archived) "Unarchive" else "Archive", color = c.textPrimary) }, onClick = { menu = false; onArchive() })
-                DropdownMenuItem(text = { Text("Delete", color = c.danger) }, onClick = { menu = false; onDelete() })
+                DropdownMenuItem(text = { Text(stringResource(R.string.home_rename_icon), color = c.textPrimary) }, onClick = { menu = false; onRename() })
+                DropdownMenuItem(text = { Text(stringResource(if (archived) R.string.home_unarchive else R.string.action_archive), color = c.textPrimary) }, onClick = { menu = false; onArchive() })
+                DropdownMenuItem(text = { Text(stringResource(R.string.action_delete), color = c.danger) }, onClick = { menu = false; onDelete() })
             }
         }
     }
@@ -74,28 +76,30 @@ internal fun AccountActionSheet(
     var note by rememberSaveable { mutableStateOf("") }
     var toId by rememberSaveable { mutableStateOf<String?>(null) }
     val c = Penny.colors
-    val title = when (action) {
-        AccountAction.INCOME -> "Add income"
-        AccountAction.WITHDRAW -> "Withdraw"
-        AccountAction.SET_BALANCE -> "Set balance"
-        AccountAction.TRANSFER -> "Transfer"
-    }
+    val title = stringResource(
+        when (action) {
+            AccountAction.INCOME -> R.string.home_action_add_income
+            AccountAction.WITHDRAW -> R.string.home_action_withdraw
+            AccountAction.SET_BALANCE -> R.string.home_action_set_balance
+            AccountAction.TRANSFER -> R.string.type_transfer
+        },
+    )
     if (action == AccountAction.TRANSFER && state.others.isEmpty()) {
         PennySheet(onDismiss = onDismiss, title = title) {
-            Text("Add another account first to transfer money between accounts.", style = Penny.type.body, color = c.textSecondary)
-            PennyButton("OK", onDismiss, Modifier.fillMaxWidth().padding(top = 16.dp))
+            Text(stringResource(R.string.home_transfer_needs_account), style = Penny.type.body, color = c.textSecondary)
+            PennyButton(stringResource(R.string.action_ok), onDismiss, Modifier.fillMaxWidth().padding(top = 16.dp))
         }
         return
     }
     val isSet = action == AccountAction.SET_BALANCE
     AmountSheet(
         title = title, onDismiss = onDismiss,
-        confirmLabel = if (isSet) "Set balance" else title,
+        confirmLabel = title,
         initialCents = if (isSet) state.money.balance else 0,
         allowZero = isSet, allowNegative = isSet,
         extra = if (isSet) null else ({
             if (action == AccountAction.TRANSFER) {
-                Text("To", style = Penny.type.label, color = c.textSecondary)
+                Text(stringResource(R.string.home_transfer_to), style = Penny.type.label, color = c.textSecondary)
                 FlowRow(horizontalArrangement = Arrangement.spacedBy(8.dp), verticalArrangement = Arrangement.spacedBy(8.dp)) {
                     state.others.forEach { a -> PennyChip(a.name, toId == a.id, { toId = a.id }) }
                 }
@@ -114,7 +118,7 @@ private fun NoteField(value: String, onChange: (String) -> Unit) {
     val c = Penny.colors
     OutlinedTextField(
         value, onChange, Modifier.fillMaxWidth(), singleLine = true,
-        placeholder = { Text("Note (optional)", color = c.textSecondary) },
+        placeholder = { Text(stringResource(R.string.home_note_optional), color = c.textSecondary) },
         textStyle = Penny.type.body, shape = Penny.dims.smallShape, colors = pennyFieldColors(),
     )
 }
@@ -132,12 +136,12 @@ internal fun RenameSheet(name: String, icon: String, onDismiss: () -> Unit, onSa
     var n by rememberSaveable { mutableStateOf(name) }
     var i by rememberSaveable { mutableStateOf(icon) }
     val c = Penny.colors
-    PennySheet(onDismiss = onDismiss, title = "Rename account") {
+    PennySheet(onDismiss = onDismiss, title = stringResource(R.string.home_rename_account)) {
         OutlinedTextField(
-            n, { n = it }, Modifier.fillMaxWidth(), singleLine = true, label = { Text("Name") },
+            n, { n = it }, Modifier.fillMaxWidth(), singleLine = true, label = { Text(stringResource(R.string.label_name)) },
             textStyle = Penny.type.body, shape = Penny.dims.smallShape, colors = pennyFieldColors(),
         )
-        Text("Icon", style = Penny.type.label, color = c.textSecondary, modifier = Modifier.padding(top = 16.dp, bottom = 8.dp))
+        Text(stringResource(R.string.label_icon), style = Penny.type.label, color = c.textSecondary, modifier = Modifier.padding(top = 16.dp, bottom = 8.dp))
         FlowRow(horizontalArrangement = Arrangement.spacedBy(10.dp), verticalArrangement = Arrangement.spacedBy(10.dp)) {
             PennyIcons.accountKeys.forEach { k ->
                 val sel = k == i
@@ -150,7 +154,7 @@ internal fun RenameSheet(name: String, icon: String, onDismiss: () -> Unit, onSa
                 ) { Icon(PennyIcons.get(k), k, tint = if (sel) c.accent else c.textPrimary, modifier = Modifier.size(24.dp)) }
             }
         }
-        PennyButton("Save", { onSave(n, i) }, Modifier.fillMaxWidth().padding(top = 20.dp), enabled = n.isNotBlank())
+        PennyButton(stringResource(R.string.action_save), { onSave(n, i) }, Modifier.fillMaxWidth().padding(top = 20.dp), enabled = n.isNotBlank())
     }
 }
 
@@ -164,6 +168,6 @@ internal fun ConfirmDialog(title: String, text: String, confirm: String, danger:
         title = { Text(title, style = Penny.type.title) },
         text = { Text(text, style = Penny.type.body) },
         confirmButton = { TextButton(onClick = onConfirm) { Text(confirm, color = if (danger) c.danger else c.accent, style = Penny.type.bodyStrong) } },
-        dismissButton = { TextButton(onClick = onDismiss) { Text("Cancel", color = c.textSecondary) } },
+        dismissButton = { TextButton(onClick = onDismiss) { Text(stringResource(R.string.action_cancel), color = c.textSecondary) } },
     )
 }

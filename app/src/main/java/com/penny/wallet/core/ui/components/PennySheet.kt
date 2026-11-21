@@ -21,7 +21,7 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.unit.dp
 import com.penny.wallet.core.ui.theme.Penny
 
-/** iOS-style sheet for every form (SPEC §7): Surface2, drag handle, drag to dismiss. */
+/** iOS-style sheet for every form: Surface2, drag handle, drag to dismiss. */
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun PennySheet(

@@ -1,0 +1,114 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="settings_title">Settings</string>
+    <string name="settings_section_money">Money</string>
+    <string name="settings_section_app">App</string>
+    <string name="settings_section_danger">Danger zone</string>
+    <string name="settings_categories">Expense categories</string>
+    <string name="settings_categories_sub">Add, edit, reorder, archive</string>
+    <string name="settings_accounts">Accounts</string>
+    <string name="settings_accounts_sub">Reorder, archive, add</string>
+    <string name="settings_recurring">Recurring expenses</string>
+    <string name="settings_recurring_sub">Bills, subscriptions, reminders</string>
+    <string name="settings_personalise">Personalise</string>
+    <string name="settings_personalise_sub">Theme, layout, motion, privacy</string>
+    <string name="settings_backup">Backup</string>
+    <string name="settings_backup_not_set_up">Not set up</string>
+    <string name="settings_backup_never">Never backed up</string>
+    <string name="settings_number_format">Number formatting</string>
+    <string name="settings_reset">Reset all data</string>
+    <string name="settings_reset_sub">Deletes everything on this phone</string>
+    <string name="settings_footer">Penny Wallet %1$s · all data stays on this phone</string>
+    <string name="settings_reset_title">Reset all data?</string>
+    <string name="settings_reset_body">Accounts, categories, goals, transactions and recurring expenses will be deleted. Make a backup first if you might want them back.</string>
+    <string name="settings_reset_continue">Continue</string>
+    <string name="settings_reset_done">All data cleared</string>
+    <string name="settings_reset_word">RESET</string>
+    <string name="settings_reset_sure_title">Are you absolutely sure?</string>
+    <string name="settings_reset_sure_body">This can\'t be undone. Type %1$s to confirm.</string>
+    <string name="settings_reset_confirm">Delete everything</string>
+
+    <string name="manage_drag_handle">Drag to reorder</string>
+    <string name="manage_unarchive">Unarchive</string>
+    <string name="manage_archived">Archived</string>
+    <string name="manage_more">More options</string>
+    <string name="manage_archived_msg">%1$s archived</string>
+    <string name="manage_restored_msg">%1$s restored</string>
+    <string name="manage_deleted_msg">%1$s deleted</string>
+    <string name="manage_moved_deleted_msg">Moved to %1$s, %2$s deleted</string>
+    <string name="manage_accounts_empty">No accounts yet. Tap + to add one.</string>
+    <string name="manage_account_cant_delete_title">Can\'t delete %1$s</string>
+    <string name="manage_account_cant_delete_body">Only empty accounts without history can be deleted. Archive it instead?</string>
+    <string name="manage_account_has_goal_money">Take this account\'s money back from your goals first</string>
+    <string name="manage_new_account">New account</string>
+    <string name="manage_add_account">Add account</string>
+    <plurals name="manage_transactions">
+        <item quantity="one">%d transaction</item>
+        <item quantity="other">%d transactions</item>
+    </plurals>
+    <string name="manage_categories_hint">Drag the handle to reorder. This order is used for the chips when sorting is set to Manual.</string>
+    <string name="manage_categories_empty">No categories yet. Tap + to add one.</string>
+    <plurals name="manage_expenses">
+        <item quantity="one">%d expense</item>
+        <item quantity="other">%d expenses</item>
+    </plurals>
+    <string name="manage_new_category">New category</string>
+    <string name="manage_edit_category">Edit category</string>
+    <string name="manage_category_delete_title">Delete %1$s?</string>
+    <plurals name="manage_category_in_use_body">
+        <item quantity="one">%d expense uses this category. Move it to another category first, or archive this one (hidden from pickers, kept in history).</item>
+        <item quantity="other">%d expenses use this category. Move them to another category first, or archive this one (hidden from pickers, kept in history).</item>
+    </plurals>
+    <string name="manage_move_expenses">Move expenses to…</string>
+    <string name="manage_archive_instead">Archive instead</string>
+    <string name="manage_move_title">Move %1$s expenses to…</string>
+    <string name="manage_move_none">There is no other category. Create one first, or archive this one.</string>
+
+    <string name="backup_last">Last backup: %1$s</string>
+    <string name="backup_never">Never</string>
+    <string name="backup_tip">Tip: pick a folder that Google Drive or your Files app syncs if you want a copy off your phone.</string>
+    <string name="backup_pick_folder">Pick folder</string>
+    <string name="backup_change_folder">Change folder</string>
+    <string name="backup_automatic">Automatic backup</string>
+    <string name="backup_daily">Daily</string>
+    <string name="backup_weekly">Weekly</string>
+    <string name="backup_monthly">Monthly</string>
+    <string name="backup_restore_export">Restore &amp; export</string>
+    <string name="backup_restore_file">Restore from file</string>
+    <string name="backup_export_csv">Export transactions as CSV</string>
+    <string name="backup_export_failed">Export failed: %1$s</string>
+    <string name="backup_export_done">CSV exported ✓</string>
+    <string name="backup_replace_title">Replace all data?</string>
+    <string name="backup_replace_body">This replaces everything on this phone. Continue?</string>
+    <string name="backup_replace">Replace</string>
+    <string name="backup_restore_failed">Restore failed: %1$s</string>
+    <string name="backup_restore_done">Restored ✓</string>
+    <string name="backup_no_folder">No folder</string>
+    <string name="backup_access_ok">Folder access OK</string>
+    <string name="backup_access_lost">Folder access lost</string>
+    <string name="backup_access_lost_body">Folder access was lost. Pick the folder again.</string>
+    <string name="backup_working">Working…</string>
+    <string name="backup_now">Back up now</string>
+    <string name="backup_saved">Saved %1$s</string>
+    <string name="backup_keep_last">Keep last</string>
+    <string name="backup_fewer">Fewer</string>
+    <string name="backup_more">More</string>
+    <plurals name="backup_keep_files">
+        <item quantity="one">%d file</item>
+        <item quantity="other">%d files</item>
+    </plurals>
+    <string name="backup_restore_title">Restore backup</string>
+    <string name="backup_sum_exported">Exported</string>
+    <string name="backup_sum_categories">Categories</string>
+    <string name="backup_sum_goals">Goals</string>
+    <string name="backup_sum_transactions">Transactions</string>
+    <string name="backup_sum_recurring">Recurring</string>
+    <string name="backup_sum_date_range">Date range</string>
+    <string name="backup_date_range_value">%1$s – %2$s</string>
+    <plurals name="backup_dangling">
+        <item quantity="one">%d entry refers to a missing account, category or goal. It will be restored anyway.</item>
+        <item quantity="other">%d entries refer to missing accounts, categories or goals. They will be restored anyway.</item>
+    </plurals>
+    <string name="backup_restore_note">Restoring replaces all data currently on this phone.</string>
+    <string name="backup_replace_all">Replace all data</string>
+</resources>

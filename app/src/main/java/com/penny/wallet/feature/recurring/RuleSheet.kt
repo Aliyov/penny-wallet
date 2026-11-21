@@ -1,5 +1,7 @@
 package com.penny.wallet.feature.recurring
 
+import com.penny.wallet.R
+import androidx.compose.ui.res.stringResource
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.FlowRow
 import androidx.compose.foundation.layout.Spacer
@@ -44,48 +46,52 @@ internal fun RuleSheet(
     var error by rememberSaveable { mutableStateOf<String?>(null) }
     val editing = initial.id != null
 
-    PennySheet(onDismiss = onDismiss, title = if (editing) "Edit recurring" else "New recurring") {
+    PennySheet(onDismiss = onDismiss, title = stringResource(if (editing) R.string.recurring_edit_title else R.string.recurring_new_title)) {
         Column(Modifier.fillMaxWidth().verticalScroll(rememberScrollState()), verticalArrangement = Arrangement.spacedBy(Penny.dims.gap)) {
             OutlinedTextField(
                 d.name, { d = d.copy(name = it); error = null }, Modifier.fillMaxWidth(), singleLine = true,
-                label = { Text("Name") }, placeholder = { Text("e.g. Phone credit", color = c.textSecondary) },
+                label = { Text(stringResource(R.string.label_name)) }, placeholder = { Text(stringResource(R.string.recurring_name_hint), color = c.textSecondary) },
                 textStyle = Penny.type.body, shape = Penny.dims.smallShape, colors = pennyFieldColors(),
             )
             AmountDisplay(Formatters.digitsToCents(digits), modifier = Modifier.clickableNoRipple { showPad = !showPad })
             if (showPad) {
                 Numpad(digits, { digits = it; error = null }, keyHeight = 48)
             } else {
-                Text("Tap the amount to edit", style = Penny.type.caption, color = c.textSecondary)
+                Text(stringResource(R.string.recurring_tap_amount), style = Penny.type.caption, color = c.textSecondary)
             }
 
-            FieldLabel("Category")
+            FieldLabel(stringResource(R.string.label_category))
             FlowRow(horizontalArrangement = Arrangement.spacedBy(8.dp), verticalArrangement = Arrangement.spacedBy(8.dp)) {
                 state.categories.forEach { cat -> PennyChip(cat.name, d.categoryId == cat.id, { d = d.copy(categoryId = cat.id); error = null }) }
             }
-            FieldLabel("Account")
+            FieldLabel(stringResource(R.string.label_account))
             FlowRow(horizontalArrangement = Arrangement.spacedBy(8.dp), verticalArrangement = Arrangement.spacedBy(8.dp)) {
                 state.accounts.forEach { a -> PennyChip(a.name, d.accountId == a.id, { d = d.copy(accountId = a.id); error = null }) }
             }
 
-            FieldLabel("Repeats")
+            FieldLabel(stringResource(R.string.recurring_repeats))
             val freqs = listOf(Frequency.WEEKLY, Frequency.MONTHLY, Frequency.YEARLY)
-            SegmentedControl(listOf("Weekly", "Monthly", "Yearly"), freqs.indexOf(d.frequency), { d = d.copy(frequency = freqs[it]) })
+            SegmentedControl(listOf(stringResource(R.string.recurring_weekly), stringResource(R.string.recurring_monthly), stringResource(R.string.recurring_yearly)), freqs.indexOf(d.frequency), { d = d.copy(frequency = freqs[it]) })
             SchedulePicker(d) { d = it }
 
-            FieldLabel("Remind me")
+            FieldLabel(stringResource(R.string.recurring_remind_me))
             RemindStepper(d.remindDaysBefore) { d = d.copy(remindDaysBefore = it) }
             SwitchRow(
-                "Auto-pay",
-                if (d.autoPay) "Recorded automatically on the due date" else "You'll get a Mark as paid reminder",
+                stringResource(R.string.recurring_auto_pay),
+                stringResource(if (d.autoPay) R.string.recurring_auto_pay_on else R.string.recurring_auto_pay_off),
                 d.autoPay,
             ) { d = d.copy(autoPay = it) }
-            if (editing) SwitchRow("Active", if (d.active) "Reminders and payments are on" else "Paused: nothing happens until resumed", d.active) {
+            if (editing) SwitchRow(
+                stringResource(R.string.recurring_active),
+                stringResource(if (d.active) R.string.recurring_active_on else R.string.recurring_active_off),
+                d.active,
+            ) {
                 d = d.copy(active = it)
             }
 
             error?.let { Text(it, style = Penny.type.label, color = c.danger) }
             PennyButton(
-                if (editing) "Save" else "Add recurring expense",
+                stringResource(if (editing) R.string.action_save else R.string.recurring_add),
                 { onSave(d.copy(amountCents = Formatters.digitsToCents(digits))) { error = it } },
                 Modifier.fillMaxWidth().padding(top = 4.dp),
             )

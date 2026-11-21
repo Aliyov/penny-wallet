@@ -1,0 +1,32 @@
+<resources>
+    <string name="action_save">Salva</string>
+    <string name="action_cancel">Annulla</string>
+    <string name="action_delete">Elimina</string>
+    <string name="action_undo">Annulla</string>
+    <string name="action_edit">Modifica</string>
+    <string name="action_close">Chiudi</string>
+    <string name="action_add">Aggiungi</string>
+    <string name="action_reset">Ripristina</string>
+    <string name="action_archive">Archivia</string>
+    <string name="action_back">Indietro</string>
+    <string name="action_ok">OK</string>
+    <string name="deleted">Eliminato</string>
+    <string name="label_amount">Importo</string>
+    <string name="label_name">Nome</string>
+    <string name="label_note">Nota</string>
+    <string name="label_account">Conto</string>
+    <string name="label_category">Categoria</string>
+    <string name="label_icon">Icona</string>
+    <string name="label_colour">Colore</string>
+    <string name="type_expense">Spesa</string>
+    <string name="type_income">Entrata</string>
+    <string name="type_save">Risparmia</string>
+    <string name="type_transfer">Trasferimento</string>
+    <string name="error_generic">Qualcosa è andato storto. Riprova.</string>
+    <string name="error_only_available">Disponibili solo %1$s</string>
+    <string name="error_amount_positive">Inserisci un importo maggiore di zero</string>
+    <string name="error_target_positive">Inserisci un obiettivo maggiore di zero</string>
+    <string name="error_same_accounts">Scegli due conti diversi</string>
+    <string name="data_note_balance_set">Saldo impostato</string>
+    <string name="data_note_returned_from">Restituito da %1$s</string>
+</resources>

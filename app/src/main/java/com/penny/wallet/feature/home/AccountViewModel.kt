@@ -1,10 +1,13 @@
 package com.penny.wallet.feature.home
 
+import com.penny.wallet.core.ui.userMessage
+import com.penny.wallet.core.ui.moneyText
 import kotlinx.coroutines.flow.flowOn
 import kotlinx.coroutines.Dispatchers
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.penny.wallet.AppContainer
+import com.penny.wallet.R
 import com.penny.wallet.data.db.entities.Account
 import com.penny.wallet.data.db.entities.Transaction
 import com.penny.wallet.data.repo.AccountDeleteResult
@@ -55,9 +58,9 @@ class AccountViewModel(private val c: AppContainer, private val id: String) : Vi
                     AccountAction.INCOME -> c.transactions.addIncome(amount, id, date, note)
                     AccountAction.WITHDRAW -> c.transactions.withdraw(amount, id, date, note)
                     AccountAction.SET_BALANCE -> c.transactions.setBalance(id, amount, date)
-                    AccountAction.TRANSFER -> c.transactions.transfer(amount, id, requireNotNull(toAccountId) { "Pick an account" }, date, note)
+                    AccountAction.TRANSFER -> c.transactions.transfer(amount, id, requireNotNull(toAccountId) { c.context.getString(R.string.home_error_pick_account) }, date, note)
                 }
-            }.exceptionOrNull()?.message
+            }.exceptionOrNull()?.let(c::userMessage)
             done(err)
         }
 
@@ -68,7 +71,7 @@ class AccountViewModel(private val c: AppContainer, private val id: String) : Vi
 
     /** Archive is blocked while money from this account is set aside in goals (it would skew available-to-spend). */
     fun setArchived(archived: Boolean, done: (String?) -> Unit) = viewModelScope.launch {
-        if (archived && state.value.money.allocated != 0L) { done("Take this account's money back from your goals first"); return@launch }
+        if (archived && state.value.money.allocated != 0L) { done(c.context.getString(R.string.home_error_archive_allocated)); return@launch }
         c.accounts.setArchived(id, archived); done(null)
     }
 

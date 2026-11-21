@@ -1,5 +1,7 @@
 package com.penny.wallet.feature.settings
 
+import com.penny.wallet.core.ui.userMessage
+import com.penny.wallet.core.ui.moneyText
 import kotlinx.coroutines.flow.flowOn
 import kotlinx.coroutines.Dispatchers
 import android.net.Uri
@@ -26,10 +28,8 @@ data class BackupUi(
     val frequency: BackupFrequency = BackupFrequency.WEEKLY,
     val keep: Int = 8,
     val busy: Boolean = false,
-    /** Just finished "Back up now" → show ✓ + file name. */
     val justBackedUp: String? = null,
     val error: String? = null,
-    /** Parsed file waiting for the double confirm. */
     val pendingRestore: Pair<Backup, BackupSummary>? = null,
 )
 
@@ -63,28 +63,26 @@ class BackupViewModel(private val c: AppContainer) : ViewModel() {
     fun setFrequency(f: BackupFrequency) = viewModelScope.launch { c.settings.update { it.copy(backupFrequency = f) } }
     fun setKeep(n: Int) = viewModelScope.launch { c.settings.update { it.copy(backupKeep = n.coerceIn(1, 60)) } }
 
-    /** Step 1 of restore: read + validate, then the UI shows the summary and asks twice. */
     fun onRestoreFilePicked(uri: Uri?) = viewModelScope.launch {
         uri ?: return@launch
         transient.update { it.copy(busy = true, error = null) }
         val r = runCatching { c.backup.read(uri) }
-        transient.update { r.fold({ ok -> it.copy(busy = false, pendingRestore = ok) }, { e -> it.copy(busy = false, error = e.message) }) }
+        transient.update { r.fold({ ok -> it.copy(busy = false, pendingRestore = ok) }, { e -> it.copy(busy = false, error = c.userMessage(e)) }) }
     }
 
     fun cancelRestore() = transient.update { it.copy(pendingRestore = null) }
 
-    /** Step 2 (after the second confirmation): replace everything in one Room transaction. */
     fun confirmRestore(done: (String?) -> Unit) = viewModelScope.launch {
         val b = transient.value.pendingRestore?.first ?: return@launch
         transient.update { it.copy(busy = true) }
-        val err = runCatching { c.backup.restore(b) }.exceptionOrNull()?.message
+        val err = runCatching { c.backup.restore(b) }.exceptionOrNull()?.let(c::userMessage)
         transient.update { it.copy(busy = false, pendingRestore = null, error = err) }
         done(err)
     }
 
     fun exportCsv(uri: Uri?, done: (String?) -> Unit) = viewModelScope.launch {
         uri ?: return@launch
-        done(runCatching { c.backup.exportCsv(uri) }.exceptionOrNull()?.message)
+        done(runCatching { c.backup.exportCsv(uri) }.exceptionOrNull()?.let(c::userMessage))
     }
 
     fun clearMessages() = transient.update { it.copy(error = null, justBackedUp = null) }

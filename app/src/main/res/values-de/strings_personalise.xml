@@ -1,0 +1,122 @@
+<resources>
+    <string name="pers_title">Anpassen</string>
+    <string name="pers_reset_all">Alles zurücksetzen</string>
+    <string name="pers_reset_all_title">Alle Optionen zurücksetzen?</string>
+    <string name="pers_reset_all_body">Alle Anpassen-Optionen kehren zum Standard zurück. Deine Daten und dein Backup-Ordner bleiben erhalten.</string>
+    <string name="pers_off">Aus</string>
+    <string name="pers_manual">Manuell</string>
+
+    <string name="pers_section_appearance">Aussehen</string>
+    <string name="pers_preview">Vorschau</string>
+    <string name="pers_preview_available">Verfügbar zum Ausgeben</string>
+    <string name="pers_accent">Akzentfarbe</string>
+    <string name="pers_accent_neon_green">Neongrün</string>
+    <string name="pers_accent_cyan">Cyan</string>
+    <string name="pers_accent_violet">Violett</string>
+    <string name="pers_accent_magenta">Magenta</string>
+    <string name="pers_accent_orange">Orange</string>
+    <string name="pers_accent_white">Weiß</string>
+    <string name="pers_accent_custom">Eigene</string>
+    <string name="pers_custom_accent">Eigene Akzentfarbe</string>
+    <string name="pers_hex_label">#RRGGBB oder rgb(r, g, b)</string>
+    <string name="pers_hex_error">Nutze 6 Hex-Ziffern, z. B. #39FF88</string>
+    <string name="pers_use_colour">Farbe übernehmen</string>
+    <string name="pers_glow">Leuchten</string>
+    <string name="pers_glow_subtle">Dezent</string>
+    <string name="pers_glow_strong">Stark</string>
+    <string name="pers_hud_grid">HUD-Raster auf Start</string>
+    <string name="pers_hud_grid_hint">Feines futuristisches Raster hinter der großen Zahl</string>
+    <string name="pers_corners">Ecken</string>
+    <string name="pers_corners_round">Rund</string>
+    <string name="pers_corners_softer">Weicher</string>
+    <string name="pers_corners_sharp">Eckig</string>
+    <string name="pers_text_size">Textgröße</string>
+    <string name="pers_density">Dichte</string>
+    <string name="pers_density_comfortable">Luftig</string>
+    <string name="pers_density_compact">Kompakt</string>
+    <string name="pers_animations">Animationen</string>
+    <string name="pers_anim_full">Voll</string>
+    <string name="pers_anim_reduced">Reduziert</string>
+    <string name="pers_haptics">Vibration</string>
+    <string name="pers_show_cents">Cent anzeigen</string>
+    <string name="pers_number_format">Zahlenformat</string>
+    <string name="pers_hide_amounts">Beträge verbergen</string>
+    <string name="pers_hide_amounts_hint">Privatmodus: zeigt •••• bis zum Antippen</string>
+
+    <string name="pers_section_home">Start</string>
+    <string name="pers_reset_layout">Layout zurücksetzen</string>
+    <string name="pers_home_hint">Ziehen zum Sortieren, Schalter zum Ein- oder Ausblenden.</string>
+    <string name="pers_drag_section">%1$s verschieben</string>
+    <string name="pers_home_hero">Große Zahl</string>
+    <string name="pers_home_month">Monat</string>
+    <string name="pers_home_accounts">Konten</string>
+    <string name="pers_home_upcoming">Demnächst</string>
+    <string name="pers_home_recent">Zuletzt</string>
+    <string name="pers_hero_shows">Große Zahl zeigt</string>
+    <string name="pers_hero_available">Verfügbar</string>
+    <string name="pers_hero_total">Gesamt</string>
+    <string name="pers_hero_spent_month">Ausgaben diesen Monat</string>
+    <string name="pers_recent_count">Letzte Buchungen</string>
+
+    <string name="pers_section_quick_add">Schnell hinzufügen</string>
+    <string name="pers_default_type">Standardtyp</string>
+    <string name="pers_default_account">Standardkonto</string>
+    <string name="pers_last_used">Zuletzt genutzt</string>
+    <string name="pers_chip_order">Reihenfolge der Kategorien</string>
+    <string name="pers_chip_most_used">Meistgenutzt</string>
+    <string name="pers_chip_az">A–Z</string>
+    <string name="pers_save_on_tap">Beim Antippen speichern</string>
+    <string name="pers_save_on_tap_hint">Antippen einer Kategorie speichert sofort</string>
+    <string name="pers_show_note">Notizfeld anzeigen</string>
+
+    <string name="pers_section_charts">Ausgaben &amp; Diagramme</string>
+    <string name="pers_default_chart">Standarddiagramm</string>
+    <string name="pers_chart_donut">Ring</string>
+    <string name="pers_chart_bars">Balken</string>
+    <string name="pers_history_months">Monate im Verlauf</string>
+    <string name="pers_first_day_week">Erster Wochentag</string>
+    <string name="pers_month_start">Monatsbeginn</string>
+    <string name="pers_month_start_hint">Zum Beispiel 27 wählen, wenn du am 27. Gehalt bekommst</string>
+    <string name="pers_month_runs">Monat läuft vom %1$d. bis zum %2$d.</string>
+
+    <string name="pers_section_savings">Sparen</string>
+    <string name="pers_goal_layout">Ansicht der Ziele</string>
+    <string name="pers_layout_grid">Raster</string>
+    <string name="pers_layout_list">Liste</string>
+    <string name="pers_goal_sort">Ziele sortieren nach</string>
+    <string name="pers_sort_progress">Fortschritt</string>
+    <string name="pers_sort_deadline">Frist</string>
+
+    <string name="pers_section_reminders">Erinnerungen</string>
+    <string name="pers_reminder_time">Uhrzeit der Erinnerung</string>
+    <string name="pers_set">Festlegen</string>
+    <string name="pers_days_before">Standard: Tage vorher</string>
+    <string name="pers_days_before_hint">Gilt für neue wiederkehrende Buchungen</string>
+    <string name="pers_same_day">Am selben Tag</string>
+    <plurals name="pers_days_count">
+        <item quantity="one">%d Tag</item>
+        <item quantity="other">%d Tage</item>
+    </plurals>
+    <string name="pers_overdue_badge">Hinweis bei Überfälligem</string>
+    <string name="pers_quiet_mode">Ruhemodus</string>
+    <string name="pers_quiet_mode_hint">Gar keine Benachrichtigungen</string>
+
+    <string name="pers_section_backup">Backup</string>
+    <string name="pers_backup_frequency">Häufigkeit</string>
+    <string name="pers_daily">Täglich</string>
+    <string name="pers_weekly">Wöchentlich</string>
+    <string name="pers_monthly">Monatlich</string>
+    <string name="pers_backup_frequency_hint">Den Backup-Ordner wählst du auf der Backup-Seite</string>
+    <string name="pers_files_kept">Behaltene Dateien</string>
+    <string name="pers_files_kept_hint">Ältere Backups werden gelöscht</string>
+
+    <string name="pers_section_security">Sicherheit</string>
+    <string name="pers_biometric">Biometrische App-Sperre</string>
+    <string name="pers_biometric_hint">Fingerabdruck, Gesicht oder Geräte-PIN</string>
+    <string name="pers_lock_after">Sperren nach</string>
+    <string name="pers_lock_immediately">Sofort</string>
+    <plurals name="pers_minutes">
+        <item quantity="one">%d Min.</item>
+        <item quantity="other">%d Min.</item>
+    </plurals>
+</resources>

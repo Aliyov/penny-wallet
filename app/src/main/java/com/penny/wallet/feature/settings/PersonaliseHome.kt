@@ -1,5 +1,7 @@
 package com.penny.wallet.feature.settings
 
+import androidx.compose.ui.res.stringResource
+import com.penny.wallet.R
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.Column
@@ -42,15 +44,18 @@ import sh.calvin.reorderable.rememberReorderableLazyListState
 
 private const val KEY_PREFIX = "homeSection_"
 
-private val HomeSection.label get() = when (this) {
-    HomeSection.HERO -> "Hero"
-    HomeSection.MONTH -> "Month"
-    HomeSection.ACCOUNTS -> "Accounts"
-    HomeSection.UPCOMING -> "Upcoming"
-    HomeSection.RECENT -> "Recent"
-}
+@Composable
+private fun HomeSection.label(): String = stringResource(
+    when (this) {
+        HomeSection.HERO -> R.string.pers_home_hero
+        HomeSection.MONTH -> R.string.pers_home_month
+        HomeSection.ACCOUNTS -> R.string.pers_home_accounts
+        HomeSection.UPCOMING -> R.string.pers_home_upcoming
+        HomeSection.RECENT -> R.string.pers_home_recent
+    },
+)
 
-/** Local drag order (persisted on drop) + the reorderable state bound to the screen's LazyColumn. */
+/** Drag order is kept locally and persisted on drop. */
 internal class HomeReorder(val state: ReorderableLazyListState, val order: MutableState<List<HomeSection>>, val persist: () -> Unit)
 
 @Composable
@@ -79,8 +84,8 @@ internal fun LazyListScope.homeSection(x: PrefsCtx, r: HomeReorder) {
             it.copy(homeSections = d.homeSections, hiddenHomeSections = d.hiddenHomeSections)
         }
         Column {
-            SectionLabel("Home", Modifier.padding(top = 8.dp), action = if (reset != null) "Reset layout" else null, onAction = reset)
-            Text("Drag to reorder, switch to show or hide.", style = Penny.type.caption, color = Penny.colors.textSecondary)
+            SectionLabel(stringResource(R.string.pers_section_home), Modifier.padding(top = 8.dp), action = if (reset != null) stringResource(R.string.pers_reset_layout) else null, onAction = reset)
+            Text(stringResource(R.string.pers_home_hint), style = Penny.type.caption, color = Penny.colors.textSecondary)
         }
     }
     items(r.order.value, key = { KEY_PREFIX + it.name }) { s ->
@@ -95,9 +100,9 @@ internal fun LazyListScope.homeSection(x: PrefsCtx, r: HomeReorder) {
                 verticalAlignment = Alignment.CenterVertically,
             ) {
                 IconButton(onClick = {}, modifier = Modifier.draggableHandle(onDragStopped = r.persist)) {
-                    Icon(Icons.Rounded.DragHandle, "Drag ${s.label}", tint = c.textSecondary)
+                    Icon(Icons.Rounded.DragHandle, stringResource(R.string.pers_drag_section, s.label()), tint = c.textSecondary)
                 }
-                Text(s.label, style = Penny.type.bodyStrong, color = if (visible) c.textPrimary else c.textSecondary, modifier = Modifier.weight(1f))
+                Text(s.label(), style = Penny.type.bodyStrong, color = if (visible) c.textPrimary else c.textSecondary, modifier = Modifier.weight(1f))
                 Switch(
                     visible, enabled = !lastVisible,
                     onCheckedChange = { show ->
@@ -114,13 +119,16 @@ internal fun LazyListScope.homeSection(x: PrefsCtx, r: HomeReorder) {
     item("homeOptions") {
         PennyCard(Modifier.fillMaxWidth()) {
             ChoiceRow(
-                "Hero shows",
-                listOf(HeroMetric.AVAILABLE to "Available", HeroMetric.TOTAL to "Total", HeroMetric.SPENT_MONTH to "Spent this month"),
+                stringResource(R.string.pers_hero_shows),
+                listOf(
+                    HeroMetric.AVAILABLE to stringResource(R.string.pers_hero_available), HeroMetric.TOTAL to stringResource(R.string.pers_hero_total),
+                    HeroMetric.SPENT_MONTH to stringResource(R.string.pers_hero_spent_month),
+                ),
                 p.heroMetric, { v -> x.set { it.copy(heroMetric = v) } },
                 onReset = x.reset(p.heroMetric, d.heroMetric) { it.copy(heroMetric = d.heroMetric) },
             )
             StepperRow(
-                "Recent transactions", p.recentCount, 3..10, { v -> x.set { it.copy(recentCount = v) } },
+                stringResource(R.string.pers_recent_count), p.recentCount, 3..10, { v -> x.set { it.copy(recentCount = v) } },
                 onReset = x.reset(p.recentCount, d.recentCount) { it.copy(recentCount = d.recentCount) },
             )
         }

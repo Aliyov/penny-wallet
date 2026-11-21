@@ -30,7 +30,9 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.vector.ImageVector
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextOverflow
+import com.penny.wallet.R
 import androidx.compose.ui.unit.dp
 import com.penny.wallet.core.ui.components.PennyIcons
 import com.penny.wallet.core.ui.theme.ItemPalette
@@ -41,9 +43,9 @@ import com.penny.wallet.core.ui.theme.Penny
 internal fun SettingsTopBar(title: String, onBack: () -> Unit, onAdd: (() -> Unit)? = null) {
     val c = Penny.colors
     Row(Modifier.fillMaxWidth().padding(horizontal = 4.dp, vertical = 4.dp), verticalAlignment = Alignment.CenterVertically) {
-        IconButton(onClick = onBack) { Icon(Icons.AutoMirrored.Rounded.ArrowBack, "Back", tint = c.textPrimary) }
+        IconButton(onClick = onBack) { Icon(Icons.AutoMirrored.Rounded.ArrowBack, stringResource(R.string.action_back), tint = c.textPrimary) }
         Text(title, style = Penny.type.title, color = c.textPrimary, modifier = Modifier.weight(1f))
-        if (onAdd != null) IconButton(onClick = onAdd) { Icon(Icons.Rounded.Add, "Add", tint = c.accent) }
+        if (onAdd != null) IconButton(onClick = onAdd) { Icon(Icons.Rounded.Add, stringResource(R.string.action_add), tint = c.accent) }
     }
 }
 
@@ -92,7 +94,6 @@ internal fun IconPicker(keys: List<String>, selected: String, tint: Color, onPic
     }
 }
 
-/** Item palette swatches (SPEC §7). */
 @Composable
 internal fun ColorSwatches(selected: Long, onPick: (Long) -> Unit) {
     val c = Penny.colors

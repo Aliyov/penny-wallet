@@ -1,5 +1,7 @@
 package com.penny.wallet.feature.expenses
 
+import com.penny.wallet.R
+import androidx.compose.ui.res.stringResource
 import com.penny.wallet.core.util.currentLocale
 import androidx.compose.animation.AnimatedContent
 import androidx.compose.animation.core.animateFloatAsState
@@ -55,9 +57,9 @@ internal fun ChartCard(state: ExpensesState, selected: Int?, onSelect: (Int?) ->
 @Composable
 private fun EmptyChart() {
     Column(Modifier.fillMaxWidth().padding(vertical = 32.dp), horizontalAlignment = Alignment.CenterHorizontally) {
-        Text("Nothing spent yet", style = Penny.type.title, color = Penny.colors.textPrimary)
+        Text(stringResource(R.string.expenses_empty_title), style = Penny.type.title, color = Penny.colors.textPrimary)
         Spacer(Modifier.height(4.dp))
-        Text("Expenses for this month will show up here.", style = Penny.type.label, color = Penny.colors.textSecondary, textAlign = TextAlign.Center)
+        Text(stringResource(R.string.expenses_empty_body), style = Penny.type.label, color = Penny.colors.textSecondary, textAlign = TextAlign.Center)
     }
 }
 
@@ -74,7 +76,7 @@ private fun DonutChart(state: ExpensesState, selected: Int?, onSelect: (Int?) ->
             Column(horizontalAlignment = Alignment.CenterHorizontally, modifier = Modifier.padding(horizontal = 36.dp)) {
                 if (s == null) {
                     MoneyText(state.total, Penny.type.amountLarge, c.textPrimary)
-                    Text("spent", style = Penny.type.label, color = c.textSecondary)
+                    Text(stringResource(R.string.expenses_spent), style = Penny.type.label, color = c.textSecondary)
                 } else {
                     Text(s.name, style = Penny.type.label, color = Color(s.color), maxLines = 1, overflow = TextOverflow.Ellipsis)
                     MoneyText(s.amount, Penny.type.amountLarge, c.textPrimary)

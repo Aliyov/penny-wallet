@@ -1,5 +1,7 @@
 package com.penny.wallet.core.ui.components
 
+import com.penny.wallet.R
+import androidx.compose.ui.res.stringResource
 import com.penny.wallet.core.util.dateText
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
@@ -65,9 +67,9 @@ fun DatePickerRow(date: LocalDate, onChange: (LocalDate) -> Unit, modifier: Modi
             TextButton(onClick = {
                 state.selectedDateMillis?.let { onChange(Instant.ofEpochMilli(it).atZone(ZoneOffset.UTC).toLocalDate()) }
                 open = false
-            }) { Text("OK", color = c.accent, style = Penny.type.bodyStrong) }
+            }) { Text(stringResource(R.string.action_ok), color = c.accent, style = Penny.type.bodyStrong) }
         },
-        dismissButton = { TextButton(onClick = { open = false }) { Text("Cancel", color = c.textSecondary) } },
+        dismissButton = { TextButton(onClick = { open = false }) { Text(stringResource(R.string.action_cancel), color = c.textSecondary) } },
         colors = colors,
     ) { DatePicker(state = state, colors = colors) }
 }

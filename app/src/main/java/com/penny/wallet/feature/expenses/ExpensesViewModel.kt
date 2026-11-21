@@ -1,5 +1,6 @@
 package com.penny.wallet.feature.expenses
 
+import com.penny.wallet.R
 import kotlinx.coroutines.flow.flowOn
 import kotlinx.coroutines.Dispatchers
 import androidx.lifecycle.ViewModel
@@ -41,12 +42,13 @@ data class ExpensesState(
 private data class Filters(val month: YearMonth?, val category: String?, val query: String)
 
 class ExpensesViewModel(private val c: AppContainer) : ViewModel() {
-    /** null = the period containing today. */
+    /** month null = the period containing today. */
     private val filters = MutableStateFlow(Filters(null, null, ""))
 
     val state: StateFlow<ExpensesState> = combine(
         c.transactions.observe(), c.categories.observe(), c.accounts.observe(), c.settings.prefs, filters,
     ) { txs, cats, accounts, prefs, f ->
+        val uncategorised = c.context.getString(R.string.expenses_uncategorised)
         val startDay = prefs.monthStartDay
         val current = MoneyCalculator.periodOf(LocalDate.now(), startDay)
         val period = f.month?.let { MoneyCalculator.period(it, startDay) } ?: current
@@ -54,7 +56,7 @@ class ExpensesViewModel(private val c: AppContainer) : ViewModel() {
         val byId = cats.associateBy { it.id }
         val slices = MoneyCalculator.spentByCategory(txs, period).map { (id, amt) ->
             val cat = id?.let(byId::get)
-            CategorySlice(id, cat?.name ?: "Uncategorised", cat?.icon ?: "other", cat?.color ?: 0xFF8E8E93, amt,
+            CategorySlice(id, cat?.name ?: uncategorised, cat?.icon ?: "other", cat?.color ?: 0xFF8E8E93, amt,
                 MoneyCalculator.categoryShare(amt, total))
         }.sortedByDescending { it.amount }
         val history = MoneyCalculator.spentHistory(txs, period, prefs.historyMonths.coerceIn(3, 12), startDay)

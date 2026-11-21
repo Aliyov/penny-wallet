@@ -8,7 +8,7 @@ import com.penny.wallet.data.db.entities.Transaction
 import com.penny.wallet.data.prefs.UserPrefs
 import kotlinx.serialization.Serializable
 
-/** SPEC §6 file format. Bump [CURRENT_SCHEMA] on breaking changes and keep reading older versions. */
+/** Bump [CURRENT_SCHEMA] on breaking changes and keep reading older versions. */
 @Serializable
 data class Backup(
     val schemaVersion: Int,

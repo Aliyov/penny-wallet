@@ -1,0 +1,75 @@
+<resources>
+    <string name="widget_balance_desc">Verfügbares Geld und Ausgaben in diesem Monat</string>
+    <string name="widget_quick_desc">Ausgabe mit einem Tipp hinzufügen</string>
+    <string name="widget_balance_label">Penny Kontostand</string>
+    <string name="widget_quick_label">Penny Schnell hinzufügen</string>
+    <string name="widget_available">Verfügbar</string>
+    <string name="widget_spent_month">Diesen Monat ausgegeben %1$s</string>
+    <string name="widget_next">Als Nächstes: %1$s · %2$s</string>
+    <string name="widget_add_expense">Ausgabe hinzufügen</string>
+
+    <string name="date_today">Heute</string>
+    <string name="date_yesterday">Gestern</string>
+    <string name="date_tomorrow">Morgen</string>
+    <string name="date_today_lower">heute</string>
+    <string name="date_yesterday_lower">gestern</string>
+    <plurals name="date_days_ago">
+        <item quantity="one">vor %d Tag</item>
+        <item quantity="other">vor %d Tagen</item>
+    </plurals>
+
+    <string name="category_groceries">Lebensmittel</string>
+    <string name="category_rent">Miete</string>
+    <string name="category_eating_out">Auswärts essen</string>
+    <string name="category_transport">Verkehr</string>
+    <string name="category_subscriptions">Abos</string>
+    <string name="category_shopping">Shopping</string>
+    <string name="category_health">Gesundheit</string>
+    <string name="category_fun">Freizeit</string>
+
+    <string name="sample_bank">Bank</string>
+    <string name="sample_cash">Bargeld</string>
+    <string name="sample_goal_phone">Neues Handy</string>
+    <string name="sample_goal_vacation">Urlaub</string>
+    <string name="sample_phone_credit">Handyvertrag</string>
+    <string name="sample_streaming">Streaming</string>
+    <string name="sample_note_supermarket">Supermarkt</string>
+    <string name="sample_note_weekly_shop">Wocheneinkauf</string>
+    <string name="sample_note_bakery">Bäckerei</string>
+    <string name="sample_note_market">Markt</string>
+    <string name="sample_note_lunch">Mittagessen</string>
+    <string name="sample_note_coffee">Kaffee und Kuchen</string>
+    <string name="sample_note_dinner">Abendessen auswärts</string>
+    <string name="sample_note_fuel">Tanken</string>
+    <string name="sample_note_train">Zugticket</string>
+    <string name="sample_note_cinema">Kino</string>
+    <string name="sample_note_concert">Konzert</string>
+    <string name="sample_note_starting_cash">Anfangsbestand</string>
+    <string name="sample_note_salary">Gehalt</string>
+    <string name="sample_note_atm">Geldautomat</string>
+
+    <string name="currency_title">Währung</string>
+    <string name="currency_search">Währung suchen</string>
+    <string name="currency_change_note">Die Währung ändert nur, wie Beträge angezeigt werden. Bereits eingegebene Beträge werden nicht umgerechnet.</string>
+    <string name="a11y_selected">Ausgewählt</string>
+
+    <string name="welcome_title">Füge dein erstes Konto hinzu</string>
+    <string name="welcome_body">Fang damit an, wo dein Geld ist, zum Beispiel dein Bankkonto oder Bargeld, und wie viel gerade darauf ist.</string>
+    <string name="welcome_add_account">Konto hinzufügen</string>
+    <string name="welcome_try_sample">Mit Beispieldaten ausprobieren</string>
+    <string name="sample_banner">Du siehst gerade Beispieldaten</string>
+    <string name="sample_remove">Entfernen</string>
+    <string name="sample_remove_title">Beispieldaten entfernen?</string>
+    <string name="sample_remove_body">Beispielkonten, -ziele und -einträge werden entfernt. Alles, was du zu einem Beispielkonto oder -ziel hinzugefügt hast, wird mit entfernt.</string>
+
+    <string name="theme_title">Design</string>
+    <string name="theme_system">System</string>
+    <string name="theme_light">Hell</string>
+    <string name="theme_dark">Dunkel</string>
+    <string name="theme_pure_black">Reines Schwarz</string>
+    <string name="theme_pure_black_hint">Dunkles Design mit schwarzem Hintergrund, spart Akku bei OLED-Bildschirmen</string>
+    <string name="format_auto">Automatisch</string>
+    <string name="symbol_position">Währungssymbol</string>
+    <string name="symbol_before">Davor</string>
+    <string name="symbol_after">Danach</string>
+</resources>

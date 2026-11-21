@@ -1,5 +1,6 @@
 package com.penny.wallet.feature.settings
 
+import androidx.compose.ui.platform.LocalResources
 import com.penny.wallet.core.util.dateText
 import android.net.Uri
 import androidx.activity.compose.rememberLauncherForActivityResult
@@ -36,6 +37,10 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.res.pluralStringResource
+import androidx.compose.ui.res.stringResource
+import com.penny.wallet.R
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.penny.wallet.data.prefs.BackupFrequency
@@ -50,46 +55,46 @@ import com.penny.wallet.core.ui.components.SegmentedControl
 import com.penny.wallet.core.ui.pennyViewModel
 import com.penny.wallet.core.ui.theme.Penny
 
-/** Settings → Backup (SPEC §6). */
 @Composable
 fun BackupScreen(onBack: () -> Unit) {
     val vm = pennyViewModel { BackupViewModel(it) }
     val s by vm.state.collectAsStateWithLifecycle()
     val snack = LocalSnack.current
     val c = Penny.colors
+    val res = LocalResources.current
     var secondConfirm by remember { mutableStateOf(false) }
 
     val pickFolder = rememberLauncherForActivityResult(ActivityResultContracts.OpenDocumentTree()) { vm.onFolderPicked(it) }
     val pickRestore = rememberLauncherForActivityResult(ActivityResultContracts.OpenDocument()) { vm.onRestoreFilePicked(it) }
     val createCsv = rememberLauncherForActivityResult(ActivityResultContracts.CreateDocument("text/csv")) { uri ->
-        vm.exportCsv(uri) { err -> snack.show(err?.let { "Export failed: $it" } ?: "CSV exported ✓") }
+        vm.exportCsv(uri) { err -> snack.show(err?.let { res.getString(R.string.backup_export_failed, it) } ?: res.getString(R.string.backup_export_done)) }
     }
 
     Column(Modifier.fillMaxSize().background(c.background).statusBarsPadding()) {
-        SettingsTopBar("Backup", onBack)
+        SettingsTopBar(stringResource(R.string.settings_backup), onBack)
         Column(
             Modifier.fillMaxSize().verticalScroll(rememberScrollState()).padding(horizontal = Penny.dims.gutter).navigationBarsPadding(),
             verticalArrangement = Arrangement.spacedBy(Penny.dims.gap),
         ) {
             StatusCard(s)
             Text(
-                "Tip: pick a folder that your Google Drive or Files app syncs if you want an off-phone copy.",
+                stringResource(R.string.backup_tip),
                 style = Penny.type.caption, color = c.textSecondary,
             )
             s.error?.let { Text(it, style = Penny.type.label, color = c.danger) }
 
-            PennyButton(if (s.folderUri == null) "Pick folder" else "Change folder", { pickFolder.launch(null) }, Modifier.fillMaxWidth(),
+            PennyButton(stringResource(if (s.folderUri == null) R.string.backup_pick_folder else R.string.backup_change_folder), { pickFolder.launch(null) }, Modifier.fillMaxWidth(),
                 kind = if (s.folderUri == null) ButtonKind.PRIMARY else ButtonKind.SECONDARY)
             if (s.folderUri != null) BackupNowButton(s, vm::backupNow)
 
-            SectionLabel("Automatic backup", Modifier.padding(top = 8.dp))
+            SectionLabel(stringResource(R.string.backup_automatic), Modifier.padding(top = 8.dp))
             val freqs = BackupFrequency.entries
-            SegmentedControl(listOf("Daily", "Weekly", "Monthly"), freqs.indexOf(s.frequency).coerceAtLeast(0), { vm.setFrequency(freqs[it]) })
+            SegmentedControl(listOf(stringResource(R.string.backup_daily), stringResource(R.string.backup_weekly), stringResource(R.string.backup_monthly)), freqs.indexOf(s.frequency).coerceAtLeast(0), { vm.setFrequency(freqs[it]) })
             KeepStepper(s.keep, vm::setKeep)
 
-            SectionLabel("Restore & export", Modifier.padding(top = 8.dp))
-            PennyButton("Restore from file", { pickRestore.launch(BackupViewModel.MIME_TYPES) }, Modifier.fillMaxWidth(), kind = ButtonKind.SECONDARY, enabled = !s.busy)
-            PennyButton("Export transactions as CSV", { createCsv.launch(vm.csvFileName) }, Modifier.fillMaxWidth(), kind = ButtonKind.SECONDARY)
+            SectionLabel(stringResource(R.string.backup_restore_export), Modifier.padding(top = 8.dp))
+            PennyButton(stringResource(R.string.backup_restore_file), { pickRestore.launch(BackupViewModel.MIME_TYPES) }, Modifier.fillMaxWidth(), kind = ButtonKind.SECONDARY, enabled = !s.busy)
+            PennyButton(stringResource(R.string.backup_export_csv), { createCsv.launch(vm.csvFileName) }, Modifier.fillMaxWidth(), kind = ButtonKind.SECONDARY)
             Spacer(Modifier.height(32.dp))
         }
     }
@@ -100,11 +105,12 @@ fun BackupScreen(onBack: () -> Unit) {
     }
     if (pending != null && secondConfirm) {
         ConfirmDialog(
-            title = "Replace all data?", text = "This replaces everything on this phone. Continue?", confirm = "Replace", danger = true,
+            title = stringResource(R.string.backup_replace_title), text = stringResource(R.string.backup_replace_body),
+            confirm = stringResource(R.string.backup_replace), danger = true,
             onDismiss = { secondConfirm = false; vm.cancelRestore() },
         ) {
             secondConfirm = false
-            vm.confirmRestore { err -> snack.show(err?.let { "Restore failed: $it" } ?: "Restored ✓") }
+            vm.confirmRestore { err -> snack.show(err?.let { res.getString(R.string.backup_restore_failed, it) } ?: res.getString(R.string.backup_restore_done)) }
         }
     }
 }
@@ -116,18 +122,18 @@ private fun StatusCard(s: BackupUi) {
         Row(verticalAlignment = Alignment.CenterVertically) {
             Icon(Icons.Rounded.Folder, null, tint = c.textSecondary, modifier = Modifier.size(22.dp))
             Spacer(Modifier.width(10.dp))
-            Text(folderName(s.folderUri) ?: "No folder", style = Penny.type.bodyStrong, color = c.textPrimary, modifier = Modifier.weight(1f), maxLines = 1)
+            Text(folderName(s.folderUri) ?: stringResource(R.string.backup_no_folder), style = Penny.type.bodyStrong, color = c.textPrimary, modifier = Modifier.weight(1f), maxLines = 1)
             if (s.folderUri != null) {
                 val ok = s.folderOk
-                Icon(if (ok) Icons.Rounded.CheckCircle else Icons.Rounded.Warning, if (ok) "Access OK" else "Access lost",
+                Icon(if (ok) Icons.Rounded.CheckCircle else Icons.Rounded.Warning, stringResource(if (ok) R.string.backup_access_ok else R.string.backup_access_lost),
                     tint = if (ok) c.accent else c.warning, modifier = Modifier.size(20.dp))
             }
         }
         if (s.folderUri != null && !s.folderOk) {
-            Text("Folder access was lost. Pick the folder again.", style = Penny.type.caption, color = c.warning, modifier = Modifier.padding(top = 6.dp))
+            Text(stringResource(R.string.backup_access_lost_body), style = Penny.type.caption, color = c.warning, modifier = Modifier.padding(top = 6.dp))
         }
         Text(
-            "Last backup: " + (s.lastBackupAt?.let { dateText().relativeDays(it) } ?: "Never"),
+            stringResource(R.string.backup_last, s.lastBackupAt?.let { dateText().relativeDays(it) } ?: stringResource(R.string.backup_never)),
             style = Penny.type.label, color = c.textSecondary, modifier = Modifier.padding(top = 10.dp),
         )
     }
@@ -140,16 +146,16 @@ private fun BackupNowButton(s: BackupUi, onClick: () -> Unit) {
         Row(Modifier.fillMaxWidth().height(52.dp), horizontalArrangement = Arrangement.Center, verticalAlignment = Alignment.CenterVertically) {
             CircularProgressIndicator(color = c.accent, strokeWidth = 2.dp, modifier = Modifier.size(22.dp))
             Spacer(Modifier.width(10.dp))
-            Text("Working…", style = Penny.type.label, color = c.textSecondary)
+            Text(stringResource(R.string.backup_working), style = Penny.type.label, color = c.textSecondary)
         }
     } else {
-        PennyButton("Back up now", onClick, Modifier.fillMaxWidth())
+        PennyButton(stringResource(R.string.backup_now), onClick, Modifier.fillMaxWidth())
     }
     s.justBackedUp?.let { name ->
         Row(verticalAlignment = Alignment.CenterVertically) {
             Icon(Icons.Rounded.CheckCircle, null, tint = c.accent, modifier = Modifier.size(18.dp))
             Spacer(Modifier.width(6.dp))
-            Text("Saved $name", style = Penny.type.caption, color = c.accent)
+            Text(stringResource(R.string.backup_saved, name), style = Penny.type.caption, color = c.accent)
         }
     }
 }
@@ -159,13 +165,13 @@ private fun KeepStepper(keep: Int, onSet: (Int) -> Unit) {
     val c = Penny.colors
     PennyCard(Modifier.fillMaxWidth(), padding = 8.dp) {
         Row(Modifier.padding(start = 8.dp), verticalAlignment = Alignment.CenterVertically) {
-            Text("Keep last", style = Penny.type.body, color = c.textPrimary, modifier = Modifier.weight(1f))
+            Text(stringResource(R.string.backup_keep_last), style = Penny.type.body, color = c.textPrimary, modifier = Modifier.weight(1f))
             IconButton(onClick = { onSet((keep - 1).coerceIn(1, 30)) }, enabled = keep > 1) {
-                Icon(Icons.Rounded.Remove, "Fewer", tint = if (keep > 1) c.accent else c.textSecondary)
+                Icon(Icons.Rounded.Remove, stringResource(R.string.backup_fewer), tint = if (keep > 1) c.accent else c.textSecondary)
             }
-            Text("$keep files", style = Penny.type.bodyStrong, color = c.textPrimary)
+            Text(pluralStringResource(R.plurals.backup_keep_files, keep, keep), style = Penny.type.bodyStrong, color = c.textPrimary)
             IconButton(onClick = { onSet((keep + 1).coerceIn(1, 30)) }, enabled = keep < 30) {
-                Icon(Icons.Rounded.Add, "More", tint = if (keep < 30) c.accent else c.textSecondary)
+                Icon(Icons.Rounded.Add, stringResource(R.string.backup_more), tint = if (keep < 30) c.accent else c.textSecondary)
             }
         }
     }

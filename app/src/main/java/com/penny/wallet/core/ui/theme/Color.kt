@@ -4,15 +4,16 @@ import androidx.compose.runtime.Immutable
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.lerp
 import androidx.compose.ui.graphics.luminance
+import com.penny.wallet.R
 
 val ItemPalette: List<Long> = listOf(
     0xFF39FF88, 0xFF00D1FF, 0xFF7C5CFF, 0xFFFF4FD8, 0xFFFF9F0A, 0xFFFFD60A,
     0xFFFF453A, 0xFF5AC8FA, 0xFFBF5AF2, 0xFF64D2FF, 0xFFA3E635, 0xFF8E8E93,
 )
 
-val AccentPresets: List<Pair<String, Long>> = listOf(
-    "Neon green" to 0xFF39FF88, "Cyan" to 0xFF00D1FF, "Violet" to 0xFF7C5CFF,
-    "Magenta" to 0xFFFF4FD8, "Orange" to 0xFFFF9F0A, "White" to 0xFFF5F5F7,
+val AccentPresets: List<Pair<Int, Long>> = listOf(
+    R.string.pers_accent_neon_green to 0xFF39FF88, R.string.pers_accent_cyan to 0xFF00D1FF, R.string.pers_accent_violet to 0xFF7C5CFF,
+    R.string.pers_accent_magenta to 0xFFFF4FD8, R.string.pers_accent_orange to 0xFFFF9F0A, R.string.pers_accent_white to 0xFFF5F5F7,
 )
 
 @Immutable

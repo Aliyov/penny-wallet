@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="notif_channel_name">Reminders</string>
+    <string name="notif_channel_desc">Upcoming and due recurring expenses</string>
+    <plurals name="notif_due_in_days">
+        <item quantity="one">Tomorrow: %2$s %3$s</item>
+        <item quantity="other">In %1$d days: %2$s %3$s</item>
+    </plurals>
+    <string name="notif_due_on">Due %1$s</string>
+    <string name="notif_due_today">Due today: %1$s %2$s</string>
+    <string name="notif_due_today_hint">Tap Mark as paid once it\'s done</string>
+    <string name="notif_action_mark_paid">Mark as paid</string>
+    <string name="notif_auto_paid">Paid automatically: %1$s %2$s</string>
+    <string name="notif_recorded_for">Recorded for %1$s</string>
+
+    <string name="backup_err_no_folder">Pick a backup folder first</string>
+    <string name="backup_err_lost_access">Lost access to the backup folder. Pick it again.</string>
+    <string name="backup_err_folder_not_found">Folder not found</string>
+    <string name="backup_err_create_file">Couldn\'t create the file</string>
+    <string name="backup_err_write_file">Couldn\'t write the file</string>
+    <string name="backup_err_open_file">Couldn\'t open the file</string>
+    <string name="backup_err_failed">Backup failed</string>
+    <string name="backup_err_not_backup">This isn\'t a Penny Wallet backup</string>
+    <string name="backup_err_too_new">Backup version %1$d is newer than this app understands (%2$d)</string>
+
+    <string name="data_csv_outside">Outside</string>
+</resources>

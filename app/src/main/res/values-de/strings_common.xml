@@ -1,0 +1,32 @@
+<resources>
+    <string name="action_save">Speichern</string>
+    <string name="action_cancel">Abbrechen</string>
+    <string name="action_delete">Löschen</string>
+    <string name="action_undo">Rückgängig</string>
+    <string name="action_edit">Bearbeiten</string>
+    <string name="action_close">Schließen</string>
+    <string name="action_add">Hinzufügen</string>
+    <string name="action_reset">Zurücksetzen</string>
+    <string name="action_archive">Archivieren</string>
+    <string name="action_back">Zurück</string>
+    <string name="action_ok">OK</string>
+    <string name="deleted">Gelöscht</string>
+    <string name="label_amount">Betrag</string>
+    <string name="label_name">Name</string>
+    <string name="label_note">Notiz</string>
+    <string name="label_account">Konto</string>
+    <string name="label_category">Kategorie</string>
+    <string name="label_icon">Symbol</string>
+    <string name="label_colour">Farbe</string>
+    <string name="type_expense">Ausgabe</string>
+    <string name="type_income">Einnahme</string>
+    <string name="type_save">Sparen</string>
+    <string name="type_transfer">Umbuchung</string>
+    <string name="error_generic">Etwas ist schiefgelaufen. Bitte versuche es noch einmal.</string>
+    <string name="error_only_available">Nur %1$s verfügbar</string>
+    <string name="error_amount_positive">Gib einen Betrag über null ein</string>
+    <string name="error_target_positive">Gib ein Ziel über null ein</string>
+    <string name="error_same_accounts">Wähle zwei verschiedene Konten</string>
+    <string name="data_note_balance_set">Kontostand gesetzt</string>
+    <string name="data_note_returned_from">Zurück aus %1$s</string>
+</resources>

@@ -1,5 +1,7 @@
 package com.penny.wallet.core.ui.components
 
+import com.penny.wallet.R
+import androidx.compose.ui.res.stringResource
 import androidx.compose.animation.animateContentSize
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
@@ -78,7 +80,7 @@ fun AmountSheet(
         AmountDisplay(cents, negative)
         if (allowNegative) {
             Row(Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.Center) {
-                PennyChip(if (negative) "− Negative" else "± Positive", negative, { negative = !negative })
+                PennyChip(stringResource(if (negative) R.string.ui_amount_negative else R.string.ui_amount_positive), negative, { negative = !negative })
             }
             Spacer(Modifier.height(8.dp))
         }

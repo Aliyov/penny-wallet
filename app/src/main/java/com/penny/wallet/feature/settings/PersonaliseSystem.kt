@@ -1,5 +1,10 @@
 package com.penny.wallet.feature.settings
 
+import androidx.compose.ui.platform.LocalResources
+import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.res.pluralStringResource
+import androidx.compose.ui.res.stringResource
+import com.penny.wallet.R
 import androidx.compose.foundation.lazy.LazyListScope
 import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.ExperimentalMaterial3Api
@@ -24,10 +29,12 @@ import com.penny.wallet.core.ui.theme.Penny
 internal fun LazyListScope.remindersSection(x: PrefsCtx) {
     val p = x.p
     val d = x.d
-    settingsCard("reminders", "Reminders") {
+    settingsCard("reminders", R.string.pers_section_reminders) {
         var picking by rememberSaveable { mutableStateOf(false) }
+        val res = LocalResources.current
+        val sameDay = stringResource(R.string.pers_same_day)
         NavRow(
-            "Reminder time", "%02d:%02d".format(p.reminderHour, p.reminderMinute), { picking = true },
+            stringResource(R.string.pers_reminder_time), "%02d:%02d".format(p.reminderHour, p.reminderMinute), { picking = true },
             onReset = x.reset(p.reminderHour to p.reminderMinute, d.reminderHour to d.reminderMinute) {
                 it.copy(reminderHour = d.reminderHour, reminderMinute = d.reminderMinute)
             },
@@ -39,16 +46,18 @@ internal fun LazyListScope.remindersSection(x: PrefsCtx) {
             }
         }
         StepperRow(
-            "Default days before", p.defaultRemindDaysBefore, 0..7, { v -> x.set { it.copy(defaultRemindDaysBefore = v) } },
-            format = { if (it == 0) "Same day" else "$it d" }, subtitle = "Used for new recurring rules",
+            stringResource(R.string.pers_days_before), p.defaultRemindDaysBefore, 0..7, { v -> x.set { it.copy(defaultRemindDaysBefore = v) } },
+            format = { if (it == 0) sameDay else res.getQuantityString(R.plurals.pers_days_count, it, it) },
+            subtitle = stringResource(R.string.pers_days_before_hint),
             onReset = x.reset(p.defaultRemindDaysBefore, d.defaultRemindDaysBefore) { it.copy(defaultRemindDaysBefore = d.defaultRemindDaysBefore) },
         )
         SwitchRow(
-            "Overdue badge", p.overdueBadge, { v -> x.set { it.copy(overdueBadge = v) } },
+            stringResource(R.string.pers_overdue_badge), p.overdueBadge, { v -> x.set { it.copy(overdueBadge = v) } },
             onReset = x.reset(p.overdueBadge, d.overdueBadge) { it.copy(overdueBadge = d.overdueBadge) },
         )
         SwitchRow(
-            "Quiet mode", p.quietMode, { v -> x.set { it.copy(quietMode = v) } }, subtitle = "No notifications at all",
+            stringResource(R.string.pers_quiet_mode), p.quietMode, { v -> x.set { it.copy(quietMode = v) } },
+            subtitle = stringResource(R.string.pers_quiet_mode_hint),
             onReset = x.reset(p.quietMode, d.quietMode) { it.copy(quietMode = d.quietMode) },
         )
     }
@@ -57,16 +66,20 @@ internal fun LazyListScope.remindersSection(x: PrefsCtx) {
 internal fun LazyListScope.backupSection(x: PrefsCtx) {
     val p = x.p
     val d = x.d
-    settingsCard("backup", "Backup") {
+    settingsCard("backup", R.string.pers_section_backup) {
         ChoiceRow(
-            "Frequency", listOf(BackupFrequency.DAILY to "Daily", BackupFrequency.WEEKLY to "Weekly", BackupFrequency.MONTHLY to "Monthly"),
+            stringResource(R.string.pers_backup_frequency),
+            listOf(
+                BackupFrequency.DAILY to stringResource(R.string.pers_daily), BackupFrequency.WEEKLY to stringResource(R.string.pers_weekly),
+                BackupFrequency.MONTHLY to stringResource(R.string.pers_monthly),
+            ),
             p.backupFrequency, { v -> x.set { it.copy(backupFrequency = v) } },
-            subtitle = "Choose the backup folder on the Backup screen",
+            subtitle = stringResource(R.string.pers_backup_frequency_hint),
             onReset = x.reset(p.backupFrequency, d.backupFrequency) { it.copy(backupFrequency = d.backupFrequency) },
         )
         StepperRow(
-            "Files kept", p.backupKeep, 1..30, { v -> x.set { it.copy(backupKeep = v) } },
-            subtitle = "Older backups are deleted",
+            stringResource(R.string.pers_files_kept), p.backupKeep, 1..30, { v -> x.set { it.copy(backupKeep = v) } },
+            subtitle = stringResource(R.string.pers_files_kept_hint),
             onReset = x.reset(p.backupKeep, d.backupKeep) { it.copy(backupKeep = d.backupKeep) },
         )
     }
@@ -75,15 +88,20 @@ internal fun LazyListScope.backupSection(x: PrefsCtx) {
 internal fun LazyListScope.securitySection(x: PrefsCtx) {
     val p = x.p
     val d = x.d
-    settingsCard("security", "Security") {
+    settingsCard("security", R.string.pers_section_security) {
         SwitchRow(
-            "Biometric app lock", p.biometricLock, { v -> x.set { it.copy(biometricLock = v) } },
-            subtitle = "Fingerprint, face or device PIN",
+            stringResource(R.string.pers_biometric), p.biometricLock, { v -> x.set { it.copy(biometricLock = v) } },
+            subtitle = stringResource(R.string.pers_biometric_hint),
             onReset = x.reset(p.biometricLock, d.biometricLock) { it.copy(biometricLock = d.biometricLock) },
         )
         if (p.biometricLock) {
             ChoiceRow(
-                "Lock after", listOf(LockAfter.IMMEDIATELY to "Immediately", LockAfter.ONE_MIN to "1 min", LockAfter.FIVE_MIN to "5 min"),
+                stringResource(R.string.pers_lock_after),
+                listOf(
+                    LockAfter.IMMEDIATELY to stringResource(R.string.pers_lock_immediately),
+                    LockAfter.ONE_MIN to pluralStringResource(R.plurals.pers_minutes, 1, 1),
+                    LockAfter.FIVE_MIN to pluralStringResource(R.plurals.pers_minutes, 5, 5),
+                ),
                 p.lockAfter, { v -> x.set { it.copy(lockAfter = v) } },
                 onReset = x.reset(p.lockAfter, d.lockAfter) { it.copy(lockAfter = d.lockAfter) },
             )
@@ -99,7 +117,7 @@ private fun TimeDialog(hour: Int, minute: Int, onDismiss: () -> Unit, onConfirm:
     AlertDialog(
         onDismissRequest = onDismiss,
         containerColor = c.surface2,
-        title = { Text("Reminder time", style = Penny.type.title, color = c.textPrimary) },
+        title = { Text(stringResource(R.string.pers_reminder_time), style = Penny.type.title, color = c.textPrimary) },
         text = {
             TimePicker(
                 state,
@@ -111,7 +129,7 @@ private fun TimeDialog(hour: Int, minute: Int, onDismiss: () -> Unit, onConfirm:
                 ),
             )
         },
-        confirmButton = { TextButton(onClick = { onConfirm(state.hour, state.minute) }) { Text("Set", color = c.accent) } },
-        dismissButton = { TextButton(onClick = onDismiss) { Text("Cancel", color = c.textSecondary) } },
+        confirmButton = { TextButton(onClick = { onConfirm(state.hour, state.minute) }) { Text(stringResource(R.string.pers_set), color = c.accent) } },
+        dismissButton = { TextButton(onClick = onDismiss) { Text(stringResource(R.string.action_cancel), color = c.textSecondary) } },
     )
 }

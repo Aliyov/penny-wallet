@@ -11,7 +11,7 @@ import com.penny.wallet.data.prefs.UserPrefs
 
 /**
  * Process-wide lock state. Locked at cold start; after going to the background it re-locks once
- * the "lock after" delay has passed (SPEC §7a Security).
+ * the "lock after" delay has passed.
  */
 object AppLock : DefaultLifecycleObserver {
     var locked by mutableStateOf(true)

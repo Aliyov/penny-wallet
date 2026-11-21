@@ -63,7 +63,7 @@ internal fun LazyListScope.appearanceSection(x: PrefsCtx) {
     val p = x.p
     val d = x.d
     item("preview") { PreviewCard(x) }
-    settingsCard("appearance", "Appearance") {
+    settingsCard("appearance", R.string.pers_section_appearance) {
         ChoiceRow(
             stringResource(R.string.theme_title),
             listOf(
@@ -81,40 +81,49 @@ internal fun LazyListScope.appearanceSection(x: PrefsCtx) {
             onReset = x.reset(p.background, d.background) { it.copy(background = d.background) },
         )
         ChoiceRow(
-            "Glow", listOf(GlowLevel.OFF to "Off", GlowLevel.SUBTLE to "Subtle", GlowLevel.STRONG to "Strong"), p.glow,
+            stringResource(R.string.pers_glow),
+            listOf(GlowLevel.OFF to stringResource(R.string.pers_off), GlowLevel.SUBTLE to stringResource(R.string.pers_glow_subtle), GlowLevel.STRONG to stringResource(R.string.pers_glow_strong)),
+            p.glow,
             { v -> x.set { it.copy(glow = v) } }, onReset = x.reset(p.glow, d.glow) { it.copy(glow = d.glow) },
         )
         SwitchRow(
-            "HUD grid on Home", p.hudGrid, { v -> x.set { it.copy(hudGrid = v) } }, subtitle = "Faint futuristic grid behind the hero number",
+            stringResource(R.string.pers_hud_grid), p.hudGrid, { v -> x.set { it.copy(hudGrid = v) } }, subtitle = stringResource(R.string.pers_hud_grid_hint),
             onReset = x.reset(p.hudGrid, d.hudGrid) { it.copy(hudGrid = d.hudGrid) },
         )
         ChoiceRow(
-            "Corners", listOf(CornerStyle.ROUND to "Round", CornerStyle.SOFTER to "Softer", CornerStyle.SHARP to "Sharp"), p.corners,
+            stringResource(R.string.pers_corners),
+            listOf(CornerStyle.ROUND to stringResource(R.string.pers_corners_round), CornerStyle.SOFTER to stringResource(R.string.pers_corners_softer), CornerStyle.SHARP to stringResource(R.string.pers_corners_sharp)),
+            p.corners,
             { v -> x.set { it.copy(corners = v) } }, onReset = x.reset(p.corners, d.corners) { it.copy(corners = d.corners) },
         )
         ChoiceRow(
-            "Text size", listOf(TextSize.S to "S", TextSize.M to "M", TextSize.L to "L"), p.textSize,
+            stringResource(R.string.pers_text_size), listOf(TextSize.S to "S", TextSize.M to "M", TextSize.L to "L"), p.textSize,
             { v -> x.set { it.copy(textSize = v) } }, onReset = x.reset(p.textSize, d.textSize) { it.copy(textSize = d.textSize) },
         )
         ChoiceRow(
-            "Density", listOf(Density.COMFORTABLE to "Comfortable", Density.COMPACT to "Compact"), p.density,
+            stringResource(R.string.pers_density),
+            listOf(Density.COMFORTABLE to stringResource(R.string.pers_density_comfortable), Density.COMPACT to stringResource(R.string.pers_density_compact)),
+            p.density,
             { v -> x.set { it.copy(density = v) } }, onReset = x.reset(p.density, d.density) { it.copy(density = d.density) },
         )
         ChoiceRow(
-            "Animations", listOf(AnimationLevel.FULL to "Full", AnimationLevel.REDUCED to "Reduced", AnimationLevel.OFF to "Off"), p.animations,
+            stringResource(R.string.pers_animations),
+            listOf(AnimationLevel.FULL to stringResource(R.string.pers_anim_full), AnimationLevel.REDUCED to stringResource(R.string.pers_anim_reduced), AnimationLevel.OFF to stringResource(R.string.pers_off)),
+            p.animations,
             { v -> x.set { it.copy(animations = v) } }, onReset = x.reset(p.animations, d.animations) { it.copy(animations = d.animations) },
         )
         SwitchRow(
-            "Haptics", p.haptics, { v -> x.set { it.copy(haptics = v) } },
+            stringResource(R.string.pers_haptics), p.haptics, { v -> x.set { it.copy(haptics = v) } },
             onReset = x.reset(p.haptics, d.haptics) { it.copy(haptics = d.haptics) },
         )
         SwitchRow(
-            "Show cents", p.showCents, { v -> x.set { it.copy(showCents = v) } },
+            stringResource(R.string.pers_show_cents), p.showCents, { v -> x.set { it.copy(showCents = v) } },
             onReset = x.reset(p.showCents, d.showCents) { it.copy(showCents = d.showCents) },
         )
         CurrencySetting(x)
         ChoiceRow(
-            "Number format", listOf(NumberFormatStyle.AUTO to stringResource(R.string.format_auto), NumberFormatStyle.EU to "1.234,56", NumberFormatStyle.US to "1,234.56"), p.numberFormat,
+            stringResource(R.string.pers_number_format),
+            listOf(NumberFormatStyle.AUTO to stringResource(R.string.format_auto), NumberFormatStyle.EU to "1.234,56", NumberFormatStyle.US to "1,234.56"), p.numberFormat,
             { v -> x.set { it.copy(numberFormat = v) } }, onReset = x.reset(p.numberFormat, d.numberFormat) { it.copy(numberFormat = d.numberFormat) },
         )
         ChoiceRow(
@@ -127,7 +136,8 @@ internal fun LazyListScope.appearanceSection(x: PrefsCtx) {
             onReset = x.reset(p.symbolPosition, d.symbolPosition) { it.copy(symbolPosition = d.symbolPosition) },
         )
         SwitchRow(
-            "Hide amounts", p.hideAmounts, { v -> x.set { it.copy(hideAmounts = v) } }, subtitle = "Privacy mode: shows •••• until tapped",
+            stringResource(R.string.pers_hide_amounts), p.hideAmounts, { v -> x.set { it.copy(hideAmounts = v) } },
+            subtitle = stringResource(R.string.pers_hide_amounts_hint),
             onReset = x.reset(p.hideAmounts, d.hideAmounts) { it.copy(hideAmounts = d.hideAmounts) },
         )
     }
@@ -154,9 +164,9 @@ private fun PreviewCard(x: PrefsCtx) {
         Modifier.fillMaxWidth().padding(top = 8.dp).clip(shape).background(c.surface1).border(0.75.dp, c.hairline, shape).padding(Penny.dims.cardPadding),
         verticalArrangement = Arrangement.spacedBy(4.dp),
     ) {
-        Text("Preview", style = Penny.type.caption, color = c.textSecondary)
+        Text(stringResource(R.string.pers_preview), style = Penny.type.caption, color = c.textSecondary)
         Text(Formatters.money(123456, Formatters.of(x.p, currentLocale())), style = Penny.type.amountLarge, color = c.accent)
-        Text("Available to spend", style = Penny.type.label, color = c.textSecondary)
+        Text(stringResource(R.string.pers_preview_available), style = Penny.type.label, color = c.textSecondary)
     }
 }
 
@@ -169,16 +179,16 @@ private fun AccentPicker(x: PrefsCtx) {
     Column(Modifier.fillMaxWidth().padding(vertical = 8.dp), verticalArrangement = Arrangement.spacedBy(10.dp)) {
         val reset = x.reset(x.p.accentArgb, x.d.accentArgb) { it.copy(accentArgb = x.d.accentArgb) }
         Row(verticalAlignment = Alignment.CenterVertically) {
-            Text("Accent colour", style = Penny.type.bodyStrong, color = c.textPrimary)
+            Text(stringResource(R.string.pers_accent), style = Penny.type.bodyStrong, color = c.textPrimary)
             if (reset != null) {
-                Text("Reset", style = Penny.type.caption, color = c.accent, modifier = Modifier.padding(start = 8.dp).clip(Penny.dims.smallShape).clickable(onClick = reset).padding(horizontal = 6.dp, vertical = 2.dp))
+                Text(stringResource(R.string.action_reset), style = Penny.type.caption, color = c.accent, modifier = Modifier.padding(start = 8.dp).clip(Penny.dims.smallShape).clickable(onClick = reset).padding(horizontal = 6.dp, vertical = 2.dp))
             }
         }
         FlowRow(horizontalArrangement = Arrangement.spacedBy(10.dp), verticalArrangement = Arrangement.spacedBy(10.dp)) {
             AccentPresets.forEach { (name, argb) ->
-                Swatch(Color(argb), name, x.p.accentArgb == argb) { x.set { it.copy(accentArgb = argb) } }
+                Swatch(Color(argb), stringResource(name), x.p.accentArgb == argb) { x.set { it.copy(accentArgb = argb) } }
             }
-            Swatch(if (isPreset) c.surface2 else Color(x.p.accentArgb), "Custom", !isPreset, custom = true) { editing = true }
+            Swatch(if (isPreset) c.surface2 else Color(x.p.accentArgb), stringResource(R.string.pers_accent_custom), !isPreset, custom = true) { editing = true }
         }
     }
     if (editing) HexSheet(x.p.accentArgb, onDismiss = { editing = false }) { argb -> x.set { it.copy(accentArgb = argb) }; editing = false }
@@ -218,15 +228,15 @@ private fun HexSheet(current: Long, onDismiss: () -> Unit, onApply: (Long) -> Un
     val c = Penny.colors
     var text by rememberSaveable { mutableStateOf("#%06X".format(current and 0xFFFFFF)) }
     val parsed = parseHex(text)
-    PennySheet(onDismiss = onDismiss, title = "Custom accent") {
+    PennySheet(onDismiss = onDismiss, title = stringResource(R.string.pers_custom_accent)) {
         Column(Modifier.fillMaxWidth().padding(vertical = 8.dp), verticalArrangement = Arrangement.spacedBy(12.dp)) {
             Box(Modifier.fillMaxWidth().padding(vertical = 4.dp).size(48.dp).clip(Penny.dims.smallShape).background(parsed?.let { Color(it) } ?: c.surface1).border(0.75.dp, c.hairline, Penny.dims.smallShape))
             OutlinedTextField(
                 text, { text = it.take(20) }, Modifier.fillMaxWidth(), singleLine = true, colors = pennyFieldColors(),
-                label = { Text("#RRGGBB or rgb(r, g, b)") }, isError = parsed == null,
-                supportingText = { if (parsed == null) Text("Use 6 hex digits, e.g. #39FF88", color = c.danger) },
+                label = { Text(stringResource(R.string.pers_hex_label)) }, isError = parsed == null,
+                supportingText = { if (parsed == null) Text(stringResource(R.string.pers_hex_error), color = c.danger) },
             )
-            PennyButton("Use colour", { parsed?.let(onApply) }, Modifier.fillMaxWidth(), enabled = parsed != null)
+            PennyButton(stringResource(R.string.pers_use_colour), { parsed?.let(onApply) }, Modifier.fillMaxWidth(), enabled = parsed != null)
         }
     }
 }

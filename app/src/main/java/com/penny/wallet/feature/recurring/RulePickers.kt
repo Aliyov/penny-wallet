@@ -1,5 +1,12 @@
 package com.penny.wallet.feature.recurring
 
+import java.time.YearMonth
+import java.time.DayOfWeek
+import com.penny.wallet.core.util.dateText
+import com.penny.wallet.core.util.currentLocale
+import com.penny.wallet.R
+import androidx.compose.ui.res.pluralStringResource
+import androidx.compose.ui.res.stringResource
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
@@ -40,23 +47,25 @@ import java.time.format.TextStyle
 @Composable
 internal fun SchedulePicker(d: RuleDraft, onChange: (RuleDraft) -> Unit) {
     val c = Penny.colors
+    val locale = currentLocale()
+    val dates = dateText()
     when (d.frequency) {
         Frequency.WEEKLY -> {
-            FieldLabel("On")
-            ChipStrip((1..7).toList(), d.dayOfWeek, { weekdayName(it, TextStyle.SHORT) }) { onChange(d.copy(dayOfWeek = it)) }
+            FieldLabel(stringResource(R.string.recurring_on))
+            ChipStrip((1..7).toList(), d.dayOfWeek, { DayOfWeek.of(it).getDisplayName(TextStyle.SHORT_STANDALONE, locale).replaceFirstChar { ch -> ch.titlecase(locale) } }) { onChange(d.copy(dayOfWeek = it)) }
         }
         Frequency.MONTHLY -> {
-            FieldLabel("Day of month")
+            FieldLabel(stringResource(R.string.recurring_day_of_month))
             DayStrip(d.dayOfMonth) { onChange(d.copy(dayOfMonth = it)) }
-            Text("Short months use the last day", style = Penny.type.caption, color = c.textSecondary)
+            Text(stringResource(R.string.recurring_short_months_hint), style = Penny.type.caption, color = c.textSecondary)
         }
         Frequency.YEARLY -> {
-            FieldLabel("Month")
-            ChipStrip((1..12).toList(), d.month, { monthName(it) }) { onChange(d.copy(month = it)) }
-            FieldLabel("Day")
+            FieldLabel(stringResource(R.string.recurring_month))
+            ChipStrip((1..12).toList(), d.month, { dates.monthShort(YearMonth.of(2000, it)) }) { onChange(d.copy(month = it)) }
+            FieldLabel(stringResource(R.string.recurring_day))
             DayStrip(d.dayOfMonth) { onChange(d.copy(dayOfMonth = it)) }
             if (d.month == 2 && d.dayOfMonth > 28) {
-                Text("In non-leap years the last day of February is used", style = Penny.type.caption, color = c.textSecondary)
+                Text(stringResource(R.string.recurring_leap_hint), style = Penny.type.caption, color = c.textSecondary)
             }
         }
     }
@@ -74,18 +83,18 @@ private fun ChipStrip(values: List<Int>, selected: Int, label: (Int) -> String, 
     }
 }
 
-/** 0–7 days before; 0 = "Same day". */
+/** 0–7 days before; 0 = same day. */
 @Composable
 internal fun RemindStepper(days: Int, onChange: (Int) -> Unit) {
     val c = Penny.colors
     Row(Modifier.fillMaxWidth(), verticalAlignment = Alignment.CenterVertically) {
         Text(
-            when (days) { 0 -> "Same day"; 1 -> "1 day before"; else -> "$days days before" },
+            if (days == 0) stringResource(R.string.recurring_remind_same_day) else pluralStringResource(R.plurals.recurring_remind_days_before, days, days),
             style = Penny.type.body, color = c.textPrimary, modifier = Modifier.weight(1f),
         )
-        StepButton(Icons.Rounded.Remove, "Fewer days", days > 0) { onChange(days - 1) }
+        StepButton(Icons.Rounded.Remove, stringResource(R.string.recurring_fewer_days), days > 0) { onChange(days - 1) }
         Text(days.toString(), style = Penny.type.bodyStrong, color = c.textPrimary, textAlign = TextAlign.Center, modifier = Modifier.widthIn(min = 36.dp))
-        StepButton(Icons.Rounded.Add, "More days", days < 7) { onChange(days + 1) }
+        StepButton(Icons.Rounded.Add, stringResource(R.string.recurring_more_days), days < 7) { onChange(days + 1) }
     }
 }
 

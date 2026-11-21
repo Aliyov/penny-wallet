@@ -48,6 +48,10 @@ android {
     buildFeatures {
         compose = true
     }
+    androidResources {
+        generateLocaleConfig = true
+        localeFilters += listOf("en", "de", "it")
+    }
 }
 
 kotlin {

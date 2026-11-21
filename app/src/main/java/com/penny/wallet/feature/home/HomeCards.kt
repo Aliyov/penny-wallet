@@ -27,6 +27,9 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.unit.dp
 import com.penny.wallet.core.ui.components.AnimatedAmount
 import com.penny.wallet.core.ui.components.IconBadge
+import androidx.compose.ui.res.pluralStringResource
+import androidx.compose.ui.res.stringResource
+import com.penny.wallet.R
 import com.penny.wallet.core.ui.components.MoneyText
 import com.penny.wallet.core.ui.components.PennyCard
 import com.penny.wallet.core.ui.components.SectionLabel
@@ -38,20 +41,20 @@ fun MonthCard(state: HomeState, modifier: Modifier = Modifier) {
     PennyCard(modifier.fillMaxWidth().animateContentSize(sizeSpec())) {
         Row(Modifier.fillMaxWidth(), verticalAlignment = Alignment.Bottom) {
             Column(Modifier.weight(1f)) {
-                Text("Spent this month", style = Penny.type.caption, color = c.textSecondary)
+                Text(stringResource(R.string.home_spent_this_month), style = Penny.type.caption, color = c.textSecondary)
                 Spacer(Modifier.height(4.dp))
                 AnimatedAmount(state.spentThisMonth, Penny.type.amountLarge, c.textPrimary)
             }
             Column(horizontalAlignment = Alignment.End) {
                 Text("${state.daysLeft}", style = Penny.type.amountLarge, color = c.textPrimary)
-                Text(if (state.daysLeft == 1) "day left" else "days left", style = Penny.type.caption, color = c.textSecondary)
+                Text(pluralStringResource(R.plurals.home_days_left, state.daysLeft), style = Penny.type.caption, color = c.textSecondary)
             }
         }
         if (state.dueThisMonth > 0) {
             Spacer(Modifier.height(10.dp))
             Row(verticalAlignment = Alignment.CenterVertically) {
                 MoneyText(state.dueThisMonth, Penny.type.label, c.warning)
-                Text(" due this month", style = Penny.type.label, color = c.textSecondary)
+                Text(stringResource(R.string.home_due_this_month), style = Penny.type.label, color = c.textSecondary)
             }
         }
     }
@@ -61,7 +64,7 @@ fun MonthCard(state: HomeState, modifier: Modifier = Modifier) {
 fun AccountCarousel(accounts: List<AccountCard>, onOpen: (String) -> Unit, onAdd: () -> Unit) {
     val gutter = Penny.dims.gutter
     Column {
-        SectionLabel("Accounts", Modifier.padding(horizontal = gutter))
+        SectionLabel(stringResource(R.string.home_accounts), Modifier.padding(horizontal = gutter))
         LazyRow(
             contentPadding = PaddingValues(horizontal = gutter),
             horizontalArrangement = Arrangement.spacedBy(Penny.dims.gap),
@@ -88,7 +91,7 @@ private fun AccountTile(a: AccountCard, onClick: () -> Unit, modifier: Modifier 
         Spacer(Modifier.weight(1f))
         AnimatedAmount(a.money.balance, Penny.type.amount, c.textPrimary)
         Row(verticalAlignment = Alignment.CenterVertically) {
-            Text("available ", style = Penny.type.caption, color = c.textSecondary)
+            Text(stringResource(R.string.home_tile_available), style = Penny.type.caption, color = c.textSecondary)
             MoneyText(avail, Penny.type.caption, if (avail < 0) c.danger else c.accent)
         }
     }
@@ -105,7 +108,7 @@ private fun AddAccountTile(onClick: () -> Unit) {
         Column(horizontalAlignment = Alignment.CenterHorizontally) {
             Icon(Icons.Rounded.Add, null, tint = c.accent, modifier = Modifier.size(28.dp))
             Spacer(Modifier.height(6.dp))
-            Text("Add account", style = Penny.type.label, color = c.accent)
+            Text(stringResource(R.string.home_add_account), style = Penny.type.label, color = c.accent)
         }
     }
 }

@@ -5,6 +5,7 @@ import kotlinx.coroutines.Dispatchers
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.penny.wallet.AppContainer
+import com.penny.wallet.R
 import com.penny.wallet.data.db.entities.Account
 import com.penny.wallet.data.db.entities.Category
 import com.penny.wallet.data.repo.AccountDeleteResult
@@ -46,7 +47,6 @@ class ManageViewModel(private val c: AppContainer) : ViewModel() {
         )
     }.flowOn(Dispatchers.Default).stateIn(viewModelScope, SharingStarted.WhileSubscribed(5_000), ManageState())
 
-    // ---- categories
     fun addCategory(name: String, icon: String, color: Long) = viewModelScope.launch { if (name.isNotBlank()) c.categories.add(name, icon, color) }
     fun saveCategory(cat: Category) = viewModelScope.launch { if (cat.name.isNotBlank()) c.categories.save(cat.copy(name = cat.name.trim())) }
     fun reorderCategories(ids: List<String>) = viewModelScope.launch { c.categories.reorder(ids) }
@@ -65,19 +65,17 @@ class ManageViewModel(private val c: AppContainer) : ViewModel() {
     fun undoCategoryDelete(cat: Category) = c.appScope.launch { c.categories.restore(cat) }
     fun undoMove(m: MovedCategory) = c.appScope.launch { c.categories.undoMove(m) }
 
-    // ---- accounts
     fun addAccount(name: String, icon: String) = viewModelScope.launch { if (name.isNotBlank()) c.accounts.add(name, icon) }
     fun saveAccount(a: Account) = viewModelScope.launch { if (a.name.isNotBlank()) c.accounts.save(a.copy(name = a.name.trim())) }
     fun reorderAccounts(ids: List<String>) = viewModelScope.launch { c.accounts.reorder(ids) }
 
     fun setAccountArchived(item: AccountItem, archived: Boolean, done: (String?) -> Unit) = viewModelScope.launch {
-        if (archived && item.money.allocated != 0L) return@launch done("Take this account's money back from your goals first")
+        if (archived && item.money.allocated != 0L) return@launch done(c.context.getString(R.string.manage_account_has_goal_money))
         c.accounts.setArchived(item.account.id, archived); done(null)
     }
 
     fun deleteAccount(id: String, done: (AccountDeleteResult) -> Unit) = viewModelScope.launch { done(c.accounts.delete(id)) }
     fun undoAccountDelete(a: Account) = c.appScope.launch { c.accounts.restore(a) }
 
-    /** Settings → Reset all data (after the double confirm). */
     fun resetAll(done: () -> Unit) = viewModelScope.launch { c.backup.resetAll(); done() }
 }

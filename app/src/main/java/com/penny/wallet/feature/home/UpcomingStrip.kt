@@ -21,6 +21,9 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.res.pluralStringResource
+import androidx.compose.ui.res.stringResource
+import com.penny.wallet.R
 import com.penny.wallet.domain.DueState
 import com.penny.wallet.core.money.Formatters
 import com.penny.wallet.core.ui.common.UpcomingItem
@@ -36,13 +39,13 @@ fun UpcomingStrip(items: List<UpcomingItem>, overdueCount: Int, onOpenRecurring:
     val showBadge = Penny.prefs.overdueBadge
     Column {
         Row(Modifier.fillMaxWidth().padding(horizontal = gutter).padding(vertical = 8.dp), verticalAlignment = Alignment.CenterVertically) {
-            Text("UPCOMING", style = Penny.type.caption, color = Penny.colors.textSecondary)
+            Text(stringResource(R.string.home_upcoming), style = Penny.type.caption, color = Penny.colors.textSecondary)
             if (showBadge && overdueCount > 0) {
                 Spacer(Modifier.width(8.dp))
-                OverdueBadge("$overdueCount overdue")
+                OverdueBadge(pluralStringResource(R.plurals.home_overdue_count, overdueCount, overdueCount))
             }
             Spacer(Modifier.weight(1f))
-            Text("All", style = Penny.type.label, color = Penny.colors.accent, modifier = Modifier.clickableNoRipple(onOpenRecurring).padding(4.dp))
+            Text(stringResource(R.string.home_all), style = Penny.type.label, color = Penny.colors.accent, modifier = Modifier.clickableNoRipple(onOpenRecurring).padding(4.dp))
         }
         LazyRow(
             contentPadding = PaddingValues(horizontal = gutter),
@@ -62,7 +65,7 @@ private fun UpcomingChip(item: UpcomingItem, showBadge: Boolean, modifier: Modif
         Row(verticalAlignment = Alignment.CenterVertically) {
             IconBadge(item.icon, tint, size = 32)
             Spacer(Modifier.weight(1f))
-            if (overdue && showBadge) OverdueBadge("Overdue")
+            if (overdue && showBadge) OverdueBadge(stringResource(R.string.home_overdue))
         }
         Spacer(Modifier.height(10.dp))
         Text(item.rule.name, style = Penny.type.bodyStrong, color = c.textPrimary, maxLines = 1)

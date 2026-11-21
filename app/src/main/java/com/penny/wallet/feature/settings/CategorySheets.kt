@@ -24,6 +24,9 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.res.pluralStringResource
+import androidx.compose.ui.res.stringResource
+import com.penny.wallet.R
 import androidx.compose.ui.unit.dp
 import com.penny.wallet.data.db.entities.Category
 import com.penny.wallet.feature.home.pennyFieldColors
@@ -44,25 +47,25 @@ internal fun CategoryEditSheet(
     var name by rememberSaveable { mutableStateOf(initial?.name ?: "") }
     var icon by rememberSaveable { mutableStateOf(initial?.icon ?: "other") }
     var color by rememberSaveable { mutableLongStateOf(initial?.color ?: ItemPalette.first()) }
-    PennySheet(onDismiss = onDismiss, title = if (initial == null) "New category" else "Edit category") {
+    PennySheet(onDismiss = onDismiss, title = stringResource(if (initial == null) R.string.manage_new_category else R.string.manage_edit_category)) {
         Column(Modifier.heightIn(max = 620.dp).verticalScroll(rememberScrollState())) {
             Row(verticalAlignment = Alignment.CenterVertically) {
                 IconBadge(icon, Color(color), size = 48)
                 Spacer(Modifier.width(12.dp))
                 OutlinedTextField(
-                    name, { name = it }, Modifier.weight(1f), singleLine = true, label = { Text("Name") },
+                    name, { name = it }, Modifier.weight(1f), singleLine = true, label = { Text(stringResource(R.string.label_name)) },
                     textStyle = Penny.type.body, shape = Penny.dims.smallShape, colors = pennyFieldColors(),
                 )
             }
-            FieldLabel("Colour")
+            FieldLabel(stringResource(R.string.label_colour))
             ColorSwatches(color) { color = it }
-            FieldLabel("Icon")
+            FieldLabel(stringResource(R.string.label_icon))
             IconPicker(PennyIcons.all.map { it.first }, icon, Color(color)) { icon = it }
-            PennyButton("Save", { onSave(name.trim(), icon, color) }, Modifier.fillMaxWidth().padding(top = 20.dp), enabled = name.isNotBlank())
+            PennyButton(stringResource(R.string.action_save), { onSave(name.trim(), icon, color) }, Modifier.fillMaxWidth().padding(top = 20.dp), enabled = name.isNotBlank())
             if (initial != null) {
                 Row(Modifier.fillMaxWidth().padding(top = 8.dp), horizontalArrangement = Arrangement.spacedBy(8.dp)) {
-                    PennyButton(if (initial.archived) "Unarchive" else "Archive", onToggleArchive, Modifier.weight(1f), kind = ButtonKind.SECONDARY)
-                    PennyButton("Delete", onDelete, Modifier.weight(1f), kind = ButtonKind.DANGER)
+                    PennyButton(stringResource(if (initial.archived) R.string.manage_unarchive else R.string.action_archive), onToggleArchive, Modifier.weight(1f), kind = ButtonKind.SECONDARY)
+                    PennyButton(stringResource(R.string.action_delete), onDelete, Modifier.weight(1f), kind = ButtonKind.DANGER)
                 }
             }
         }
@@ -77,16 +80,15 @@ internal fun CategoryInUseDialog(cat: Category, count: Int, onMove: () -> Unit, 
         onDismissRequest = onDismiss,
         containerColor = c.surface2, titleContentColor = c.textPrimary, textContentColor = c.textSecondary,
         shape = Penny.dims.cardShape,
-        title = { Text("Delete ${cat.name}?", style = Penny.type.title) },
+        title = { Text(stringResource(R.string.manage_category_delete_title, cat.name), style = Penny.type.title) },
         text = {
-            val what = if (count == 1) "1 expense uses" else "$count expenses use"
-            Text("$what this category. Move them to another category first, or archive it (hidden from pickers, kept in history).", style = Penny.type.body)
+            Text(pluralStringResource(R.plurals.manage_category_in_use_body, count, count), style = Penny.type.body)
         },
         confirmButton = {
             Column(horizontalAlignment = Alignment.End) {
-                TextButton(onClick = onMove) { Text("Move expenses to…", color = c.danger, style = Penny.type.bodyStrong) }
-                TextButton(onClick = onArchive) { Text("Archive instead", color = c.accent, style = Penny.type.bodyStrong) }
-                TextButton(onClick = onDismiss) { Text("Cancel", color = c.textSecondary) }
+                TextButton(onClick = onMove) { Text(stringResource(R.string.manage_move_expenses), color = c.danger, style = Penny.type.bodyStrong) }
+                TextButton(onClick = onArchive) { Text(stringResource(R.string.manage_archive_instead), color = c.accent, style = Penny.type.bodyStrong) }
+                TextButton(onClick = onDismiss) { Text(stringResource(R.string.action_cancel), color = c.textSecondary) }
             }
         },
     )
@@ -96,9 +98,9 @@ internal fun CategoryInUseDialog(cat: Category, count: Int, onMove: () -> Unit, 
 @Composable
 internal fun MoveTargetSheet(from: Category, options: List<Category>, onDismiss: () -> Unit, onPick: (Category) -> Unit) {
     val c = Penny.colors
-    PennySheet(onDismiss = onDismiss, title = "Move ${from.name} expenses to…") {
+    PennySheet(onDismiss = onDismiss, title = stringResource(R.string.manage_move_title, from.name)) {
         if (options.isEmpty()) {
-            Text("There is no other category. Create one first, or archive this one.", style = Penny.type.body, color = c.textSecondary)
+            Text(stringResource(R.string.manage_move_none), style = Penny.type.body, color = c.textSecondary)
         }
         Column(Modifier.heightIn(max = 480.dp).verticalScroll(rememberScrollState())) {
             options.forEach { cat ->

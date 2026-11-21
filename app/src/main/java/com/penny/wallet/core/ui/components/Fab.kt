@@ -1,5 +1,7 @@
 package com.penny.wallet.core.ui.components
 
+import com.penny.wallet.R
+import androidx.compose.ui.res.stringResource
 import androidx.compose.animation.core.animateFloatAsState
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
@@ -23,7 +25,7 @@ import androidx.compose.ui.unit.dp
 import com.penny.wallet.core.ui.theme.Penny
 import com.penny.wallet.core.ui.theme.glow
 
-/** Neon circle, black +, soft glow, spring scale 0.92 on press (SPEC §7). */
+/** Neon circle, black +, soft glow, spring scale 0.92 on press. */
 @Composable
 fun PennyFab(onClick: () -> Unit, modifier: Modifier = Modifier) {
     val src = remember { MutableInteractionSource() }
@@ -36,5 +38,5 @@ fun PennyFab(onClick: () -> Unit, modifier: Modifier = Modifier) {
             .clip(CircleShape).background(c.accent)
             .clickable(src, null) { haptic(HapticFeedbackType.LongPress); onClick() },
         contentAlignment = Alignment.Center,
-    ) { Icon(Icons.Rounded.Add, "Add", tint = c.onAccent, modifier = Modifier.size(32.dp)) }
+    ) { Icon(Icons.Rounded.Add, stringResource(R.string.action_add), tint = c.onAccent, modifier = Modifier.size(32.dp)) }
 }

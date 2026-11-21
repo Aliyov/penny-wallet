@@ -1,5 +1,7 @@
 package com.penny.wallet.feature.savings
 
+import com.penny.wallet.R
+import androidx.compose.ui.res.stringResource
 import com.penny.wallet.core.util.currentLocale
 import com.penny.wallet.core.util.dateText
 import androidx.compose.foundation.border
@@ -66,20 +68,19 @@ private fun GoalRing(card: GoalCard, color: Color, modifier: Modifier, stroke: I
     }
 }
 
-/** Saved / target, %, reached, deadline and monthly need. Pure display of VM-computed values. */
 @Composable
 private fun GoalDetails(card: GoalCard, color: Color) {
     val c = Penny.colors
-    Text("${money(card.balance)} / ${money(card.goal.targetCents)}", style = Penny.type.label, color = c.textSecondary, maxLines = 1)
+    Text(stringResource(R.string.savings_saved_of_target, money(card.balance), money(card.goal.targetCents)), style = Penny.type.label, color = c.textSecondary, maxLines = 1)
     Row(verticalAlignment = Alignment.CenterVertically, horizontalArrangement = Arrangement.spacedBy(8.dp)) {
         Text(Formatters.percent(card.progress, currentLocale()), style = Penny.type.bodyStrong, color = color)
-        if (card.reached) Text("Reached ✓", style = Penny.type.label, color = c.accent)
+        if (card.reached) Text(stringResource(R.string.savings_reached), style = Penny.type.label, color = c.accent)
     }
     card.goal.deadline?.let { d ->
         Text(dateText().fullDate(d), style = Penny.type.caption, color = c.textSecondary, maxLines = 1)
     }
     card.monthlyNeeded?.takeIf { it > 0 }?.let { m ->
-        Text("${money(m)}/month", style = Penny.type.caption, color = c.textPrimary, maxLines = 1)
+        Text(stringResource(R.string.savings_per_month, money(m)), style = Penny.type.caption, color = c.textPrimary, maxLines = 1)
     }
 }
 
@@ -94,7 +95,7 @@ internal fun NewGoalCard(grid: Boolean, onClick: () -> Unit) {
     ) {
         Row(verticalAlignment = Alignment.CenterVertically, horizontalArrangement = Arrangement.spacedBy(8.dp)) {
             Icon(Icons.Rounded.Add, null, tint = c.accent, modifier = Modifier.size(22.dp))
-            Text("New goal", style = Penny.type.bodyStrong, color = c.accent)
+            Text(stringResource(R.string.savings_new_goal), style = Penny.type.bodyStrong, color = c.accent)
         }
     }
 }

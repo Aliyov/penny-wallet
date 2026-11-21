@@ -1,6 +1,7 @@
 package com.penny.wallet.data.repo
 
 import androidx.room.withTransaction
+import com.penny.wallet.R
 import com.penny.wallet.data.db.PennyDatabase
 import com.penny.wallet.data.db.entities.Goal
 import com.penny.wallet.data.db.entities.Transaction
@@ -12,7 +13,11 @@ import java.time.LocalDate
 /** Snapshot to undo a goal delete: the goal and the UNSAVE rows created by the delete. */
 data class DeletedGoal(val goal: Goal, val returned: List<Transaction>, val history: List<Transaction>)
 
-class GoalRepo(private val db: PennyDatabase, private val listener: ChangeListener) {
+class GoalRepo(
+    private val db: PennyDatabase,
+    private val listener: ChangeListener,
+    private val text: (Int, String) -> String,
+) {
     private val dao = db.goals()
 
     fun observe(): Flow<List<Goal>> = dao.observeAll()
@@ -20,13 +25,13 @@ class GoalRepo(private val db: PennyDatabase, private val listener: ChangeListen
     suspend fun get(id: String) = dao.get(id)
 
     suspend fun add(name: String, icon: String, color: Long, targetCents: Long, deadline: LocalDate?): Goal {
-        require(targetCents > 0) { "Target must be greater than zero" }
+        if (targetCents <= 0) throw InvalidInputException(InvalidInputException.Reason.TARGET_NOT_POSITIVE)
         val order = (dao.getAll().maxOfOrNull { it.sortOrder } ?: -1) + 1
         return Goal(newId(), name.trim(), icon, color, targetCents, deadline, sortOrder = order, createdAt = now())
             .also { dao.upsert(it); listener.onDataChanged() }
     }
 
-    suspend fun save(g: Goal) { require(g.targetCents > 0); dao.upsert(g); listener.onDataChanged() }
+    suspend fun save(g: Goal) { if (g.targetCents <= 0) throw InvalidInputException(InvalidInputException.Reason.TARGET_NOT_POSITIVE); dao.upsert(g); listener.onDataChanged() }
 
     suspend fun reorder(idsInOrder: List<String>) {
         val byId = dao.getAll().associateBy { it.id }
@@ -35,7 +40,7 @@ class GoalRepo(private val db: PennyDatabase, private val listener: ChangeListen
     }
 
     /**
-     * Returns the goal's money to its source accounts via UNSAVE (SPEC §4), then deletes the goal.
+     * Returns the goal's money to its source accounts via UNSAVE, then deletes the goal.
      * The goal's SAVE/UNSAVE history is removed with it so no transaction points at a missing goal;
      * the account balances are unaffected because SAVE/UNSAVE are earmarks only.
      */
@@ -45,7 +50,7 @@ class GoalRepo(private val db: PennyDatabase, private val listener: ChangeListen
         val history = tdao.getForGoal(id)
         val split = MoneyCalculator.unsaveSplit(id, history)
         val returned = split.map { (acc, amt) ->
-            Transaction(newId(), TxType.UNSAVE, amt, acc, goalId = id, date = today, note = "Returned from ${g.name}", createdAt = now())
+            Transaction(newId(), TxType.UNSAVE, amt, acc, goalId = id, date = today, note = text(R.string.data_note_returned_from, g.name), createdAt = now())
         }
         // Net effect on every account's allocation equals adding `returned`; we drop the whole goal ledger.
         tdao.deleteIds(history.map { it.id })

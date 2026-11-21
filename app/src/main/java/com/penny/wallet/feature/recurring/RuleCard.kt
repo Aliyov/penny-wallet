@@ -1,5 +1,8 @@
 package com.penny.wallet.feature.recurring
 
+import com.penny.wallet.core.util.currentLocale
+import com.penny.wallet.R
+import androidx.compose.ui.res.stringResource
 import com.penny.wallet.core.util.dateText
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.background
@@ -44,7 +47,7 @@ import com.penny.wallet.core.ui.theme.Penny
 import java.time.DayOfWeek
 import java.time.Month
 import java.time.format.TextStyle
-import java.util.Locale
+import java.time.LocalDate
 
 @OptIn(ExperimentalFoundationApi::class)
 @Composable
@@ -74,31 +77,31 @@ internal fun RuleCard(
             row.account?.let { Text(it.name, style = Penny.type.caption, color = c.textSecondary) }
             Row(Modifier.padding(top = 6.dp), verticalAlignment = Alignment.CenterVertically, horizontalArrangement = Arrangement.spacedBy(6.dp)) {
                 Text(
-                    if (paused) "Paused" else "Next: ${dateText().day(r.nextDueDate)}",
+                    if (paused) stringResource(R.string.recurring_paused) else stringResource(R.string.recurring_next, dateText().day(r.nextDueDate)),
                     style = Penny.type.label, color = c.textPrimary, modifier = Modifier.weight(1f, fill = false),
                 )
                 when (row.state) {
-                    DueState.OVERDUE -> Pill("Overdue", c.danger)
-                    DueState.DUE_TODAY -> Pill("Due today", c.warning)
-                    DueState.PAUSED -> Pill("Paused", c.textSecondary)
+                    DueState.OVERDUE -> Pill(stringResource(R.string.recurring_overdue), c.danger)
+                    DueState.DUE_TODAY -> Pill(stringResource(R.string.recurring_due_today), c.warning)
+                    DueState.PAUSED -> Pill(stringResource(R.string.recurring_paused), c.textSecondary)
                     else -> Unit
                 }
-                if (r.autoPay && !paused) Pill("Auto-pay", c.accent)
+                if (r.autoPay && !paused) Pill(stringResource(R.string.recurring_auto_pay), c.accent)
             }
         }
         Column(horizontalAlignment = Alignment.End) {
             Box {
                 Icon(
-                    Icons.Rounded.MoreVert, "More", tint = c.textSecondary,
+                    Icons.Rounded.MoreVert, stringResource(R.string.recurring_more), tint = c.textSecondary,
                     modifier = Modifier.padding(start = 4.dp).clip(RoundedCornerShape(50)).clickable { menu = true }.padding(4.dp).size(20.dp),
                 )
                 DropdownMenu(expanded = menu, onDismissRequest = { menu = false }, containerColor = c.surface2) {
-                    DropdownMenuItem(text = { Text("Edit", color = c.textPrimary) }, onClick = { menu = false; onEdit() })
-                    DropdownMenuItem(text = { Text(if (r.active) "Pause" else "Resume", color = c.textPrimary) }, onClick = { menu = false; onToggleActive() })
-                    DropdownMenuItem(text = { Text("Delete", color = c.danger) }, onClick = { menu = false; onDelete() })
+                    DropdownMenuItem(text = { Text(stringResource(R.string.action_edit), color = c.textPrimary) }, onClick = { menu = false; onEdit() })
+                    DropdownMenuItem(text = { Text(stringResource(if (r.active) R.string.recurring_pause else R.string.recurring_resume), color = c.textPrimary) }, onClick = { menu = false; onToggleActive() })
+                    DropdownMenuItem(text = { Text(stringResource(R.string.action_delete), color = c.danger) }, onClick = { menu = false; onDelete() })
                 }
             }
-            if (!paused) SmallButton("Pay now", Modifier.padding(top = 8.dp), onPayNow)
+            if (!paused) SmallButton(stringResource(R.string.recurring_pay_now), Modifier.padding(top = 8.dp), onPayNow)
         }
     }
 }
@@ -122,23 +125,21 @@ private fun SmallButton(text: String, modifier: Modifier, onClick: () -> Unit) {
     )
 }
 
-internal fun ordinal(n: Int): String = n.toString() + when {
-    n % 100 in 11..13 -> "th"
-    n % 10 == 1 -> "st"
-    n % 10 == 2 -> "nd"
-    n % 10 == 3 -> "rd"
-    else -> "th"
+private fun anchorDate(month: Int, day: Int): LocalDate {
+    val m = Month.of(month.coerceIn(1, 12))
+    // Leap year so 29 Feb is a valid date.
+    return LocalDate.of(2000, m, day.coerceIn(1, m.maxLength()))
 }
 
-internal fun weekdayName(iso: Int, style: TextStyle = TextStyle.FULL): String =
-    DayOfWeek.of(iso.coerceIn(1, 7)).getDisplayName(style, Locale.ENGLISH)
-
-internal fun monthName(m: Int, style: TextStyle = TextStyle.SHORT): String =
-    Month.of(m.coerceIn(1, 12)).getDisplayName(style, Locale.ENGLISH)
-
-/** "Every month on the 14th" / "Every Friday" / "Every year on 3 Mar". */
-internal fun frequencyText(r: RecurringExpense): String = when (r.frequency) {
-    Frequency.WEEKLY -> "Every ${weekdayName(r.dayOfWeek ?: r.nextDueDate.dayOfWeek.value)}"
-    Frequency.MONTHLY -> "Every month on the ${ordinal(r.dayOfMonth ?: r.nextDueDate.dayOfMonth)}"
-    Frequency.YEARLY -> "Every year on ${r.dayOfMonth ?: r.nextDueDate.dayOfMonth} ${monthName(r.month ?: r.nextDueDate.monthValue)}"
+@Composable
+internal fun frequencyText(r: RecurringExpense): String {
+    val day = r.dayOfMonth ?: r.nextDueDate.dayOfMonth
+    return when (r.frequency) {
+        Frequency.WEEKLY -> stringResource(
+            R.string.recurring_every_weekday,
+            DayOfWeek.of((r.dayOfWeek ?: r.nextDueDate.dayOfWeek.value).coerceIn(1, 7)).getDisplayName(TextStyle.FULL, currentLocale()),
+        )
+        Frequency.MONTHLY -> stringResource(R.string.recurring_every_month_on, day)
+        Frequency.YEARLY -> stringResource(R.string.recurring_every_year_on, dateText().shortDate(anchorDate(r.month ?: r.nextDueDate.monthValue, day)))
+    }
 }

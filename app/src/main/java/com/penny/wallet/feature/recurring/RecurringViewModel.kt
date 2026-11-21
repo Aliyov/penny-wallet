@@ -1,5 +1,6 @@
 package com.penny.wallet.feature.recurring
 
+import com.penny.wallet.R
 import kotlinx.coroutines.flow.flowOn
 import kotlinx.coroutines.Dispatchers
 import androidx.lifecycle.ViewModel
@@ -60,7 +61,7 @@ class RecurringViewModel(private val c: AppContainer) : ViewModel() {
         val acc = accounts.associateBy { it.id }
         val rows = rules.map { RuleRow(it, Recurrence.state(it, today), cat[it.categoryId], acc[it.accountId]) }
             .sortedWith(compareBy<RuleRow> { it.state == DueState.PAUSED }.thenBy { it.rule.nextDueDate })
-        // Normalised monthly cost of active rules (weekly ×52/12, yearly /12), for the header.
+        // Weekly ×52/12, yearly /12.
         val monthly = rules.filter { it.active }.sumOf {
             when (it.frequency) { Frequency.MONTHLY -> it.amountCents; Frequency.WEEKLY -> it.amountCents * 52 / 12; Frequency.YEARLY -> it.amountCents / 12 }
         }
@@ -73,13 +74,13 @@ class RecurringViewModel(private val c: AppContainer) : ViewModel() {
      */
     fun save(d: RuleDraft, done: (String?, Boolean) -> Unit) = viewModelScope.launch {
         val err = when {
-            d.name.isBlank() -> "Give it a name"
-            d.amountCents <= 0 -> "Enter an amount"
-            d.categoryId == null -> "Pick a category"
-            d.accountId == null -> "Pick an account"
+            d.name.isBlank() -> R.string.recurring_error_name
+            d.amountCents <= 0 -> R.string.recurring_error_amount
+            d.categoryId == null -> R.string.recurring_error_category
+            d.accountId == null -> R.string.recurring_error_account
             else -> null
         }
-        if (err != null) return@launch done(err, false)
+        if (err != null) return@launch done(c.context.getString(err), false)
         val old = d.id?.let { c.recurring.get(it) }
         val rule = RecurringExpense(
             id = d.id ?: UUID.randomUUID().toString(), name = d.name.trim(), amountCents = d.amountCents,
@@ -112,7 +113,7 @@ class RecurringViewModel(private val c: AppContainer) : ViewModel() {
     }
     fun restore(r: RecurringExpense) = viewModelScope.launch { c.recurring.restore(r) }
 
-    /** "Pay now": pays the current occurrence dated today if it's early, or on its due date otherwise. */
+    /** Pays the current occurrence dated today if it's early, or on its due date otherwise. */
     fun payNow(r: RecurringExpense, done: (Payment?) -> Unit) = viewModelScope.launch {
         val today = LocalDate.now()
         val p = c.recurring.pay(r.id, expectedDue = r.nextDueDate, paidOn = if (r.nextDueDate.isAfter(today)) today else r.nextDueDate)

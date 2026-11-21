@@ -1,5 +1,8 @@
 package com.penny.wallet.feature.savings
 
+import com.penny.wallet.R
+import androidx.compose.ui.res.pluralStringResource
+import androidx.compose.ui.res.stringResource
 import androidx.compose.animation.animateContentSize
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
@@ -29,7 +32,6 @@ import com.penny.wallet.core.ui.components.money
 import com.penny.wallet.core.ui.pennyViewModel
 import com.penny.wallet.core.ui.theme.Penny
 
-/** Savings tab (SPEC §8): total saved hero, goal cards grid / list, "+ New goal". */
 @Composable
 fun SavingsScreen(onOpenGoal: (String) -> Unit) {
     val vm = pennyViewModel { SavingsViewModel(it) }
@@ -69,12 +71,12 @@ private fun SavingsHero(state: SavingsState) {
             .then(if (Penny.motion.enabled) Modifier.animateContentSize() else Modifier),
         horizontalAlignment = Alignment.CenterHorizontally,
     ) {
-        Text("Total saved", style = Penny.type.label, color = c.textSecondary)
+        Text(stringResource(R.string.savings_total_saved), style = Penny.type.label, color = c.textSecondary)
         AnimatedAmount(state.totalSaved, Penny.type.hero, c.accent)
         val n = state.goals.size
         if (n > 0) Text(
-            "of ${money(state.totalTarget)} across $n ${if (n == 1) "goal" else "goals"}",
+            pluralStringResource(R.plurals.savings_of_target_across, n, money(state.totalTarget), n),
             style = Penny.type.label, color = c.textSecondary,
-        ) else if (!state.loading) Text("Create a goal to start saving", style = Penny.type.label, color = c.textSecondary)
+        ) else if (!state.loading) Text(stringResource(R.string.savings_empty_hint), style = Penny.type.label, color = c.textSecondary)
     }
 }

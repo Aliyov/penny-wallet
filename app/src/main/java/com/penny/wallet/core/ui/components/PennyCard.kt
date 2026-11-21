@@ -16,7 +16,7 @@ import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import com.penny.wallet.core.ui.theme.Penny
 
-/** SPEC §7 card: Surface1, hairline border, faint top-left gradient, corner from prefs. */
+/** Card: Surface1, hairline border, faint top-left gradient, corner from prefs. */
 @Composable
 fun PennyCard(
     modifier: Modifier = Modifier,

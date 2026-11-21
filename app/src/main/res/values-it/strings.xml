@@ -1,0 +1,76 @@
+<resources>
+    <string name="widget_balance_desc">Disponibile da spendere e spese di questo mese</string>
+    <string name="widget_quick_desc">Aggiungi una spesa con un tocco</string>
+    <string name="widget_balance_label">Saldo Penny</string>
+    <string name="widget_quick_label">Aggiunta rapida Penny</string>
+    <string name="widget_available">Disponibile</string>
+    <string name="widget_spent_month">Speso questo mese %1$s</string>
+    <string name="widget_next">Prossima: %1$s · %2$s</string>
+    <string name="widget_add_expense">Aggiungi spesa</string>
+
+    <string name="date_today">Oggi</string>
+    <string name="date_yesterday">Ieri</string>
+    <string name="date_tomorrow">Domani</string>
+    <string name="date_today_lower">oggi</string>
+    <string name="date_yesterday_lower">ieri</string>
+    <plurals name="date_days_ago">
+        <item quantity="one">%d giorno fa</item>
+        <item quantity="other">%d giorni fa</item>
+        <item quantity="many">%d giorni fa</item>
+    </plurals>
+
+    <string name="category_groceries">Spesa</string>
+    <string name="category_rent">Affitto</string>
+    <string name="category_eating_out">Mangiare fuori</string>
+    <string name="category_transport">Trasporti</string>
+    <string name="category_subscriptions">Abbonamenti</string>
+    <string name="category_shopping">Shopping</string>
+    <string name="category_health">Salute</string>
+    <string name="category_fun">Svago</string>
+
+    <string name="sample_bank">Banca</string>
+    <string name="sample_cash">Contanti</string>
+    <string name="sample_goal_phone">Telefono nuovo</string>
+    <string name="sample_goal_vacation">Vacanza</string>
+    <string name="sample_phone_credit">Piano telefonico</string>
+    <string name="sample_streaming">Streaming</string>
+    <string name="sample_note_supermarket">Supermercato</string>
+    <string name="sample_note_weekly_shop">Spesa settimanale</string>
+    <string name="sample_note_bakery">Panetteria</string>
+    <string name="sample_note_market">Mercato</string>
+    <string name="sample_note_lunch">Pranzo</string>
+    <string name="sample_note_coffee">Caffè e dolce</string>
+    <string name="sample_note_dinner">Cena fuori</string>
+    <string name="sample_note_fuel">Carburante</string>
+    <string name="sample_note_train">Biglietto del treno</string>
+    <string name="sample_note_cinema">Cinema</string>
+    <string name="sample_note_concert">Concerto</string>
+    <string name="sample_note_starting_cash">Contanti iniziali</string>
+    <string name="sample_note_salary">Stipendio</string>
+    <string name="sample_note_atm">Bancomat</string>
+
+    <string name="currency_title">Valuta</string>
+    <string name="currency_search">Cerca valuta</string>
+    <string name="currency_change_note">Cambiare la valuta cambia solo come vengono mostrati gli importi. Gli importi già inseriti non vengono convertiti.</string>
+    <string name="a11y_selected">Selezionato</string>
+
+    <string name="welcome_title">Aggiungi il tuo primo conto</string>
+    <string name="welcome_body">Parti da dove sono i tuoi soldi, per esempio il conto in banca o i contanti, e quanto c\'è adesso.</string>
+    <string name="welcome_add_account">Aggiungi conto</string>
+    <string name="welcome_try_sample">Prova con dati di esempio</string>
+    <string name="sample_banner">Stai guardando dati di esempio</string>
+    <string name="sample_remove">Rimuovi</string>
+    <string name="sample_remove_title">Rimuovere i dati di esempio?</string>
+    <string name="sample_remove_body">Conti, obiettivi e movimenti di esempio vengono rimossi. Anche ciò che hai aggiunto a un conto o obiettivo di esempio viene rimosso.</string>
+
+    <string name="theme_title">Tema</string>
+    <string name="theme_system">Sistema</string>
+    <string name="theme_light">Chiaro</string>
+    <string name="theme_dark">Scuro</string>
+    <string name="theme_pure_black">Nero puro</string>
+    <string name="theme_pure_black_hint">Tema scuro con sfondo nero, fa risparmiare batteria sugli schermi OLED</string>
+    <string name="format_auto">Automatico</string>
+    <string name="symbol_position">Simbolo della valuta</string>
+    <string name="symbol_before">Prima</string>
+    <string name="symbol_after">Dopo</string>
+</resources>

@@ -26,8 +26,8 @@ class AppContainer(val context: Context) {
 
     val accounts = AccountRepo(db, listener)
     val categories = CategoryRepo(db, listener)
-    val goals = GoalRepo(db, listener)
-    val transactions = TransactionRepo(db, listener)
+    val goals = GoalRepo(db, listener) { id, arg -> context.getString(id, arg) }
+    val transactions = TransactionRepo(db, listener, context::getString)
     val recurring = RecurringRepo(db, listener)
     val backup = BackupManager(context, db, settings, listener)
     val receipts = ReceiptReader(context)

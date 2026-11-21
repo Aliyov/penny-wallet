@@ -38,6 +38,8 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import androidx.compose.ui.res.stringResource
+import com.penny.wallet.R
 import com.penny.wallet.core.money.Formatters
 import com.penny.wallet.core.util.currentLocale
 import com.penny.wallet.domain.receipt.ReceiptResult
@@ -58,7 +60,9 @@ fun rememberReceiptLaunchers(vm: QuickAddViewModel): ReceiptLaunchers {
     val gallery = rememberLauncherForActivityResult(ActivityResultContracts.PickVisualMedia()) { uri ->
         if (uri != null) vm.readReceipt(uri)
     }
-    return remember(vm, camera, gallery) {
+    val noCamera = stringResource(R.string.add_scan_no_camera)
+    val noGallery = stringResource(R.string.add_scan_no_gallery)
+    return remember(vm, camera, gallery, noCamera, noGallery) {
         ReceiptLaunchers(
             camera = {
                 try {
@@ -66,14 +70,14 @@ fun rememberReceiptLaunchers(vm: QuickAddViewModel): ReceiptLaunchers {
                     pending = uri
                     camera.launch(uri)
                 } catch (_: ActivityNotFoundException) {
-                    vm.scanFailed("No camera app found. Choose a photo from the gallery instead.")
+                    vm.scanFailed(noCamera)
                 }
             },
             gallery = {
                 try {
                     gallery.launch(PickVisualMediaRequest(ActivityResultContracts.PickVisualMedia.ImageOnly))
                 } catch (_: ActivityNotFoundException) {
-                    vm.scanFailed("No gallery app found.")
+                    vm.scanFailed(noGallery)
                 }
             },
         )
@@ -86,15 +90,15 @@ internal fun ReceiptChip(launchers: ReceiptLaunchers) {
     val c = Penny.colors
     var open by remember { mutableStateOf(false) }
     Box {
-        TintChip("Scan receipt", false, c.accent, { open = true }, Icons.Rounded.Receipt)
+        TintChip(stringResource(R.string.add_scan_receipt), false, c.accent, { open = true }, Icons.Rounded.Receipt)
         DropdownMenu(open, { open = false }, containerColor = c.surface2) {
             DropdownMenuItem(
-                text = { Text("Take photo", style = Penny.type.body, color = c.textPrimary) },
+                text = { Text(stringResource(R.string.add_take_photo), style = Penny.type.body, color = c.textPrimary) },
                 leadingIcon = { Icon(Icons.Rounded.PhotoCamera, null, tint = c.textSecondary) },
                 onClick = { open = false; launchers.camera() },
             )
             DropdownMenuItem(
-                text = { Text("Choose from gallery", style = Penny.type.body, color = c.textPrimary) },
+                text = { Text(stringResource(R.string.add_choose_gallery), style = Penny.type.body, color = c.textPrimary) },
                 leadingIcon = { Icon(Icons.Rounded.PhotoLibrary, null, tint = c.textSecondary) },
                 onClick = { open = false; launchers.gallery() },
             )
@@ -108,16 +112,16 @@ fun ReceiptScanDialog(vm: QuickAddViewModel, launchers: ReceiptLaunchers) {
     val state by vm.scan.collectAsStateWithLifecycle()
     when (val s = state) {
         ScanState.Idle -> Unit
-        ScanState.Reading -> ScanAlert("Reading receipt…", onDismiss = vm::closeScan, body = {
+        ScanState.Reading -> ScanAlert(stringResource(R.string.add_scan_reading), onDismiss = vm::closeScan, body = {
             Row(verticalAlignment = Alignment.CenterVertically, horizontalArrangement = Arrangement.spacedBy(12.dp)) {
                 CircularProgressIndicator(color = Penny.colors.accent, strokeWidth = 2.dp, modifier = Modifier.size(22.dp))
-                Text("Looking for the total", style = Penny.type.body)
+                Text(stringResource(R.string.add_scan_looking), style = Penny.type.body)
             }
-        }) { DialogButton("Cancel", vm::closeScan) }
-        ScanState.NothingFound -> ScanAlert("No amount found", onDismiss = vm::closeScan, body = {
-            Text("Make sure the whole receipt is in the photo, flat and well lit.", style = Penny.type.body)
+        }) { DialogButton(stringResource(R.string.action_cancel), vm::closeScan) }
+        ScanState.NothingFound -> ScanAlert(stringResource(R.string.add_scan_nothing_title), onDismiss = vm::closeScan, body = {
+            Text(stringResource(R.string.add_scan_nothing_body), style = Penny.type.body)
         }) { RetryButtons(vm, launchers) }
-        is ScanState.Failed -> ScanAlert("Couldn't scan", onDismiss = vm::closeScan, body = {
+        is ScanState.Failed -> ScanAlert(stringResource(R.string.add_scan_failed_title), onDismiss = vm::closeScan, body = {
             Text(s.message, style = Penny.type.body)
         }) { RetryButtons(vm, launchers) }
         is ScanState.Found -> ConfirmAmount(s.result, vm, launchers)
@@ -135,16 +139,17 @@ private fun ConfirmAmount(result: ReceiptResult, vm: QuickAddViewModel, launcher
     var text by remember(result) { mutableStateOf(editable(result.totalCents ?: 0L)) }
     val cents = Formatters.parseCents(text, digits)?.takeIf { it in 1..MAX_CENTS }
     ScanAlert(
-        title = if (cents != null) "Add ${money(cents, ignorePrivacy = true)} to expense?" else "Add to expense?",
+        title = if (cents != null) stringResource(R.string.add_scan_confirm_amount, money(cents, ignorePrivacy = true))
+        else stringResource(R.string.add_scan_confirm),
         onDismiss = vm::closeScan,
         body = {
             Column(verticalArrangement = Arrangement.spacedBy(10.dp)) {
                 if (!result.confident) {
-                    Text("No \"total\" line found, so this is the largest amount. Please check it.", style = Penny.type.caption, color = c.textSecondary)
+                    Text(stringResource(R.string.add_scan_not_confident), style = Penny.type.caption, color = c.textSecondary)
                 }
                 OutlinedTextField(
                     text, { text = it.filter { ch -> ch.isDigit() || ch == ',' || ch == '.' }.take(12) },
-                    singleLine = true, label = { Text("Amount") }, isError = cents == null,
+                    singleLine = true, label = { Text(stringResource(R.string.label_amount)) }, isError = cents == null,
                     keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Decimal),
                     textStyle = Penny.type.title.copy(color = c.textPrimary),
                     colors = OutlinedTextFieldDefaults.colors(
@@ -156,7 +161,7 @@ private fun ConfirmAmount(result: ReceiptResult, vm: QuickAddViewModel, launcher
                 )
                 val others = result.candidates
                 if (others.size > 1) {
-                    Text("Other amounts on the receipt", style = Penny.type.caption, color = c.textSecondary)
+                    Text(stringResource(R.string.add_scan_other_amounts), style = Penny.type.caption, color = c.textSecondary)
                     Row(Modifier.horizontalScroll(rememberScrollState()), horizontalArrangement = Arrangement.spacedBy(8.dp)) {
                         others.forEach { a ->
                             TintChip(money(a, ignorePrivacy = true), a == cents, c.accent, { text = editable(a) })
@@ -166,17 +171,17 @@ private fun ConfirmAmount(result: ReceiptResult, vm: QuickAddViewModel, launcher
             }
         },
     ) {
-        DialogButton("Decline", vm::closeScan, muted = true)
-        DialogButton("Retake", launchers.camera, muted = true)
-        DialogButton("Accept", { cents?.let(vm::acceptReceipt) }, enabled = cents != null)
+        DialogButton(stringResource(R.string.add_scan_decline), vm::closeScan, muted = true)
+        DialogButton(stringResource(R.string.add_scan_retake), launchers.camera, muted = true)
+        DialogButton(stringResource(R.string.add_scan_accept), { cents?.let(vm::acceptReceipt) }, enabled = cents != null)
     }
 }
 
 @Composable
 private fun RetryButtons(vm: QuickAddViewModel, launchers: ReceiptLaunchers) {
-    DialogButton("Close", vm::closeScan, muted = true)
-    DialogButton("Gallery", launchers.gallery, muted = true)
-    DialogButton("Retake", launchers.camera)
+    DialogButton(stringResource(R.string.action_close), vm::closeScan, muted = true)
+    DialogButton(stringResource(R.string.add_scan_gallery), launchers.gallery, muted = true)
+    DialogButton(stringResource(R.string.add_scan_retake), launchers.camera)
 }
 
 @Composable

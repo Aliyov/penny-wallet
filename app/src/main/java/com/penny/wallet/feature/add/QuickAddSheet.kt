@@ -27,6 +27,8 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.penny.wallet.data.db.entities.Transaction
+import androidx.compose.ui.res.stringResource
+import com.penny.wallet.R
 import com.penny.wallet.data.db.entities.TxType
 import com.penny.wallet.data.prefs.QuickType
 import com.penny.wallet.core.ui.components.Numpad
@@ -38,9 +40,9 @@ import com.penny.wallet.core.ui.components.rememberHaptic
 import com.penny.wallet.core.ui.theme.Penny
 
 private val TYPES = listOf(QuickType.EXPENSE, QuickType.INCOME, QuickType.SAVE, QuickType.TRANSFER)
-private val LABELS = listOf("Expense", "Income", "Save", "Transfer")
+private val LABELS = listOf(R.string.type_expense, R.string.type_income, R.string.type_save, R.string.type_transfer)
 
-/** Quick add (+) sheet, SPEC §8: type switch, huge amount, context chips, optional row, numpad. */
+/** Quick add (+) sheet: type switch, huge amount, context chips, optional row, numpad. */
 @Composable
 fun QuickAddSheet(
     vm: QuickAddViewModel,
@@ -73,12 +75,12 @@ fun QuickAddSheet(
 
     PennySheet(onDismiss = onDismiss) {
         if (editing == null) {
-            SegmentedControl(LABELS, TYPES.indexOf(form.type).coerceAtLeast(0), { i -> vm.edit { it.copy(type = TYPES[i]) } })
+            SegmentedControl(LABELS.map { stringResource(it) }, TYPES.indexOf(form.type).coerceAtLeast(0), { i -> vm.edit { it.copy(type = TYPES[i]) } })
         } else {
             Row(Modifier.fillMaxWidth(), verticalAlignment = Alignment.CenterVertically) {
-                Text("Edit", style = Penny.type.title, color = c.textPrimary, modifier = Modifier.weight(1f))
+                Text(stringResource(R.string.action_edit), style = Penny.type.title, color = c.textPrimary, modifier = Modifier.weight(1f))
                 TextButton(onClick = { vm.deleteEditing { t -> if (t != null) onDeleted(t) } }) {
-                    Text("Delete", style = Penny.type.bodyStrong, color = c.danger)
+                    Text(stringResource(R.string.action_delete), style = Penny.type.bodyStrong, color = c.danger)
                 }
             }
         }
@@ -109,7 +111,7 @@ fun QuickAddSheet(
         // Always visible: with save-on-chip-tap a category tap is just a shortcut. Hiding the button left the
         // user stuck when they picked the category before typing the amount.
         Spacer(Modifier.height(10.dp))
-        PennyButton(if (editing != null) "Save changes" else "Save", { vm.save(handle) }, Modifier.fillMaxWidth(), enabled = cents > 0)
+        PennyButton(stringResource(if (editing != null) R.string.add_save_changes else R.string.action_save), { vm.save(handle) }, Modifier.fillMaxWidth(), enabled = cents > 0)
     }
 }
 
@@ -124,13 +126,13 @@ private fun ContextRow(form: QuickForm, data: QuickData, vm: QuickAddViewModel, 
             val acc = data.accounts.firstOrNull { it.id == form.accountId }
             if (acc != null) {
                 Text(
-                    "Available in ${acc.name}: ${money(data.available[acc.id] ?: 0L)}",
+                    stringResource(R.string.add_available_in, acc.name, money(data.available[acc.id] ?: 0L)),
                     style = Penny.type.caption, color = c.textSecondary,
                 )
             }
         }
         QuickType.TRANSFER -> AccountChips(data.accounts.filter { it.id != form.accountId }, form.toAccountId,
-            { id -> vm.edit { it.copy(toAccountId = id) } }, "To")
+            { id -> vm.edit { it.copy(toAccountId = id) } }, stringResource(R.string.add_to))
     }
 }
 

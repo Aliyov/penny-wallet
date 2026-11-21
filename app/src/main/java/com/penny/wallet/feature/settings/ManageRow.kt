@@ -21,11 +21,12 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextOverflow
+import com.penny.wallet.R
 import androidx.compose.ui.unit.dp
 import com.penny.wallet.core.ui.components.IconBadge
 import com.penny.wallet.core.ui.components.PennyCard
-
 import com.penny.wallet.core.ui.theme.Penny
 
 /** List row for categories / accounts: badge, title, subtitle, trailing slot, optional drag handle. */
@@ -52,7 +53,7 @@ internal fun ManageRow(
             trailing?.invoke()
             if (handle != null) {
                 Box(handle.padding(start = 4.dp).size(40.dp), contentAlignment = Alignment.Center) {
-                    Icon(Icons.Rounded.DragHandle, "Drag to reorder", tint = if (dragging) color else c.textSecondary)
+                    Icon(Icons.Rounded.DragHandle, stringResource(R.string.manage_drag_handle), tint = if (dragging) color else c.textSecondary)
                 }
             }
         }
@@ -61,5 +62,5 @@ internal fun ManageRow(
 
 @Composable
 internal fun UnarchiveButton(onClick: () -> Unit) {
-    TextButton(onClick = onClick) { Text("Unarchive", style = Penny.type.label, color = Penny.colors.accent) }
+    TextButton(onClick = onClick) { Text(stringResource(R.string.manage_unarchive), style = Penny.type.label, color = Penny.colors.accent) }
 }

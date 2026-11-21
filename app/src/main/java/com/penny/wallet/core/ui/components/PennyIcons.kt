@@ -15,7 +15,6 @@ import androidx.compose.ui.graphics.vector.ImageVector
 object PennyIcons {
 
     val all: List<Pair<String, ImageVector>> = listOf(
-        // Money / accounts
         "bank" to Icons.Rounded.AccountBalance,
         "cash" to Icons.Rounded.Payments,
         "card" to Icons.Rounded.CreditCard,
@@ -32,7 +31,6 @@ object PennyIcons {
         "tax" to Icons.AutoMirrored.Rounded.ReceiptLong,
         "insurance" to Icons.Rounded.Shield,
         "diamond" to Icons.Rounded.Diamond,
-        // Home & bills
         "home" to Icons.Rounded.Home,
         "rent" to Icons.Rounded.Apartment,
         "key" to Icons.Rounded.Key,
@@ -57,7 +55,6 @@ object PennyIcons {
         "cleaning" to Icons.Rounded.CleaningServices,
         "laundry" to Icons.Rounded.LocalLaundryService,
         "garden" to Icons.Rounded.Yard,
-        // Food & drink
         "groceries" to Icons.Rounded.LocalGroceryStore,
         "restaurant" to Icons.Rounded.Restaurant,
         "dinner" to Icons.Rounded.DinnerDining,
@@ -69,7 +66,6 @@ object PennyIcons {
         "wine" to Icons.Rounded.WineBar,
         "icecream" to Icons.Rounded.Icecream,
         "cake" to Icons.Rounded.Cake,
-        // Transport & travel
         "car" to Icons.Rounded.DirectionsCar,
         "fuel" to Icons.Rounded.LocalGasStation,
         "parking" to Icons.Rounded.LocalParking,
@@ -84,7 +80,6 @@ object PennyIcons {
         "hotel" to Icons.Rounded.Hotel,
         "hiking" to Icons.Rounded.Hiking,
         "shipping" to Icons.Rounded.LocalShipping,
-        // Shopping
         "shopping" to Icons.Rounded.ShoppingBag,
         "cart" to Icons.Rounded.ShoppingCart,
         "store" to Icons.Rounded.Storefront,
@@ -93,7 +88,6 @@ object PennyIcons {
         "haircut" to Icons.Rounded.Brush,
         "gift" to Icons.Rounded.CardGiftcard,
         "camera" to Icons.Rounded.PhotoCamera,
-        // Health & life
         "health" to Icons.Rounded.Favorite,
         "pharmacy" to Icons.Rounded.LocalPharmacy,
         "medication" to Icons.Rounded.Medication,
@@ -107,7 +101,6 @@ object PennyIcons {
         "book" to Icons.AutoMirrored.Rounded.MenuBook,
         "charity" to Icons.Rounded.VolunteerActivism,
         "smoking" to Icons.Rounded.SmokingRooms,
-        // Fun
         "music" to Icons.Rounded.MusicNote,
         "movie" to Icons.Rounded.Movie,
         "cinema" to Icons.Rounded.Theaters,
@@ -116,7 +109,6 @@ object PennyIcons {
         "party" to Icons.Rounded.Celebration,
         "park" to Icons.Rounded.Park,
         "star" to Icons.Rounded.Star,
-        // Misc
         "other" to Icons.Rounded.Category,
         "more" to Icons.Rounded.MoreHoriz,
         "transfer" to Icons.Rounded.SwapHoriz,

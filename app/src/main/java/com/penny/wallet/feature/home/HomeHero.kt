@@ -21,22 +21,24 @@ import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.res.stringResource
+import com.penny.wallet.R
 import com.penny.wallet.data.prefs.HeroMetric
 import com.penny.wallet.core.ui.components.AnimatedAmount
 import com.penny.wallet.core.ui.components.money
 import com.penny.wallet.core.ui.theme.Penny
 import kotlin.math.hypot
 
-/** Hero number with radial accent glow and optional HUD grid (SPEC §7, §7a Home). */
+/** Hero number with radial accent glow and optional HUD grid. */
 @Composable
 fun HomeHero(state: HomeState, modifier: Modifier = Modifier) {
     val c = Penny.colors
     val prefs = Penny.prefs
     val s = state.summary
     val (label, cents) = when (prefs.heroMetric) {
-        HeroMetric.AVAILABLE -> "Available to spend" to s.availableToSpend
-        HeroMetric.TOTAL -> "Total balance" to s.totalBalance
-        HeroMetric.SPENT_MONTH -> "Spent this month" to state.spentThisMonth
+        HeroMetric.AVAILABLE -> stringResource(R.string.home_available_to_spend) to s.availableToSpend
+        HeroMetric.TOTAL -> stringResource(R.string.home_total_balance) to s.totalBalance
+        HeroMetric.SPENT_MONTH -> stringResource(R.string.home_spent_this_month) to state.spentThisMonth
     }
     val color = when {
         prefs.heroMetric == HeroMetric.AVAILABLE && s.availableToSpend < 0 -> c.danger
@@ -46,16 +48,16 @@ fun HomeHero(state: HomeState, modifier: Modifier = Modifier) {
     Box(modifier.fillMaxWidth()) {
         HeroBackdrop(Modifier.matchParentSize(), glowColor = color, grid = prefs.hudGrid)
         Column(Modifier.fillMaxWidth().padding(top = 8.dp, bottom = 20.dp).animateContentSize(sizeSpec())) {
-            Text("Penny", style = Penny.type.bodyStrong, color = c.accent)
+            Text(stringResource(R.string.home_brand), style = Penny.type.bodyStrong, color = c.accent)
             Spacer(Modifier.height(28.dp))
             Text(label, style = Penny.type.caption, color = c.textSecondary)
             Spacer(Modifier.height(4.dp))
             AnimatedAmount(cents, Penny.type.hero, color)
             Spacer(Modifier.height(6.dp))
             Row(horizontalArrangement = Arrangement.spacedBy(6.dp), verticalAlignment = Alignment.CenterVertically) {
-                Text("${money(s.totalBalance)} total", style = Penny.type.label, color = c.textSecondary)
+                Text(stringResource(R.string.home_hero_total, money(s.totalBalance)), style = Penny.type.label, color = c.textSecondary)
                 Text("·", style = Penny.type.label, color = c.textSecondary)
-                Text("${money(s.totalSaved)} saved", style = Penny.type.label, color = c.textSecondary)
+                Text(stringResource(R.string.home_hero_saved, money(s.totalSaved)), style = Penny.type.label, color = c.textSecondary)
             }
         }
     }

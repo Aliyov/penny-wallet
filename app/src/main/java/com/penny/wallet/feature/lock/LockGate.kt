@@ -27,6 +27,8 @@ import androidx.compose.ui.unit.dp
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.FragmentActivity
 import com.penny.wallet.container
+import androidx.compose.ui.res.stringResource
+import com.penny.wallet.R
 import com.penny.wallet.core.ui.components.PennyButton
 import com.penny.wallet.core.ui.theme.Penny
 import com.penny.wallet.core.ui.theme.glow
@@ -41,7 +43,7 @@ fun promptUnlock(activity: FragmentActivity, onSuccess: () -> Unit) {
     val prompt = BiometricPrompt(activity, ContextCompat.getMainExecutor(activity), object : BiometricPrompt.AuthenticationCallback() {
         override fun onAuthenticationSucceeded(result: BiometricPrompt.AuthenticationResult) = onSuccess()
     })
-    prompt.authenticate(BiometricPrompt.PromptInfo.Builder().setTitle("Unlock Penny Wallet").setAllowedAuthenticators(AUTH).build())
+    prompt.authenticate(BiometricPrompt.PromptInfo.Builder().setTitle(activity.getString(R.string.lock_prompt_title)).setAllowedAuthenticators(AUTH).build())
 }
 
 /** Covers the app while locked. If the phone has no lock method at all, it never locks the user out. */
@@ -69,9 +71,9 @@ fun LockGate(content: @Composable () -> Unit) {
                 Icon(Icons.Rounded.Lock, null, tint = c.accent, modifier = Modifier.size(48.dp))
             }
             Spacer(Modifier.height(20.dp))
-            Text("Penny Wallet is locked", style = Penny.type.title, color = c.textPrimary)
+            Text(stringResource(R.string.lock_locked), style = Penny.type.title, color = c.textPrimary)
             Spacer(Modifier.height(24.dp))
-            PennyButton("Unlock", onClick = { promptUnlock(activity) { AppLock.unlock() } })
+            PennyButton(stringResource(R.string.lock_unlock), onClick = { promptUnlock(activity) { AppLock.unlock() } })
         }
     }
 }

@@ -16,7 +16,6 @@ sealed interface ReminderAction {
     data class DueToday(val due: LocalDate) : ReminderAction
 }
 
-/** SPEC §5. Pure, unit-tested. */
 object Recurrence {
 
     fun clampDay(ym: YearMonth, day: Int): LocalDate = ym.atDay(day.coerceIn(1, ym.lengthOfMonth()))

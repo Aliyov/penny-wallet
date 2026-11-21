@@ -1,5 +1,7 @@
 package com.penny.wallet.core.ui.common
 
+import com.penny.wallet.R
+import androidx.compose.ui.res.stringResource
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
@@ -38,7 +40,7 @@ fun TxRowItem(row: TxRow, modifier: Modifier = Modifier, onClick: (() -> Unit)? 
         onDismiss = { if (it == SwipeToDismissBoxValue.EndToStart) onDelete() },
         backgroundContent = {
             Box(Modifier.fillMaxSize().background(Penny.colors.danger.copy(alpha = 0.18f)).padding(horizontal = 20.dp), contentAlignment = Alignment.CenterEnd) {
-                Icon(Icons.Rounded.Delete, "Delete", tint = Penny.colors.danger)
+                Icon(Icons.Rounded.Delete, stringResource(R.string.action_delete), tint = Penny.colors.danger)
             }
         },
         modifier = modifier,
@@ -59,8 +61,8 @@ private fun TxRowContent(row: TxRow, modifier: Modifier, onClick: (() -> Unit)?)
     ) {
         IconBadge(row.icon, tint)
         Column(Modifier.weight(1f)) {
-            Text(row.title, style = Penny.type.bodyStrong, color = c.textPrimary, maxLines = 1, overflow = TextOverflow.Ellipsis)
-            Text(row.subtitle, style = Penny.type.label, color = c.textSecondary, maxLines = 1, overflow = TextOverflow.Ellipsis)
+            Text(row.title.resolve(), style = Penny.type.bodyStrong, color = c.textPrimary, maxLines = 1, overflow = TextOverflow.Ellipsis)
+            Text(row.subtitle.resolve(), style = Penny.type.label, color = c.textSecondary, maxLines = 1, overflow = TextOverflow.Ellipsis)
         }
         MoneyText(
             row.amount, Penny.type.amount,

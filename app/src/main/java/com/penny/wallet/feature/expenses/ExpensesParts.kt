@@ -1,5 +1,7 @@
 package com.penny.wallet.feature.expenses
 
+import com.penny.wallet.R
+import androidx.compose.ui.res.stringResource
 import com.penny.wallet.core.util.dateText
 import androidx.compose.animation.core.animateFloatAsState
 import androidx.compose.animation.animateColorAsState
@@ -40,20 +42,19 @@ import com.penny.wallet.core.ui.theme.Penny
 import java.time.LocalDate
 import java.time.YearMonth
 
-/** Title + "Recurring" pill. */
 @Composable
 internal fun ExpensesHeader(onOpenRecurring: () -> Unit, modifier: Modifier = Modifier) {
     val c = Penny.colors
     val shape = RoundedCornerShape(50)
     Row(modifier.fillMaxWidth().padding(top = 12.dp), verticalAlignment = Alignment.CenterVertically) {
-        Text("Expenses", style = Penny.type.amountLarge, color = c.textPrimary, modifier = Modifier.weight(1f))
+        Text(stringResource(R.string.expenses_title), style = Penny.type.amountLarge, color = c.textPrimary, modifier = Modifier.weight(1f))
         Row(
             Modifier.clip(shape).background(c.surface1).border(0.75.dp, c.hairline, shape)
                 .clickableNoRipple(onOpenRecurring).padding(horizontal = 14.dp, vertical = 8.dp),
             verticalAlignment = Alignment.CenterVertically, horizontalArrangement = Arrangement.spacedBy(6.dp),
         ) {
             Icon(Icons.Rounded.Repeat, null, tint = c.accent, modifier = Modifier.size(16.dp))
-            Text("Recurring", style = Penny.type.label, color = c.textPrimary)
+            Text(stringResource(R.string.expenses_recurring), style = Penny.type.label, color = c.textPrimary)
         }
     }
 }
@@ -98,16 +99,15 @@ internal fun SearchField(query: String, onChange: (String) -> Unit, modifier: Mo
     val c = Penny.colors
     OutlinedTextField(
         query, onChange, modifier.fillMaxWidth(),
-        placeholder = { Text("Search notes or categories", color = c.textSecondary) },
+        placeholder = { Text(stringResource(R.string.expenses_search_hint), color = c.textSecondary) },
         leadingIcon = { Icon(Icons.Rounded.Search, null, tint = c.textSecondary) },
         trailingIcon = if (query.isNotEmpty()) {
-            { Icon(Icons.Rounded.Close, "Clear", tint = c.textSecondary, modifier = Modifier.clickableNoRipple { onChange("") }) }
+            { Icon(Icons.Rounded.Close, stringResource(R.string.expenses_search_clear), tint = c.textSecondary, modifier = Modifier.clickableNoRipple { onChange("") }) }
         } else null,
         singleLine = true, shape = Penny.dims.smallShape, colors = pennyFieldColors(), textStyle = Penny.type.body,
     )
 }
 
-/** Active category filter chip with ✕. */
 @Composable
 internal fun CategoryFilterChip(name: String, color: Color, onClear: () -> Unit, modifier: Modifier = Modifier) {
     val shape = RoundedCornerShape(50)
@@ -117,7 +117,7 @@ internal fun CategoryFilterChip(name: String, color: Color, onClear: () -> Unit,
         verticalAlignment = Alignment.CenterVertically, horizontalArrangement = Arrangement.spacedBy(6.dp),
     ) {
         Text(name, style = Penny.type.label, color = color, maxLines = 1, overflow = TextOverflow.Ellipsis)
-        Icon(Icons.Rounded.Close, "Clear filter", tint = color, modifier = Modifier.size(14.dp))
+        Icon(Icons.Rounded.Close, stringResource(R.string.expenses_filter_clear), tint = color, modifier = Modifier.size(14.dp))
     }
 }
 

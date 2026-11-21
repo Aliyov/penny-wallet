@@ -56,6 +56,9 @@ fun HomeScreen(
         prefs.homeSections.filterNot { it in prefs.hiddenHomeSections }
     }
     val gutter = Penny.dims.gutter
+    val deletedText = stringResource(R.string.deleted)
+    val recentLabel = stringResource(R.string.home_recent)
+    val recentEmpty = stringResource(R.string.home_recent_empty)
 
     LazyColumn(
         Modifier.fillMaxSize().statusBarsPadding(),
@@ -87,11 +90,11 @@ fun HomeScreen(
                     UpcomingStrip(state.upcoming, state.overdueCount, onOpenRecurring)
                 }
                 HomeSection.RECENT -> {
-                    item(key = "recent_label") { SectionLabel("Recent", Modifier.padding(horizontal = gutter)) }
+                    item(key = "recent_label") { SectionLabel(recentLabel, Modifier.padding(horizontal = gutter)) }
                     if (state.recent.isEmpty() && !state.loading) {
                         item(key = "recent_empty") {
                             Text(
-                                "No transactions yet. Tap + to add your first one.",
+                                recentEmpty,
                                 style = Penny.type.body, color = Penny.colors.textSecondary,
                                 modifier = Modifier.padding(horizontal = gutter, vertical = 12.dp),
                             )
@@ -102,7 +105,7 @@ fun HomeScreen(
                             row,
                             Modifier.padding(horizontal = gutter).animateItem(),
                             onClick = { onEditTransaction(row.tx.id) },
-                            onDelete = { vm.delete(row.tx) { t -> snack.undo("Deleted") { vm.restore(t) } } },
+                            onDelete = { vm.delete(row.tx) { t -> snack.undo(deletedText) { vm.restore(t) } } },
                         )
                     }
                 }
@@ -139,7 +142,7 @@ private fun BackupBanner(onClick: () -> Unit, modifier: Modifier = Modifier) {
     ) {
         Icon(Icons.Rounded.Warning, null, tint = c.warning, modifier = Modifier.size(18.dp))
         Spacer(Modifier.width(10.dp))
-        Text("No backup in over 10 days", style = Penny.type.label, color = c.warning, modifier = Modifier.weight(1f))
-        Text("Back up", style = Penny.type.label, color = c.warning)
+        Text(stringResource(R.string.home_backup_warning), style = Penny.type.label, color = c.warning, modifier = Modifier.weight(1f))
+        Text(stringResource(R.string.home_back_up), style = Penny.type.label, color = c.warning)
     }
 }

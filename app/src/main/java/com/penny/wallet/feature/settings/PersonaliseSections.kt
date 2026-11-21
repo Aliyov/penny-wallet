@@ -1,5 +1,9 @@
 package com.penny.wallet.feature.settings
 
+import java.time.DayOfWeek
+import com.penny.wallet.core.util.dateText
+import androidx.compose.ui.res.stringResource
+import com.penny.wallet.R
 import androidx.compose.foundation.lazy.LazyListScope
 import com.penny.wallet.data.db.entities.Account
 import com.penny.wallet.data.prefs.ChartStyle
@@ -14,31 +18,37 @@ import com.penny.wallet.core.ui.components.SwitchRow
 internal fun LazyListScope.quickAddSection(x: PrefsCtx, accounts: List<Account>) {
     val p = x.p
     val d = x.d
-    settingsCard("quickAdd", "Quick add") {
+    settingsCard("quickAdd", R.string.pers_section_quick_add) {
         ChoiceRow(
-            "Default type", listOf(QuickType.EXPENSE to "Expense", QuickType.INCOME to "Income"), p.quickAddDefaultType,
+            stringResource(R.string.pers_default_type),
+            listOf(QuickType.EXPENSE to stringResource(R.string.type_expense), QuickType.INCOME to stringResource(R.string.type_income)), p.quickAddDefaultType,
             { v -> x.set { it.copy(quickAddDefaultType = v) } },
             onReset = x.reset(p.quickAddDefaultType, d.quickAddDefaultType) { it.copy(quickAddDefaultType = d.quickAddDefaultType) },
         )
-        // A fixed account that was archived/deleted falls back to "Last used" in the picker.
+        // An archived or deleted fixed account falls back to "last used".
         val fixed = p.fixedAccountId?.takeIf { id -> accounts.any { it.id == id } }
         ChoiceRow(
-            "Default account", listOf<Pair<String?, String>>(null to "Last used") + accounts.map { it.id to it.name }, fixed,
+            stringResource(R.string.pers_default_account),
+            listOf<Pair<String?, String>>(null to stringResource(R.string.pers_last_used)) + accounts.map { it.id to it.name }, fixed,
             { v -> x.set { it.copy(fixedAccountId = v) } },
             onReset = x.reset(p.fixedAccountId, d.fixedAccountId) { it.copy(fixedAccountId = d.fixedAccountId) },
         )
         ChoiceRow(
-            "Category chip order",
-            listOf(ChipOrder.MOST_USED to "Most used", ChipOrder.MANUAL to "Manual", ChipOrder.ALPHABETICAL to "A–Z"), p.chipOrder,
+            stringResource(R.string.pers_chip_order),
+            listOf(
+                ChipOrder.MOST_USED to stringResource(R.string.pers_chip_most_used), ChipOrder.MANUAL to stringResource(R.string.pers_manual),
+                ChipOrder.ALPHABETICAL to stringResource(R.string.pers_chip_az),
+            ),
+            p.chipOrder,
             { v -> x.set { it.copy(chipOrder = v) } }, onReset = x.reset(p.chipOrder, d.chipOrder) { it.copy(chipOrder = d.chipOrder) },
         )
         SwitchRow(
-            "Save on chip tap", p.saveOnChipTap, { v -> x.set { it.copy(saveOnChipTap = v) } },
-            subtitle = "Tapping a category saves immediately",
+            stringResource(R.string.pers_save_on_tap), p.saveOnChipTap, { v -> x.set { it.copy(saveOnChipTap = v) } },
+            subtitle = stringResource(R.string.pers_save_on_tap_hint),
             onReset = x.reset(p.saveOnChipTap, d.saveOnChipTap) { it.copy(saveOnChipTap = d.saveOnChipTap) },
         )
         SwitchRow(
-            "Show note field", p.showNoteField, { v -> x.set { it.copy(showNoteField = v) } },
+            stringResource(R.string.pers_show_note), p.showNoteField, { v -> x.set { it.copy(showNoteField = v) } },
             onReset = x.reset(p.showNoteField, d.showNoteField) { it.copy(showNoteField = d.showNoteField) },
         )
     }
@@ -47,25 +57,26 @@ internal fun LazyListScope.quickAddSection(x: PrefsCtx, accounts: List<Account>)
 internal fun LazyListScope.chartsSection(x: PrefsCtx) {
     val p = x.p
     val d = x.d
-    settingsCard("charts", "Expenses & charts") {
+    settingsCard("charts", R.string.pers_section_charts) {
         ChoiceRow(
-            "Default chart", listOf(ChartStyle.DONUT to "Donut", ChartStyle.BARS to "Bars"), p.defaultChart,
+            stringResource(R.string.pers_default_chart),
+            listOf(ChartStyle.DONUT to stringResource(R.string.pers_chart_donut), ChartStyle.BARS to stringResource(R.string.pers_chart_bars)), p.defaultChart,
             { v -> x.set { it.copy(defaultChart = v) } }, onReset = x.reset(p.defaultChart, d.defaultChart) { it.copy(defaultChart = d.defaultChart) },
         )
         ChoiceRow(
-            "Months in history", listOf(3 to "3", 6 to "6", 12 to "12"), p.historyMonths,
+            stringResource(R.string.pers_history_months), listOf(3 to "3", 6 to "6", 12 to "12"), p.historyMonths,
             { v -> x.set { it.copy(historyMonths = v) } }, onReset = x.reset(p.historyMonths, d.historyMonths) { it.copy(historyMonths = d.historyMonths) },
         )
         ChoiceRow(
-            "First day of week", listOf(1 to "Monday", 7 to "Sunday"), p.firstDayOfWeek,
+            stringResource(R.string.pers_first_day_week),
+            listOf(1 to dateText().weekday(DayOfWeek.MONDAY), 7 to dateText().weekday(DayOfWeek.SUNDAY)), p.firstDayOfWeek,
             { v -> x.set { it.copy(firstDayOfWeek = v) } },
             onReset = x.reset(p.firstDayOfWeek, d.firstDayOfWeek) { it.copy(firstDayOfWeek = d.firstDayOfWeek) },
         )
         StepperRow(
-            "Month start day", p.monthStartDay, 1..28, { v -> x.set { it.copy(monthStartDay = v) } },
-            format = { ordinal(it) },
-            subtitle = if (p.monthStartDay == 1) "e.g. payday on the 27th → month runs 27th–26th"
-            else "Month runs ${ordinal(p.monthStartDay)}–${ordinal(p.monthStartDay - 1)}",
+            stringResource(R.string.pers_month_start), p.monthStartDay, 1..28, { v -> x.set { it.copy(monthStartDay = v) } },
+            subtitle = if (p.monthStartDay == 1) stringResource(R.string.pers_month_start_hint)
+            else stringResource(R.string.pers_month_runs, p.monthStartDay, p.monthStartDay - 1),
             onReset = x.reset(p.monthStartDay, d.monthStartDay) { it.copy(monthStartDay = d.monthStartDay) },
         )
     }
@@ -74,19 +85,20 @@ internal fun LazyListScope.chartsSection(x: PrefsCtx) {
 internal fun LazyListScope.savingsSection(x: PrefsCtx) {
     val p = x.p
     val d = x.d
-    settingsCard("savings", "Savings") {
+    settingsCard("savings", R.string.pers_section_savings) {
         ChoiceRow(
-            "Goal layout", listOf(GoalLayout.GRID to "Grid", GoalLayout.LIST to "List"), p.goalLayout,
+            stringResource(R.string.pers_goal_layout),
+            listOf(GoalLayout.GRID to stringResource(R.string.pers_layout_grid), GoalLayout.LIST to stringResource(R.string.pers_layout_list)), p.goalLayout,
             { v -> x.set { it.copy(goalLayout = v) } }, onReset = x.reset(p.goalLayout, d.goalLayout) { it.copy(goalLayout = d.goalLayout) },
         )
         ChoiceRow(
-            "Sort goals by", listOf(GoalSort.PROGRESS to "Progress", GoalSort.DEADLINE to "Deadline", GoalSort.MANUAL to "Manual"), p.goalSort,
+            stringResource(R.string.pers_goal_sort),
+            listOf(
+                GoalSort.PROGRESS to stringResource(R.string.pers_sort_progress), GoalSort.DEADLINE to stringResource(R.string.pers_sort_deadline),
+                GoalSort.MANUAL to stringResource(R.string.pers_manual),
+            ),
+            p.goalSort,
             { v -> x.set { it.copy(goalSort = v) } }, onReset = x.reset(p.goalSort, d.goalSort) { it.copy(goalSort = d.goalSort) },
         )
     }
-}
-
-internal fun ordinal(n: Int): String {
-    val suffix = if (n % 100 in 11..13) "th" else when (n % 10) { 1 -> "st"; 2 -> "nd"; 3 -> "rd"; else -> "th" }
-    return "$n$suffix"
 }

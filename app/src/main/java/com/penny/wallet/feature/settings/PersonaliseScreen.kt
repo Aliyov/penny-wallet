@@ -1,5 +1,8 @@
 package com.penny.wallet.feature.settings
 
+import androidx.annotation.StringRes
+import androidx.compose.ui.res.stringResource
+import com.penny.wallet.R
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -36,7 +39,6 @@ import com.penny.wallet.core.ui.components.SectionLabel
 import com.penny.wallet.core.ui.pennyViewModel
 import com.penny.wallet.core.ui.theme.Penny
 
-/** Settings → Personalise (SPEC §7a). Every change is written immediately and applied live. */
 @Composable
 fun PersonaliseScreen(onBack: () -> Unit) {
     val vm = pennyViewModel { PersonaliseViewModel(it) }
@@ -49,9 +51,9 @@ fun PersonaliseScreen(onBack: () -> Unit) {
 
     Column(Modifier.fillMaxSize().background(c.background).statusBarsPadding()) {
         Row(Modifier.fillMaxWidth().padding(horizontal = 4.dp, vertical = 4.dp), verticalAlignment = Alignment.CenterVertically) {
-            IconButton(onClick = onBack) { Icon(Icons.AutoMirrored.Rounded.ArrowBack, "Back", tint = c.textPrimary) }
-            Text("Personalise", style = Penny.type.title, color = c.textPrimary, modifier = Modifier.weight(1f))
-            TextButton(onClick = { confirmReset = true }) { Text("Reset all", style = Penny.type.label, color = c.accent) }
+            IconButton(onClick = onBack) { Icon(Icons.AutoMirrored.Rounded.ArrowBack, stringResource(R.string.action_back), tint = c.textPrimary) }
+            Text(stringResource(R.string.pers_title), style = Penny.type.title, color = c.textPrimary, modifier = Modifier.weight(1f))
+            TextButton(onClick = { confirmReset = true }) { Text(stringResource(R.string.pers_reset_all), style = Penny.type.label, color = c.accent) }
         }
         val reorder = rememberHomeReorderState(listState, ctx)
         LazyColumn(
@@ -75,15 +77,14 @@ fun PersonaliseScreen(onBack: () -> Unit) {
         AlertDialog(
             onDismissRequest = { confirmReset = false },
             containerColor = c.surface2,
-            title = { Text("Reset all options?", style = Penny.type.title, color = c.textPrimary) },
-            text = { Text("Every Personalise option goes back to its default. Your data and backup folder are kept.", style = Penny.type.body, color = c.textSecondary) },
-            confirmButton = { TextButton(onClick = { vm.resetAll(); confirmReset = false }) { Text("Reset", color = c.danger) } },
-            dismissButton = { TextButton(onClick = { confirmReset = false }) { Text("Cancel", color = c.textSecondary) } },
+            title = { Text(stringResource(R.string.pers_reset_all_title), style = Penny.type.title, color = c.textPrimary) },
+            text = { Text(stringResource(R.string.pers_reset_all_body), style = Penny.type.body, color = c.textSecondary) },
+            confirmButton = { TextButton(onClick = { vm.resetAll(); confirmReset = false }) { Text(stringResource(R.string.action_reset), color = c.danger) } },
+            dismissButton = { TextButton(onClick = { confirmReset = false }) { Text(stringResource(R.string.action_cancel), color = c.textSecondary) } },
         )
     }
 }
 
-/** Current prefs, defaults and the writer, passed to every section. */
 internal class PrefsCtx(val p: UserPrefs, val d: UserPrefs, private val setter: ((UserPrefs) -> UserPrefs) -> Any) {
     fun set(t: (UserPrefs) -> UserPrefs) { setter(t) }
 
@@ -92,11 +93,10 @@ internal class PrefsCtx(val p: UserPrefs, val d: UserPrefs, private val setter: 
         if (current != default) ({ set(t) }) else null
 }
 
-/** A section label followed by one card holding its rows. */
-internal fun LazyListScope.settingsCard(key: String, title: String, content: @Composable () -> Unit) {
+internal fun LazyListScope.settingsCard(key: String, @StringRes title: Int, content: @Composable () -> Unit) {
     item(key) {
         Column {
-            SectionLabel(title, Modifier.padding(top = 8.dp))
+            SectionLabel(stringResource(title), Modifier.padding(top = 8.dp))
             PennyCard(Modifier.fillMaxWidth()) { content() }
         }
     }

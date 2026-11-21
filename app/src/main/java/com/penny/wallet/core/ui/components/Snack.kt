@@ -8,8 +8,8 @@ import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 
-/** App-wide snackbars. Every delete shows "Undo" for 5 s (SPEC §4). */
-class Snack(private val host: SnackbarHostState, private val scope: CoroutineScope) {
+/** App-wide snackbars. Every delete shows Undo for 5 s. */
+class Snack(private val host: SnackbarHostState, private val scope: CoroutineScope, private val undoLabel: String = "Undo") {
     val state get() = host
 
     fun show(message: String) { scope.launch { host.currentSnackbarData?.dismiss(); host.showSnackbar(message) } }
@@ -18,7 +18,7 @@ class Snack(private val host: SnackbarHostState, private val scope: CoroutineSco
         scope.launch {
             host.currentSnackbarData?.dismiss()
             val job = launch { delay(5_000); host.currentSnackbarData?.dismiss() }
-            val r = host.showSnackbar(message, actionLabel = "Undo", duration = SnackbarDuration.Indefinite)
+            val r = host.showSnackbar(message, actionLabel = undoLabel, duration = SnackbarDuration.Indefinite)
             job.cancel()
             if (r == SnackbarResult.ActionPerformed) onUndo()
         }

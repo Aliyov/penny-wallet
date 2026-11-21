@@ -49,7 +49,7 @@ fun PennyBottomBar(items: List<NavItem>, current: String?, onSelect: (String) ->
         horizontalArrangement = Arrangement.SpaceEvenly, verticalAlignment = Alignment.CenterVertically,
     ) {
         items.forEachIndexed { i, item ->
-            if (i == items.size / 2) Spacer(Modifier.width(64.dp)) // room for the FAB
+            if (i == items.size / 2) Spacer(Modifier.width(64.dp))
             val selected = current == item.route
             val tint by animateColorAsState(if (selected) c.textPrimary else c.textSecondary, label = "tint")
             val dot by animateFloatAsState(if (selected) 1f else 0f, Penny.motion.spec(), label = "dot")

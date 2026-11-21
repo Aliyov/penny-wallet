@@ -12,7 +12,7 @@ import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 
 /**
- * Soft neon glow behind a shape (SPEC §7: accent @ 35%, blur 24dp). alpha 0 = off.
+ * Soft neon glow behind a shape. alpha 0 = off.
  * The Paint + BlurMaskFilter are built once per size/colour (drawWithCache), not on every frame.
  */
 fun Modifier.glow(color: Color, alpha: Float, radius: Dp = 24.dp, corner: Dp = 999.dp): Modifier =

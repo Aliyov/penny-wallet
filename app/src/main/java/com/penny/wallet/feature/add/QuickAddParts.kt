@@ -39,6 +39,8 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.SolidColor
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.res.stringResource
+import com.penny.wallet.R
 import com.penny.wallet.data.db.entities.Account
 import com.penny.wallet.data.db.entities.Category
 import com.penny.wallet.data.db.entities.Goal
@@ -78,7 +80,7 @@ internal fun CategoryChips(categories: List<Category>, selectedId: String?, onTa
 @Composable
 internal fun GoalChips(goals: List<Goal>, selectedId: String?, onTap: (String) -> Unit) {
     if (goals.isEmpty()) {
-        Text("Create a goal in Savings first", style = Penny.type.caption, color = Penny.colors.textSecondary)
+        Text(stringResource(R.string.add_no_goals), style = Penny.type.caption, color = Penny.colors.textSecondary)
         return
     }
     LazyRow(Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.spacedBy(8.dp), contentPadding = chipRowPadding) {
@@ -94,7 +96,7 @@ internal fun AccountChips(accounts: List<Account>, selectedId: String?, onTap: (
     Row(Modifier.fillMaxWidth(), verticalAlignment = Alignment.CenterVertically, horizontalArrangement = Arrangement.spacedBy(8.dp)) {
         Text(label, style = Penny.type.label, color = c.textSecondary)
         if (accounts.isEmpty()) {
-            Text("Add another account first", style = Penny.type.caption, color = c.textSecondary)
+            Text(stringResource(R.string.add_no_other_account), style = Penny.type.caption, color = c.textSecondary)
             return@Row
         }
         LazyRow(Modifier.weight(1f), horizontalArrangement = Arrangement.spacedBy(8.dp)) {
@@ -118,7 +120,7 @@ internal fun OptionalRow(form: QuickForm, data: QuickData, edit: ((QuickForm) ->
         DatePickerRow(form.date, { d -> edit { it.copy(date = d) } })
         if (data.showNote && form.type != QuickType.SAVE) NoteChip(form.note) { n -> edit { it.copy(note = n) } }
         if (form.type == QuickType.EXPENSE && form.editing == null) {
-            TintChip("Make recurring", form.recurring, c.accent, { edit { it.copy(recurring = !it.recurring) } }, Icons.Rounded.Repeat)
+            TintChip(stringResource(R.string.add_make_recurring), form.recurring, c.accent, { edit { it.copy(recurring = !it.recurring) } }, Icons.Rounded.Repeat)
         }
     }
 }
@@ -128,9 +130,10 @@ private fun AccountPicker(form: QuickForm, accounts: List<Account>, onPick: (Str
     val c = Penny.colors
     var open by remember { mutableStateOf(false) }
     val current = accounts.firstOrNull { it.id == form.accountId }
-    val prefix = if (form.type == QuickType.TRANSFER || form.type == QuickType.SAVE) "From " else ""
+    val name = current?.name ?: stringResource(R.string.label_account)
+    val chipText = if (form.type == QuickType.TRANSFER || form.type == QuickType.SAVE) stringResource(R.string.add_from_account, name) else name
     Box {
-        TintChip(prefix + (current?.name ?: "Account"), false, c.accent, { if (accounts.size > 1) open = true },
+        TintChip(chipText, false, c.accent, { if (accounts.size > 1) open = true },
             current?.let { PennyIcons.get(it.icon) } ?: Icons.Rounded.AccountBalanceWallet)
         DropdownMenu(open, { open = false }, containerColor = c.surface2) {
             accounts.forEach { a ->
@@ -159,7 +162,7 @@ private fun NoteChip(note: String, onChange: (String) -> Unit) {
             modifier = Modifier.widthIn(min = 48.dp, max = 220.dp),
             decorationBox = { inner ->
                 Box(contentAlignment = Alignment.CenterStart) {
-                    if (note.isEmpty()) Text("Note", style = Penny.type.label, color = c.textSecondary)
+                    if (note.isEmpty()) Text(stringResource(R.string.label_note), style = Penny.type.label, color = c.textSecondary)
                     inner()
                 }
             },

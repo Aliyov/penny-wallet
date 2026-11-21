@@ -25,7 +25,7 @@ private class Particle(val angle: Float, val speed: Float, val color: Color, val
 
 private const val DURATION_MS = 1500
 
-/** Confetti burst overlay shown when a goal reaches 100% (SPEC §8 Savings). Skipped when animations are off. */
+/** Confetti burst overlay shown when a goal reaches 100%. Skipped when animations are off. */
 @Composable
 fun Celebration(visible: Boolean, onFinished: () -> Unit) {
     val finished by rememberUpdatedState(onFinished)

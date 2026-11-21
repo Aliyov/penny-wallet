@@ -1,5 +1,6 @@
 package com.penny.wallet.feature.settings
 
+import androidx.compose.ui.platform.LocalResources
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
@@ -21,6 +22,10 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.hapticfeedback.HapticFeedbackType
+import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.res.pluralStringResource
+import androidx.compose.ui.res.stringResource
+import com.penny.wallet.R
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.penny.wallet.data.db.entities.Category
@@ -39,7 +44,6 @@ private sealed interface CatSheet {
     data class Move(val cat: Category) : CatSheet
 }
 
-/** Settings → Expense categories: drag to reorder, edit, archive, delete with reassign (SPEC §4, §8). */
 @Composable
 fun CategoriesScreen(onBack: () -> Unit) {
     val vm = pennyViewModel { ManageViewModel(it) }
@@ -47,6 +51,7 @@ fun CategoriesScreen(onBack: () -> Unit) {
     val snack = LocalSnack.current
     val haptic = rememberHaptic()
     val c = Penny.colors
+    val res = LocalResources.current
     var sheet by remember { mutableStateOf<CatSheet?>(null) }
 
     val active = remember(state.categories) { state.categories.filter { !it.category.archived } }
@@ -68,21 +73,21 @@ fun CategoriesScreen(onBack: () -> Unit) {
     fun delete(cat: Category) {
         vm.deleteCategory(cat) { r ->
             sheet = when (r) {
-                is CategoryDelete.Deleted -> { snack.undo("${r.category.name} deleted") { vm.undoCategoryDelete(r.category) }; null }
+                is CategoryDelete.Deleted -> { snack.undo(res.getString(R.string.manage_deleted_msg, r.category.name)) { vm.undoCategoryDelete(r.category) }; null }
                 is CategoryDelete.InUse -> CatSheet.InUse(r.category, r.count)
             }
         }
     }
 
     Column(Modifier.fillMaxSize().background(c.background).statusBarsPadding()) {
-        SettingsTopBar("Expense categories", onBack, onAdd = { sheet = CatSheet.New })
+        SettingsTopBar(stringResource(R.string.settings_categories), onBack, onAdd = { sheet = CatSheet.New })
         LazyColumn(state = listState, modifier = Modifier.fillMaxSize().padding(horizontal = Penny.dims.gutter).navigationBarsPadding()) {
             item("hint") {
-                Text("Drag the handle to reorder. Order is used for chips when set to Manual.", style = Penny.type.caption, color = c.textSecondary,
+                Text(stringResource(R.string.manage_categories_hint), style = Penny.type.caption, color = c.textSecondary,
                     modifier = Modifier.padding(bottom = 8.dp))
             }
             if (order.isEmpty()) item("empty") {
-                Text("No categories yet. Tap + to add one.", style = Penny.type.body, color = c.textSecondary, modifier = Modifier.padding(vertical = 24.dp))
+                Text(stringResource(R.string.manage_categories_empty), style = Penny.type.body, color = c.textSecondary, modifier = Modifier.padding(vertical = 24.dp))
             }
             items(order, key = { it.category.id }) { item ->
                 ReorderableItem(reorder, key = item.category.id) { dragging ->
@@ -95,7 +100,7 @@ fun CategoriesScreen(onBack: () -> Unit) {
                 }
             }
             if (archived.isNotEmpty()) {
-                item("archivedLabel") { SectionLabel("Archived", Modifier.padding(top = 16.dp)) }
+                item("archivedLabel") { SectionLabel(stringResource(R.string.manage_archived), Modifier.padding(top = 16.dp)) }
                 items(archived, key = { "a-" + it.category.id }) { item ->
                     ManageRow(
                         icon = item.category.icon, color = Color(item.category.color), title = item.category.name,
@@ -116,14 +121,14 @@ fun CategoriesScreen(onBack: () -> Unit) {
             onSave = { n, i, col -> vm.saveCategory(s.cat.copy(name = n, icon = i, color = col)); sheet = null },
             onToggleArchive = {
                 vm.setCategoryArchived(s.cat.id, !s.cat.archived); sheet = null
-                snack.show(if (s.cat.archived) "${s.cat.name} restored" else "${s.cat.name} archived")
+                snack.show(res.getString(if (s.cat.archived) R.string.manage_restored_msg else R.string.manage_archived_msg, s.cat.name))
             },
             onDelete = { delete(s.cat) },
         )
         is CatSheet.InUse -> CategoryInUseDialog(
             s.cat, s.count,
             onMove = { sheet = CatSheet.Move(s.cat) },
-            onArchive = { vm.setCategoryArchived(s.cat.id, true); sheet = null; snack.show("${s.cat.name} archived") },
+            onArchive = { vm.setCategoryArchived(s.cat.id, true); sheet = null; snack.show(res.getString(R.string.manage_archived_msg, s.cat.name)) },
             onDismiss = { sheet = null },
         )
         is CatSheet.Move -> MoveTargetSheet(
@@ -132,11 +137,12 @@ fun CategoriesScreen(onBack: () -> Unit) {
         ) { target ->
             sheet = null
             vm.moveAndDelete(s.cat, target.id) { m ->
-                if (m != null) snack.undo("Moved to ${target.name}, ${s.cat.name} deleted") { vm.undoMove(m) }
+                if (m != null) snack.undo(res.getString(R.string.manage_moved_deleted_msg, target.name, s.cat.name)) { vm.undoMove(m) }
             }
         }
         null -> Unit
     }
 }
 
-private fun expenses(n: Int) = if (n == 1) "1 expense" else "$n expenses"
+@Composable
+private fun expenses(n: Int) = pluralStringResource(R.plurals.manage_expenses, n, n)

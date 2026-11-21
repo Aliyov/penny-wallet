@@ -21,7 +21,6 @@ import com.penny.wallet.platform.work.MarkPaidReceiver
 import java.time.LocalDate
 import java.time.temporal.ChronoUnit
 
-/** Channel "Reminders" + the three notification kinds from SPEC §5. */
 object Notifications {
     const val CHANNEL = "reminders"
 
@@ -29,8 +28,8 @@ object Notifications {
         if (Build.VERSION.SDK_INT < 26) return
         val nm = context.getSystemService(NotificationManager::class.java)
         if (nm.getNotificationChannel(CHANNEL) == null) {
-            nm.createNotificationChannel(NotificationChannel(CHANNEL, "Reminders", NotificationManager.IMPORTANCE_DEFAULT).apply {
-                description = "Upcoming and due recurring expenses"
+            nm.createNotificationChannel(NotificationChannel(CHANNEL, context.getString(R.string.notif_channel_name), NotificationManager.IMPORTANCE_DEFAULT).apply {
+                description = context.getString(R.string.notif_channel_desc)
             })
         }
     }
@@ -48,25 +47,24 @@ object Notifications {
 
     fun remind(context: Context, r: RecurringExpense, due: LocalDate, today: LocalDate, p: UserPrefs) {
         val days = ChronoUnit.DAYS.between(today, due)
-        val whenText = if (days == 1L) "Tomorrow" else "In $days days"
-        post(context, r, base(context, p, "$whenText: ${r.name} ${amount(context, r, p)}", "Due ${DateText.of(context).day(due, today)}"))
+        val title = context.resources.getQuantityString(R.plurals.notif_due_in_days, days.toInt(), days.toInt(), r.name, amount(context, r, p))
+        post(context, r, base(context, p, title, context.getString(R.string.notif_due_on, DateText.of(context).day(due, today))))
     }
 
     fun dueToday(context: Context, r: RecurringExpense, due: LocalDate, p: UserPrefs) {
-        val b = base(context, p, "Due today: ${r.name} ${amount(context, r, p)}", "Tap Mark as paid once it's done")
-            .addAction(0, "Mark as paid", receiver(context, MarkPaidReceiver.ACTION_PAY, r.id, due, null))
+        val b = base(context, p, context.getString(R.string.notif_due_today, r.name, amount(context, r, p)), context.getString(R.string.notif_due_today_hint))
+            .addAction(0, context.getString(R.string.notif_action_mark_paid), receiver(context, MarkPaidReceiver.ACTION_PAY, r.id, due, null))
         post(context, r, b)
     }
 
     fun autoPaid(context: Context, r: RecurringExpense, due: LocalDate, txId: String, p: UserPrefs) {
-        val b = base(context, p, "Paid automatically: ${r.name} ${amount(context, r, p)}", "Recorded for ${DateText.of(context).day(due)}")
-            .addAction(0, "Undo", receiver(context, MarkPaidReceiver.ACTION_UNDO, r.id, due, txId))
+        val b = base(context, p, context.getString(R.string.notif_auto_paid, r.name, amount(context, r, p)), context.getString(R.string.notif_recorded_for, DateText.of(context).day(due)))
+            .addAction(0, context.getString(R.string.action_undo), receiver(context, MarkPaidReceiver.ACTION_UNDO, r.id, due, txId))
         post(context, r, b)
     }
 
     fun cancel(context: Context, ruleId: String) = NotificationManagerCompat.from(context).cancel(idFor(ruleId))
 
-    /** Tinted with the user's accent from settings. */
     private fun base(context: Context, p: UserPrefs, title: String, text: String) =
         NotificationCompat.Builder(context, CHANNEL)
             .setSmallIcon(R.drawable.ic_stat_penny)

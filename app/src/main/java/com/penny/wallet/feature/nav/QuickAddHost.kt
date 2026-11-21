@@ -6,6 +6,8 @@ import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.ui.res.stringResource
+import com.penny.wallet.R
 import com.penny.wallet.core.ui.components.LocalSnack
 import com.penny.wallet.core.ui.pennyViewModel
 import com.penny.wallet.feature.add.QuickAddSheet
@@ -25,6 +27,7 @@ fun QuickAddHost(root: RootState) {
         if (root.quickAddOpen) root.editTxId?.let { vm.startEdit(it) } ?: vm.startNew()
     }
     if (!root.quickAddOpen) return
+    val deletedText = stringResource(R.string.deleted)
 
     QuickAddSheet(
         vm = vm,
@@ -39,7 +42,7 @@ fun QuickAddHost(root: RootState) {
         },
         onDeleted = { t ->
             root.close()
-            snack.undo("Deleted") { vm.restore(t) }
+            snack.undo(deletedText) { vm.restore(t) }
         },
     )
 }

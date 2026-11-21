@@ -1,5 +1,8 @@
 package com.penny.wallet.feature.savings
 
+import com.penny.wallet.core.ui.userMessage
+import com.penny.wallet.core.ui.moneyText
+import com.penny.wallet.R
 import kotlinx.coroutines.flow.flowOn
 import kotlinx.coroutines.Dispatchers
 import androidx.lifecycle.ViewModel
@@ -58,6 +61,6 @@ class SavingsViewModel(private val c: AppContainer) : ViewModel() {
 
     fun create(name: String, icon: String, color: Long, targetCents: Long, deadline: LocalDate?, done: (String?) -> Unit) =
         viewModelScope.launch {
-            done(runCatching { require(name.isNotBlank()) { "Give it a name" }; c.goals.add(name, icon, color, targetCents, deadline) }.exceptionOrNull()?.message)
+            done(runCatching { require(name.isNotBlank()) { c.context.getString(R.string.savings_error_name) }; c.goals.add(name, icon, color, targetCents, deadline) }.exceptionOrNull()?.let(c::userMessage))
         }
 }

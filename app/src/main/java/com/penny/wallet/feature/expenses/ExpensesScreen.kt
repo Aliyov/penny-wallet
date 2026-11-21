@@ -1,5 +1,8 @@
 package com.penny.wallet.feature.expenses
 
+import com.penny.wallet.R
+import androidx.compose.ui.res.pluralStringResource
+import androidx.compose.ui.res.stringResource
 import androidx.compose.animation.animateContentSize
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.PaddingValues
@@ -31,6 +34,7 @@ fun ExpensesScreen(onOpenRecurring: () -> Unit, onEditTransaction: (String) -> U
     val snack = LocalSnack.current
     val gutter = Penny.dims.gutter
     val c = Penny.colors
+    val deletedText = stringResource(R.string.deleted)
     // Selected donut slice; cleared whenever the month changes.
     var selected by rememberSaveable(state.period?.label?.toString()) { mutableStateOf<Int?>(null) }
     val selectedIdx = selected?.takeIf { it in state.slices.indices }
@@ -46,7 +50,7 @@ fun ExpensesScreen(onOpenRecurring: () -> Unit, onEditTransaction: (String) -> U
         item(key = "chart") { ChartCard(state, selectedIdx, { selected = it }, hPad.animateContentSize()) }
 
         if (state.slices.isNotEmpty()) {
-            item(key = "cat_label") { SectionLabel("Categories", hPad) }
+            item(key = "cat_label") { SectionLabel(stringResource(R.string.expenses_categories), hPad) }
             items(state.slices, key = { "cat_" + (it.categoryId ?: "none") }) { s ->
                 val active = state.filterCategoryId != null && state.filterCategoryId == s.categoryId
                 CategoryRow(
@@ -57,22 +61,22 @@ fun ExpensesScreen(onOpenRecurring: () -> Unit, onEditTransaction: (String) -> U
         }
 
         if (state.history.isNotEmpty()) {
-            item(key = "hist_label") { SectionLabel("Last ${state.history.size} months", hPad) }
+            item(key = "hist_label") { SectionLabel(pluralStringResource(R.plurals.expenses_last_months, state.history.size, state.history.size), hPad) }
             item(key = "hist") { HistoryChart(state.history, vm::selectMonth, hPad) }
         }
 
-        item(key = "tx_label") { SectionLabel("Transactions", hPad) }
+        item(key = "tx_label") { SectionLabel(stringResource(R.string.expenses_transactions), hPad) }
         item(key = "search") { SearchField(state.query, vm::search, hPad) }
         state.filterCategoryId?.let { id ->
             val slice = state.slices.firstOrNull { it.categoryId == id }
             item(key = "filter") {
-                CategoryFilterChip(slice?.name ?: "Category", slice?.let { Color(it.color) } ?: c.accent, { vm.filterCategory(id) }, hPad)
+                CategoryFilterChip(slice?.name ?: stringResource(R.string.label_category), slice?.let { Color(it.color) } ?: c.accent, { vm.filterCategory(id) }, hPad)
             }
         }
         if (state.days.isEmpty()) {
             item(key = "tx_empty") {
                 Text(
-                    if (state.query.isNotBlank() || state.filterCategoryId != null) "No matching expenses." else "No expenses this month.",
+                    stringResource(if (state.query.isNotBlank() || state.filterCategoryId != null) R.string.expenses_none_matching else R.string.expenses_none_month),
                     style = Penny.type.body, color = c.textSecondary, modifier = hPad.padding(vertical = 12.dp),
                 )
             }
@@ -83,7 +87,7 @@ fun ExpensesScreen(onOpenRecurring: () -> Unit, onEditTransaction: (String) -> U
                 TxRowItem(
                     row, hPad,
                     onClick = { onEditTransaction(row.tx.id) },
-                    onDelete = { vm.delete(row.tx) { t -> snack.undo("Deleted") { vm.restore(t) } } },
+                    onDelete = { vm.delete(row.tx) { t -> snack.undo(deletedText) { vm.restore(t) } } },
                 )
             }
         }

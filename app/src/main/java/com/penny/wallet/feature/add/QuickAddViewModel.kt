@@ -1,10 +1,13 @@
 package com.penny.wallet.feature.add
 
+import com.penny.wallet.core.ui.userMessage
+import com.penny.wallet.core.ui.moneyText
 import kotlinx.coroutines.flow.flowOn
 import kotlinx.coroutines.Dispatchers
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.penny.wallet.AppContainer
+import com.penny.wallet.R
 import com.penny.wallet.data.db.entities.Account
 import com.penny.wallet.data.db.entities.Category
 import com.penny.wallet.data.db.entities.Frequency
@@ -75,7 +78,7 @@ class QuickAddViewModel(private val c: AppContainer) : ViewModel() {
             ChipOrder.MANUAL -> visible.sortedBy { it.sortOrder }
             ChipOrder.ALPHABETICAL -> visible.sortedBy { it.name.lowercase() }
             ChipOrder.MOST_USED -> visible.sortedWith(compareByDescending<Category> { usage[it.id] ?: 0 }.thenBy { it.sortOrder })
-        }.let { list -> // last used first (SPEC §8)
+        }.let { list -> // last used first
             val last = prefs.lastCategoryId
             if (prefs.chipOrder == ChipOrder.MOST_USED && last != null) list.sortedByDescending { it.id == last } else list
         }
@@ -106,7 +109,6 @@ class QuickAddViewModel(private val c: AppContainer) : ViewModel() {
 
     fun edit(f: (QuickForm) -> QuickForm) = _form.update(f)
 
-    // ---- Receipt scan: photo → on-device OCR → confirm dialog → amount ----
     private val _scan = MutableStateFlow<ScanState>(ScanState.Idle)
     val scan: StateFlow<ScanState> = _scan
     private var scanJob: kotlinx.coroutines.Job? = null
@@ -122,7 +124,7 @@ class QuickAddViewModel(private val c: AppContainer) : ViewModel() {
                 { e ->
                     if (e is kotlinx.coroutines.CancellationException) throw e
                     android.util.Log.w("PennyReceipt", "Receipt scan failed", e)
-                    ScanState.Failed("Couldn't read this photo")
+                    ScanState.Failed(text(R.string.add_scan_read_failed))
                 },
             )
             c.receipts.discardPhoto()
@@ -160,30 +162,38 @@ class QuickAddViewModel(private val c: AppContainer) : ViewModel() {
         val f = form.value
         val r = runCatching { if (f.editing != null) saveEdit(f) else saveNew(f) }
             .getOrElse { e ->
-                QuickResult.Error(if (e is InsufficientAvailableException) "Only ${Formatters.money(e.availableCents)} available" else e.message ?: "Couldn't save")
+                QuickResult.Error(
+                    if (e is InsufficientAvailableException) text(R.string.add_error_only_available, c.moneyText(e.availableCents))
+                    else c.userMessage(e),
+                )
             }
         done(r)
     }
 
     private suspend fun saveNew(f: QuickForm): QuickResult {
-        val acc = requireNotNull(f.accountId) { "Add an account first" }
+        val acc = requireNotNull(f.accountId) { text(R.string.add_error_no_account) }
         val amt = f.cents
-        require(amt > 0) { "Enter an amount" }
+        require(amt > 0) { text(R.string.add_error_enter_amount) }
         val note = f.note.takeIf { it.isNotBlank() }
         val t = when (f.type) {
-            QuickType.EXPENSE -> c.transactions.addExpense(amt, acc, requireNotNull(f.categoryId) { "Pick a category" }, f.date, note)
+            QuickType.EXPENSE -> c.transactions.addExpense(amt, acc, requireNotNull(f.categoryId) { text(R.string.add_error_pick_category) }, f.date, note)
             QuickType.INCOME -> c.transactions.addIncome(amt, acc, f.date, note)
-            QuickType.TRANSFER -> c.transactions.transfer(amt, acc, requireNotNull(f.toAccountId) { "Pick where to" }, f.date, note)
-            QuickType.SAVE -> c.transactions.save(amt, acc, requireNotNull(f.goalId) { "Pick a goal" }, f.date)
+            QuickType.TRANSFER -> c.transactions.transfer(amt, acc, requireNotNull(f.toAccountId) { text(R.string.add_error_pick_target) }, f.date, note)
+            QuickType.SAVE -> c.transactions.save(amt, acc, requireNotNull(f.goalId) { text(R.string.add_error_pick_goal) }, f.date)
         }
         var askPermission = false
         if (f.recurring && f.type == QuickType.EXPENSE) {
             askPermission = makeRecurring(t, note)
         }
         c.settings.update { it.copy(lastAccountId = acc, lastCategoryId = f.categoryId ?: it.lastCategoryId) }
-        val label = when (f.type) { QuickType.EXPENSE -> "Expense"; QuickType.INCOME -> "Income"; QuickType.TRANSFER -> "Transfer"; QuickType.SAVE -> "Saved" }
+        val label = when (f.type) {
+            QuickType.EXPENSE -> R.string.add_saved_expense
+            QuickType.INCOME -> R.string.add_saved_income
+            QuickType.TRANSFER -> R.string.add_saved_transfer
+            QuickType.SAVE -> R.string.add_saved_save
+        }
         // re-read: makeRecurring sets recurringId, which Undo needs to remove the rule too
-        return QuickResult.Saved("$label · ${Formatters.money(amt)}", c.transactions.get(t.id) ?: t, askPermission)
+        return QuickResult.Saved(text(label, c.moneyText(amt)), c.transactions.get(t.id) ?: t, askPermission)
     }
 
     /** Creates a monthly rule anchored on the expense's day, already paid for this occurrence. */
@@ -191,7 +201,7 @@ class QuickAddViewModel(private val c: AppContainer) : ViewModel() {
         val cat = c.categories.all().firstOrNull { it.id == t.categoryId }
         val p = c.settings.current()
         val id = UUID.randomUUID().toString()
-        val base = RecurringExpense(id, note ?: cat?.name ?: "Recurring", t.amountCents, t.categoryId!!, t.accountId,
+        val base = RecurringExpense(id, note ?: cat?.name ?: text(R.string.add_recurring_default), t.amountCents, t.categoryId!!, t.accountId,
             Frequency.MONTHLY, dayOfMonth = t.date.dayOfMonth, nextDueDate = t.date, remindDaysBefore = p.defaultRemindDaysBefore)
         c.recurring.save(base.copy(nextDueDate = Recurrence.next(base, t.date)))
         c.transactions.update(t.copy(recurringId = id))
@@ -202,13 +212,13 @@ class QuickAddViewModel(private val c: AppContainer) : ViewModel() {
     private suspend fun saveEdit(f: QuickForm): QuickResult {
         val old = f.editing!!
         val amt = f.cents
-        require(amt > 0) { "Enter an amount" }
+        require(amt > 0) { text(R.string.add_error_enter_amount) }
         val acc = f.accountId ?: old.accountId
         val updated = when (old.type) {
             TxType.EXPENSE -> old.copy(amountCents = amt, accountId = acc, categoryId = f.categoryId ?: old.categoryId)
             TxType.TRANSFER -> {
                 val to = f.toAccountId ?: old.toAccountId
-                require(to != acc) { "Pick two different accounts" }
+                require(to != acc) { text(R.string.add_error_same_account) }
                 old.copy(amountCents = amt, accountId = acc, toAccountId = to)
             }
             TxType.SAVE -> {
@@ -222,7 +232,7 @@ class QuickAddViewModel(private val c: AppContainer) : ViewModel() {
             else -> old.copy(amountCents = amt, accountId = acc)
         }.copy(date = f.date, note = f.note.takeIf { it.isNotBlank() })
         c.transactions.update(updated)
-        return QuickResult.Saved("Updated", null, false)
+        return QuickResult.Saved(text(R.string.add_updated), null, false)
     }
 
     fun deleteEditing(done: (Transaction?) -> Unit) = viewModelScope.launch {
@@ -236,6 +246,8 @@ class QuickAddViewModel(private val c: AppContainer) : ViewModel() {
     }
 
     fun restore(t: Transaction) = viewModelScope.launch { c.transactions.restore(t) }
+
+    private fun text(id: Int, vararg args: Any): String = c.context.getString(id, *args)
 }
 
 object NumpadDigits { fun of(cents: Long) = if (cents <= 0) "" else cents.toString() }

@@ -56,7 +56,7 @@ fun AddAccountSheet(
     var digits by rememberSaveable { mutableStateOf("") }
     var pickCurrency by rememberSaveable { mutableStateOf(false) }
 
-    PennySheet(onDismiss = onDismiss, title = "New account") {
+    PennySheet(onDismiss = onDismiss, title = stringResource(R.string.home_new_account)) {
         NameField(name, { name = it.take(40) })
         Spacer(Modifier.height(14.dp))
         IconGrid(icon) { icon = it }
@@ -65,7 +65,7 @@ fun AddAccountSheet(
             NavRow(stringResource(R.string.currency_title), currencyCode, { pickCurrency = true })
             Spacer(Modifier.height(6.dp))
         }
-        Text("Opening balance", style = Penny.type.caption, color = c.textSecondary)
+        Text(stringResource(R.string.home_opening_balance), style = Penny.type.caption, color = c.textSecondary)
         MoneyText(
             Formatters.digitsToCents(digits), Penny.type.amountLarge,
             if (digits.isEmpty()) c.textSecondary else c.textPrimary,
@@ -74,7 +74,7 @@ fun AddAccountSheet(
         Numpad(digits, { digits = it }, keyHeight = 52)
         Spacer(Modifier.height(14.dp))
         PennyButton(
-            "Save", { onSave(name.trim(), icon, Formatters.digitsToCents(digits)) },
+            stringResource(R.string.action_save), { onSave(name.trim(), icon, Formatters.digitsToCents(digits)) },
             Modifier.fillMaxWidth(), enabled = name.isNotBlank(),
         )
     }
@@ -98,7 +98,7 @@ private fun NameField(value: String, onChange: (String) -> Unit) {
                 Modifier.fillMaxWidth().clip(shape).background(c.surface1).border(0.75.dp, c.hairline, shape)
                     .padding(horizontal = 16.dp, vertical = 14.dp),
             ) {
-                if (value.isEmpty()) Text("Account name", style = Penny.type.body, color = c.textSecondary)
+                if (value.isEmpty()) Text(stringResource(R.string.home_account_name), style = Penny.type.body, color = c.textSecondary)
                 inner()
             }
         },

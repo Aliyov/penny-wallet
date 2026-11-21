@@ -1,5 +1,6 @@
 package com.penny.wallet.feature.settings
 
+import androidx.compose.ui.platform.LocalContext
 import com.penny.wallet.core.util.dateText
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Column
@@ -31,6 +32,8 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.res.stringResource
+import com.penny.wallet.R
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
@@ -46,7 +49,6 @@ import com.penny.wallet.core.ui.theme.ItemPalette
 import com.penny.wallet.core.ui.theme.Penny
 import androidx.compose.ui.graphics.Color
 
-/** Settings hub (SPEC §8 Settings). */
 @Composable
 fun SettingsScreen(onOpen: (String) -> Unit) {
     val backupVm = pennyViewModel { BackupViewModel(it) }
@@ -55,44 +57,45 @@ fun SettingsScreen(onOpen: (String) -> Unit) {
     val snack = LocalSnack.current
     val c = Penny.colors
     var resetStep by rememberSaveable { mutableIntStateOf(0) }
+    val clearedMsg = stringResource(R.string.settings_reset_done)
 
     Column(
         Modifier.fillMaxSize().background(c.background).statusBarsPadding()
             .verticalScroll(rememberScrollState()).padding(horizontal = Penny.dims.gutter),
     ) {
-        Text("Settings", style = Penny.type.amountLarge, color = c.textPrimary, modifier = Modifier.padding(top = 16.dp, bottom = 12.dp))
+        Text(stringResource(R.string.settings_title), style = Penny.type.amountLarge, color = c.textPrimary, modifier = Modifier.padding(top = 16.dp, bottom = 12.dp))
 
-        SectionLabel("Money")
+        SectionLabel(stringResource(R.string.settings_section_money))
         Group {
-            SettingsRow(Icons.Rounded.Category, "Expense categories", { onOpen("categories") }, "Add, edit, reorder, archive", tint = Color(ItemPalette[3]))
+            SettingsRow(Icons.Rounded.Category, stringResource(R.string.settings_categories), { onOpen("categories") }, stringResource(R.string.settings_categories_sub), tint = Color(ItemPalette[3]))
             RowDivider()
-            SettingsRow(Icons.Rounded.AccountBalance, "Accounts", { onOpen("accounts") }, "Reorder, archive, add", tint = Color(ItemPalette[1]))
+            SettingsRow(Icons.Rounded.AccountBalance, stringResource(R.string.settings_accounts), { onOpen("accounts") }, stringResource(R.string.settings_accounts_sub), tint = Color(ItemPalette[1]))
             RowDivider()
-            SettingsRow(Icons.Rounded.Repeat, "Recurring expenses", { onOpen("recurring") }, "Bills, subscriptions, reminders", tint = Color(ItemPalette[4]))
+            SettingsRow(Icons.Rounded.Repeat, stringResource(R.string.settings_recurring), { onOpen("recurring") }, stringResource(R.string.settings_recurring_sub), tint = Color(ItemPalette[4]))
         }
 
-        SectionLabel("App", Modifier.padding(top = 12.dp))
+        SectionLabel(stringResource(R.string.settings_section_app), Modifier.padding(top = 12.dp))
         Group {
-            SettingsRow(Icons.Rounded.Palette, "Personalise", { onOpen("personalise") }, "Theme, layout, motion, privacy", tint = Color(ItemPalette[2]))
+            SettingsRow(Icons.Rounded.Palette, stringResource(R.string.settings_personalise), { onOpen("personalise") }, stringResource(R.string.settings_personalise_sub), tint = Color(ItemPalette[2]))
             RowDivider()
             val last = backup.lastBackupAt
             val sub = when {
-                backup.folderUri == null -> "Not set up"
-                last == null -> "Never backed up"
-                else -> "Last backup: ${dateText().relativeDays(last)}"
+                backup.folderUri == null -> stringResource(R.string.settings_backup_not_set_up)
+                last == null -> stringResource(R.string.settings_backup_never)
+                else -> stringResource(R.string.backup_last, dateText().relativeDays(last))
             }
-            SettingsRow(Icons.Rounded.Backup, "Backup", { onOpen("backup") }, sub, tint = if (backup.folderUri != null && !backup.folderOk) c.warning else Color(ItemPalette[7]))
+            SettingsRow(Icons.Rounded.Backup, stringResource(R.string.settings_backup), { onOpen("backup") }, sub, tint = if (backup.folderUri != null && !backup.folderOk) c.warning else Color(ItemPalette[7]))
             RowDivider()
-            SettingsRow(Icons.Rounded.Euro, "Number formatting", { onOpen("personalise") }, "EUR · ${money(123456, ignorePrivacy = true)}", tint = Color(ItemPalette[10]))
+            SettingsRow(Icons.Rounded.Euro, stringResource(R.string.settings_number_format), { onOpen("personalise") }, "${Penny.prefs.currencyCode} · ${money(123456, ignorePrivacy = true)}", tint = Color(ItemPalette[10]))
         }
 
-        SectionLabel("Danger zone", Modifier.padding(top = 12.dp))
+        SectionLabel(stringResource(R.string.settings_section_danger), Modifier.padding(top = 12.dp))
         Group {
-            SettingsRow(Icons.Rounded.DeleteForever, "Reset all data", { resetStep = 1 }, "Deletes everything on this phone", danger = true, chevron = false)
+            SettingsRow(Icons.Rounded.DeleteForever, stringResource(R.string.settings_reset), { resetStep = 1 }, stringResource(R.string.settings_reset_sub), danger = true, chevron = false)
         }
 
         Text(
-            "Penny Wallet 1.0 · all data stays on this phone", style = Penny.type.caption, color = c.textSecondary,
+            stringResource(R.string.settings_footer, appVersion()), style = Penny.type.caption, color = c.textSecondary,
             textAlign = TextAlign.Center, modifier = Modifier.fillMaxWidth().padding(top = 24.dp),
         )
         Spacer(Modifier.height(120.dp))
@@ -100,12 +103,12 @@ fun SettingsScreen(onOpen: (String) -> Unit) {
 
     when (resetStep) {
         1 -> ConfirmDialog(
-            title = "Reset all data?", text = "Accounts, categories, goals, transactions and recurring expenses will be deleted. Make a backup first if you might want them back.",
-            confirm = "Continue", danger = true, onDismiss = { resetStep = 0 },
+            title = stringResource(R.string.settings_reset_title), text = stringResource(R.string.settings_reset_body),
+            confirm = stringResource(R.string.settings_reset_continue), danger = true, onDismiss = { resetStep = 0 },
         ) { resetStep = 2 }
         2 -> TypeResetDialog(onDismiss = { resetStep = 0 }) {
             resetStep = 0
-            manageVm.resetAll { snack.show("All data cleared") }
+            manageVm.resetAll { snack.show(clearedMsg) }
         }
     }
 }
@@ -115,32 +118,39 @@ private fun Group(content: @Composable () -> Unit) {
     PennyCard(Modifier.fillMaxWidth(), padding = 0.dp) { Column(Modifier.padding(vertical = 4.dp)) { content() } }
 }
 
-/** Second confirmation: the user has to type RESET. */
+/** Second confirmation: the user has to type the reset word. */
 @Composable
 private fun TypeResetDialog(onDismiss: () -> Unit, onConfirm: () -> Unit) {
     val c = Penny.colors
     var typed by remember { mutableStateOf("") }
-    val ok = typed.trim() == "RESET"
+    val word = stringResource(R.string.settings_reset_word)
+    val ok = typed.trim() == word
     AlertDialog(
         onDismissRequest = onDismiss,
         containerColor = c.surface2, titleContentColor = c.textPrimary, textContentColor = c.textSecondary,
         shape = Penny.dims.cardShape,
-        title = { Text("Are you absolutely sure?", style = Penny.type.title) },
+        title = { Text(stringResource(R.string.settings_reset_sure_title), style = Penny.type.title) },
         text = {
             Column {
-                Text("This can't be undone. Type RESET to confirm.", style = Penny.type.body)
+                Text(stringResource(R.string.settings_reset_sure_body, word), style = Penny.type.body)
                 OutlinedTextField(
                     typed, { typed = it }, Modifier.fillMaxWidth().padding(top = 12.dp), singleLine = true,
-                    placeholder = { Text("RESET", color = c.textSecondary) },
+                    placeholder = { Text(word, color = c.textSecondary) },
                     textStyle = Penny.type.body, shape = Penny.dims.smallShape, colors = pennyFieldColors(),
                 )
             }
         },
         confirmButton = {
             TextButton(onClick = onConfirm, enabled = ok) {
-                Text("Delete everything", color = if (ok) c.danger else c.textSecondary, style = Penny.type.bodyStrong)
+                Text(stringResource(R.string.settings_reset_confirm), color = if (ok) c.danger else c.textSecondary, style = Penny.type.bodyStrong)
             }
         },
-        dismissButton = { TextButton(onClick = onDismiss) { Text("Cancel", color = c.textSecondary) } },
+        dismissButton = { TextButton(onClick = onDismiss) { Text(stringResource(R.string.action_cancel), color = c.textSecondary) } },
     )
+}
+
+@Composable
+private fun appVersion(): String {
+    val context = LocalContext.current
+    return remember { runCatching { context.packageManager.getPackageInfo(context.packageName, 0).versionName }.getOrNull().orEmpty() }
 }

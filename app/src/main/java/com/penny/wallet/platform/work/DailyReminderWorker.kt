@@ -9,7 +9,7 @@ import com.penny.wallet.domain.ReminderAction
 import com.penny.wallet.platform.notify.Notifications
 import java.time.LocalDate
 
-/** SPEC §5: reminders, auto-pay (with catch-up) and due-today notifications, once a day at the user's time. */
+/** Reminders, auto-pay (with catch-up) and due-today notifications, once a day at the user's time. */
 class DailyReminderWorker(context: Context, params: WorkerParameters) : CoroutineWorker(context, params) {
     override suspend fun doWork(): Result {
         val c = applicationContext.container

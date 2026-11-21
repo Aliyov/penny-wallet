@@ -6,6 +6,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.ReadOnlyComposable
 import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.platform.LocalLocale
 import androidx.core.os.ConfigurationCompat
 import com.penny.wallet.R
 import java.time.LocalDate
@@ -59,5 +60,4 @@ fun dateText(): DateText {
 
 @Composable
 @ReadOnlyComposable
-fun currentLocale(): Locale =
-    ConfigurationCompat.getLocales(LocalConfiguration.current)[0] ?: Locale.getDefault()
+fun currentLocale(): Locale = LocalLocale.current.platformLocale

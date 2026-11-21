@@ -13,7 +13,7 @@ import com.penny.wallet.data.prefs.AnimationLevel
 import com.penny.wallet.core.ui.theme.Penny
 import kotlin.math.roundToLong
 
-/** Big number that counts to its new value (SPEC §7). Instant when animations are off. */
+/** Big number that counts to its new value. Instant when animations are off. */
 @Composable
 fun AnimatedAmount(cents: Long, style: TextStyle, color: Color, modifier: Modifier = Modifier) {
     val level = Penny.motion.level

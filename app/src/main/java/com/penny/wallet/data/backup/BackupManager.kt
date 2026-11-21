@@ -5,6 +5,7 @@ import android.content.Intent
 import android.net.Uri
 import androidx.documentfile.provider.DocumentFile
 import androidx.room.withTransaction
+import com.penny.wallet.R
 import com.penny.wallet.domain.MoneyCalculator
 import com.penny.wallet.core.money.Formatters
 import com.penny.wallet.data.db.PennyDatabase
@@ -17,7 +18,6 @@ import kotlinx.serialization.json.Json
 import java.time.Instant
 import java.time.LocalDate
 
-/** Serialize, write via SAF, prune, restore (SPEC §6). Fully local. */
 class BackupManager(
     private val context: Context,
     private val db: PennyDatabase,
@@ -50,7 +50,6 @@ class BackupManager(
     suspend fun setFolder(tree: Uri) {
         val flags = Intent.FLAG_GRANT_READ_URI_PERMISSION or Intent.FLAG_GRANT_WRITE_URI_PERMISSION
         runCatching { context.contentResolver.takePersistableUriPermission(tree, flags) }
-        // release the previous folder's grant
         settings.current().backupFolderUri?.let(Uri::parse)?.takeIf { it != tree }?.let { old ->
             runCatching { context.contentResolver.releasePersistableUriPermission(old, flags) }
         }
@@ -66,21 +65,21 @@ class BackupManager(
     /** "Back up now" and the scheduled worker share this path. Same-day file is replaced; keeps the newest N. */
     suspend fun backupNow(): BackupResult = withContext(Dispatchers.IO) {
         val p = settings.current()
-        val tree = p.backupFolderUri?.let(Uri::parse) ?: return@withContext BackupResult.Failed("Pick a backup folder first")
-        if (!hasFolderAccess(p)) return@withContext BackupResult.Failed("Lost access to the backup folder. Pick it again.")
-        val dir = DocumentFile.fromTreeUri(context, tree) ?: return@withContext BackupResult.Failed("Folder not found")
+        val tree = p.backupFolderUri?.let(Uri::parse) ?: return@withContext BackupResult.Failed(context.getString(R.string.backup_err_no_folder))
+        if (!hasFolderAccess(p)) return@withContext BackupResult.Failed(context.getString(R.string.backup_err_lost_access))
+        val dir = DocumentFile.fromTreeUri(context, tree) ?: return@withContext BackupResult.Failed(context.getString(R.string.backup_err_folder_not_found))
         runCatching {
             val data = encode(snapshot()).toByteArray()
             val name = fileName()
             dir.findFile(name)?.delete()
             val file = dir.createFile("application/json", name.removeSuffix(".json"))
-                ?: error("Couldn't create the file")
-            context.contentResolver.openOutputStream(file.uri, "wt")?.use { it.write(data) } ?: error("Couldn't write the file")
+                ?: error(context.getString(R.string.backup_err_create_file))
+            context.contentResolver.openOutputStream(file.uri, "wt")?.use { it.write(data) } ?: error(context.getString(R.string.backup_err_write_file))
             prune(dir, p.backupKeep)
             val now = System.currentTimeMillis()
             settings.update { it.copy(lastBackupAt = now) }
             BackupResult.Ok(file.name ?: name, now)
-        }.getOrElse { BackupResult.Failed(it.message ?: "Backup failed") }
+        }.getOrElse { BackupResult.Failed(it.message ?: context.getString(R.string.backup_err_failed)) }
     }
 
     /** Keep the newest [keep] backups (names sort by date), delete older ones. Never touches other files. */
@@ -94,11 +93,11 @@ class BackupManager(
     /** Reads and validates a backup file chosen with ACTION_OPEN_DOCUMENT. Throws with a readable message. */
     suspend fun read(uri: Uri): Pair<Backup, BackupSummary> = withContext(Dispatchers.IO) {
         val text = context.contentResolver.openInputStream(uri)?.use { it.readBytes().decodeToString() }
-            ?: throw IllegalArgumentException("Couldn't open the file")
+            ?: throw IllegalArgumentException(context.getString(R.string.backup_err_open_file))
         val b = runCatching { json.decodeFromString(Backup.serializer(), text) }
-            .getOrElse { throw IllegalArgumentException("This isn't a Penny Wallet backup") }
+            .getOrElse { throw IllegalArgumentException(context.getString(R.string.backup_err_not_backup)) }
         require(b.schemaVersion in 1..Backup.CURRENT_SCHEMA) {
-            "Backup version ${b.schemaVersion} is newer than this app understands (${Backup.CURRENT_SCHEMA})"
+            context.getString(R.string.backup_err_too_new, b.schemaVersion, Backup.CURRENT_SCHEMA)
         }
         b to summarize(b)
     }
@@ -153,7 +152,7 @@ class BackupManager(
     /** "Export transactions as CSV" to a file the user created with ACTION_CREATE_DOCUMENT. */
     suspend fun exportCsv(uri: Uri) = withContext(Dispatchers.IO) {
         val b = snapshot()
-        val csv = Csv.transactions(b)
-        context.contentResolver.openOutputStream(uri, "wt")?.use { it.write(csv.toByteArray()) } ?: error("Couldn't write the file")
+        val csv = Csv.transactions(b, context.getString(R.string.data_csv_outside))
+        context.contentResolver.openOutputStream(uri, "wt")?.use { it.write(csv.toByteArray()) } ?: error(context.getString(R.string.backup_err_write_file))
     }
 }

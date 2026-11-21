@@ -1,5 +1,8 @@
 package com.penny.wallet.feature.recurring
 
+import com.penny.wallet.R
+import androidx.compose.ui.res.pluralStringResource
+import androidx.compose.ui.res.stringResource
 import android.Manifest
 import android.os.Build
 import androidx.activity.compose.rememberLauncherForActivityResult
@@ -41,7 +44,6 @@ import com.penny.wallet.core.ui.components.SectionLabel
 import com.penny.wallet.core.ui.pennyViewModel
 import com.penny.wallet.core.ui.theme.Penny
 
-/** Recurring expenses list (SPEC §5): add / edit / pause / delete, next due, "Pay now". */
 @Composable
 fun RecurringScreen(onBack: () -> Unit) {
     val vm = pennyViewModel { RecurringViewModel(it) }
@@ -49,14 +51,16 @@ fun RecurringScreen(onBack: () -> Unit) {
     val snack = LocalSnack.current
     val c = Penny.colors
     var editing by remember { mutableStateOf<RuleDraft?>(null) }
+    val alreadyPaidText = stringResource(R.string.recurring_already_paid)
+    val deletedText = stringResource(R.string.deleted)
     val permission = rememberLauncherForActivityResult(ActivityResultContracts.RequestPermission()) { }
 
     Column(Modifier.fillMaxSize().background(c.background).statusBarsPadding()) {
         Row(Modifier.fillMaxWidth().padding(horizontal = 4.dp, vertical = 4.dp), verticalAlignment = Alignment.CenterVertically) {
-            IconButton(onClick = onBack) { Icon(Icons.AutoMirrored.Rounded.ArrowBack, "Back", tint = c.textPrimary) }
-            Text("Recurring", style = Penny.type.title, color = c.textPrimary, modifier = Modifier.weight(1f))
+            IconButton(onClick = onBack) { Icon(Icons.AutoMirrored.Rounded.ArrowBack, stringResource(R.string.action_back), tint = c.textPrimary) }
+            Text(stringResource(R.string.recurring_title), style = Penny.type.title, color = c.textPrimary, modifier = Modifier.weight(1f))
             IconButton(onClick = { editing = RuleDraft(remindDaysBefore = state.defaultRemindDays) }) {
-                Icon(Icons.Rounded.Add, "Add recurring expense", tint = c.accent)
+                Icon(Icons.Rounded.Add, stringResource(R.string.recurring_add), tint = c.accent)
             }
         }
         LazyColumn(
@@ -67,18 +71,19 @@ fun RecurringScreen(onBack: () -> Unit) {
                 item("empty") { EmptyState { editing = RuleDraft(remindDaysBefore = state.defaultRemindDays) } }
             } else {
                 item("header") { HeaderCard(state) }
-                item("label") { SectionLabel("Rules", Modifier.padding(top = 8.dp)) }
+                item("label") { SectionLabel(stringResource(R.string.recurring_rules), Modifier.padding(top = 8.dp)) }
                 items(state.rows, key = { it.rule.id }) { row ->
+                    val paidText = stringResource(R.string.recurring_paid, row.rule.name)
                     RuleCard(
                         row, Modifier.animateItem(),
                         onEdit = { editing = row.rule.toDraft() },
                         onPayNow = {
                             vm.payNow(row.rule) { p ->
-                                if (p != null) snack.undo("Paid ${row.rule.name}") { vm.undoPay(p) } else snack.show("Already paid")
+                                if (p != null) snack.undo(paidText) { vm.undoPay(p) } else snack.show(alreadyPaidText)
                             }
                         },
                         onToggleActive = { vm.setActive(row.rule, !row.rule.active) },
-                        onDelete = { vm.delete(row.rule) { r -> snack.undo("Deleted") { vm.restore(r) } } },
+                        onDelete = { vm.delete(row.rule) { r -> snack.undo(deletedText) { vm.restore(r) } } },
                     )
                 }
             }
@@ -104,14 +109,14 @@ private fun HeaderCard(state: RecurringState) {
     val c = Penny.colors
     val active = state.rows.count { it.rule.active }
     PennyCard(Modifier.fillMaxWidth()) {
-        Text("Per month", style = Penny.type.label, color = c.textSecondary)
+        Text(stringResource(R.string.recurring_per_month_label), style = Penny.type.label, color = c.textSecondary)
         Row(verticalAlignment = Alignment.Bottom) {
             Text("≈ ", style = Penny.type.amountLarge, color = c.textSecondary)
             MoneyText(state.monthlyTotal, Penny.type.amountLarge, c.textPrimary)
-            Text(" / month", style = Penny.type.body, color = c.textSecondary, modifier = Modifier.padding(bottom = 4.dp))
+            Text(stringResource(R.string.recurring_per_month_suffix), style = Penny.type.body, color = c.textSecondary, modifier = Modifier.padding(bottom = 4.dp))
         }
         Text(
-            if (active == 1) "1 active rule" else "$active active rules",
+            pluralStringResource(R.plurals.recurring_active_rules, active, active),
             style = Penny.type.caption, color = c.textSecondary, modifier = Modifier.padding(top = 4.dp),
         )
     }
@@ -121,12 +126,12 @@ private fun HeaderCard(state: RecurringState) {
 private fun EmptyState(onAdd: () -> Unit) {
     val c = Penny.colors
     Column(Modifier.fillMaxWidth().padding(top = 64.dp), horizontalAlignment = Alignment.CenterHorizontally) {
-        Text("No recurring expenses", style = Penny.type.title, color = c.textPrimary)
+        Text(stringResource(R.string.recurring_empty_title), style = Penny.type.title, color = c.textPrimary)
         Text(
-            "Add subscriptions, rent or phone credit. Penny reminds you before they're due and can record them automatically.",
+            stringResource(R.string.recurring_empty_body),
             style = Penny.type.body, color = c.textSecondary, textAlign = TextAlign.Center,
             modifier = Modifier.padding(top = 8.dp, bottom = 24.dp),
         )
-        PennyButton("Add recurring expense", onAdd)
+        PennyButton(stringResource(R.string.recurring_add), onAdd)
     }
 }

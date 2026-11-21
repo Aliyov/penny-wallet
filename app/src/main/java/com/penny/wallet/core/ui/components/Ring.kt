@@ -21,7 +21,7 @@ import com.penny.wallet.core.ui.theme.Penny
 import kotlin.math.cos
 import kotlin.math.sin
 
-/** Apple Fitness style progress ring (SPEC §7): dim track, rounded arc from 12 o'clock, glowing tip. */
+/** Apple Fitness style progress ring: dim track, rounded arc from 12 o'clock, glowing tip. */
 @Composable
 fun ProgressRing(
     progress: Float,

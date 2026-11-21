@@ -1,5 +1,6 @@
 package com.penny.wallet.data.repo
 
+import com.penny.wallet.R
 import com.penny.wallet.data.db.PennyDatabase
 import com.penny.wallet.data.db.entities.Transaction
 import com.penny.wallet.data.db.entities.TxType
@@ -7,9 +8,11 @@ import com.penny.wallet.domain.MoneyCalculator
 import kotlinx.coroutines.flow.Flow
 import java.time.LocalDate
 
-class InsufficientAvailableException(val availableCents: Long) : IllegalArgumentException("Not enough available")
-
-class TransactionRepo(private val db: PennyDatabase, private val listener: ChangeListener) {
+class TransactionRepo(
+    private val db: PennyDatabase,
+    private val listener: ChangeListener,
+    private val text: (Int) -> String,
+) {
     private val dao = db.transactions()
 
     fun observe(): Flow<List<Transaction>> = dao.observeAll()
@@ -33,7 +36,7 @@ class TransactionRepo(private val db: PennyDatabase, private val listener: Chang
         insert(tx(TxType.WITHDRAWAL, requirePositive(amount), accountId, date, note))
 
     suspend fun transfer(amount: Long, from: String, to: String, date: LocalDate, note: String? = null): Transaction {
-        require(from != to) { "Pick two different accounts" }
+        if (from == to) throw InvalidInputException(InvalidInputException.Reason.SAME_ACCOUNTS)
         return insert(tx(TxType.TRANSFER, requirePositive(amount), from, date, note, to = to))
     }
 
@@ -42,7 +45,7 @@ class TransactionRepo(private val db: PennyDatabase, private val listener: Chang
         val current = MoneyCalculator.accountBalance(accountId, dao.getForAccount(accountId))
         val diff = MoneyCalculator.adjustmentFor(target, current)
         if (diff == 0L) return null
-        return insert(tx(TxType.ADJUSTMENT, diff, accountId, date, "Balance set"))
+        return insert(tx(TxType.ADJUSTMENT, diff, accountId, date, text(R.string.data_note_balance_set)))
     }
 
     /**
@@ -72,5 +75,5 @@ class TransactionRepo(private val db: PennyDatabase, private val listener: Chang
     /** Undo of a delete: re-inserts the exact same row. */
     suspend fun restore(t: Transaction) { dao.upsert(t); listener.onDataChanged() }
 
-    private fun requirePositive(a: Long): Long { require(a > 0) { "Amount must be greater than zero" }; return a }
+    private fun requirePositive(a: Long): Long { if (a <= 0) throw InvalidInputException(InvalidInputException.Reason.AMOUNT_NOT_POSITIVE); return a }
 }

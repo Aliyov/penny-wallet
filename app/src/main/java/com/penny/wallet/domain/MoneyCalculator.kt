@@ -33,7 +33,7 @@ data class Period(val label: YearMonth, val start: LocalDate, val end: LocalDate
 }
 
 /**
- * SPEC §4. Everything derives from the ledger; nothing here is stored.
+ * Everything derives from the ledger; nothing here is stored.
  * Pure Kotlin, no Android dependencies, so it is unit-tested directly.
  */
 object MoneyCalculator {
@@ -162,8 +162,6 @@ object MoneyCalculator {
         while (left > 0) { base.merge(order[i % order.size], 1L, Long::plus); left--; i++ }
         return base.filterValues { it > 0 }
     }
-
-    // ---- Months & categories -------------------------------------------------------------
 
     /** The budgeting month labelled [label], starting on [startDay] (clamped to month length). */
     fun period(label: YearMonth, startDay: Int): Period {

@@ -1,5 +1,7 @@
 package com.penny.wallet.core.ui.components
 
+import com.penny.wallet.R
+import androidx.compose.ui.res.stringResource
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
@@ -32,7 +34,6 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import com.penny.wallet.core.ui.theme.Penny
 
-/** Title (+ optional subtitle) with a small "Reset" action shown when [onReset] != null. */
 @Composable
 private fun RowTitle(title: String, subtitle: String?, onReset: (() -> Unit)?, modifier: Modifier = Modifier) {
     val c = Penny.colors
@@ -41,7 +42,7 @@ private fun RowTitle(title: String, subtitle: String?, onReset: (() -> Unit)?, m
             Text(title, style = Penny.type.bodyStrong, color = c.textPrimary, modifier = Modifier.weight(1f, fill = false))
             if (onReset != null) {
                 Text(
-                    "Reset", style = Penny.type.caption, color = c.accent,
+                    stringResource(R.string.action_reset), style = Penny.type.caption, color = c.accent,
                     modifier = Modifier.padding(start = 8.dp).clip(Penny.dims.smallShape).clickable(onClick = onReset).padding(horizontal = 6.dp, vertical = 2.dp),
                 )
             }
@@ -116,12 +117,12 @@ fun StepperRow(
     val c = Penny.colors
     Row(modifier.fillMaxWidth().padding(vertical = 8.dp), verticalAlignment = Alignment.CenterVertically) {
         RowTitle(title, subtitle, onReset, Modifier.weight(1f).padding(end = 12.dp))
-        StepButton(Icons.Rounded.Remove, "Decrease", value > range.first) { onChange((value - 1).coerceIn(range)) }
+        StepButton(Icons.Rounded.Remove, stringResource(R.string.ui_decrease), value > range.first) { onChange((value - 1).coerceIn(range)) }
         Text(
             format(value), style = Penny.type.bodyStrong, color = c.textPrimary, textAlign = TextAlign.Center,
             modifier = Modifier.widthIn(min = 56.dp).padding(horizontal = 6.dp),
         )
-        StepButton(Icons.Rounded.Add, "Increase", value < range.last) { onChange((value + 1).coerceIn(range)) }
+        StepButton(Icons.Rounded.Add, stringResource(R.string.ui_increase), value < range.last) { onChange((value + 1).coerceIn(range)) }
     }
 }
 

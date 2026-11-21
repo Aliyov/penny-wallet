@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="notif_channel_name">Promemoria</string>
+    <string name="notif_channel_desc">Spese ricorrenti in arrivo e in scadenza</string>
+    <plurals name="notif_due_in_days">
+        <item quantity="one">Domani: %2$s %3$s</item>
+        <item quantity="other">Tra %1$d giorni: %2$s %3$s</item>
+        <item quantity="many">Tra %1$d giorni: %2$s %3$s</item>
+    </plurals>
+    <string name="notif_due_on">Scadenza: %1$s</string>
+    <string name="notif_due_today">Scade oggi: %1$s %2$s</string>
+    <string name="notif_due_today_hint">Tocca \"Segna come pagato\" quando hai fatto</string>
+    <string name="notif_action_mark_paid">Segna come pagato</string>
+    <string name="notif_auto_paid">Pagato in automatico: %1$s %2$s</string>
+    <string name="notif_recorded_for">Registrato per %1$s</string>
+
+    <string name="backup_err_no_folder">Scegli prima una cartella per i backup</string>
+    <string name="backup_err_lost_access">Accesso alla cartella dei backup perso. Sceglila di nuovo.</string>
+    <string name="backup_err_folder_not_found">Cartella non trovata</string>
+    <string name="backup_err_create_file">Impossibile creare il file</string>
+    <string name="backup_err_write_file">Impossibile scrivere il file</string>
+    <string name="backup_err_open_file">Impossibile aprire il file</string>
+    <string name="backup_err_failed">Backup non riuscito</string>
+    <string name="backup_err_not_backup">Questo non è un backup di Penny Wallet</string>
+    <string name="backup_err_too_new">La versione del backup (%1$d) è più recente di quella supportata dall\'app (%2$d)</string>
+
+    <string name="data_csv_outside">Esterno</string>
+</resources>

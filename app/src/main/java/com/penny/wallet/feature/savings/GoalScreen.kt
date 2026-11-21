@@ -1,5 +1,7 @@
 package com.penny.wallet.feature.savings
 
+import com.penny.wallet.R
+import androidx.compose.ui.res.stringResource
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -35,7 +37,6 @@ import kotlinx.coroutines.launch
 
 internal enum class GoalDialog { EDIT, DELETE, ADD, TAKE_BACK }
 
-/** Goal detail (SPEC §8 Savings): big ring, Add money / Take back, Edit / Delete, history. */
 @Composable
 fun GoalScreen(id: String, onBack: () -> Unit) {
     val vm = pennyViewModel(key = "goal-$id") { GoalViewModel(it, id) }
@@ -50,6 +51,9 @@ fun GoalScreen(id: String, onBack: () -> Unit) {
     LaunchedEffect(state.missing) { if (state.missing) leave() }
     val card = state.card ?: return
     val c = Penny.colors
+    val addedText = stringResource(R.string.savings_added_to, card.goal.name)
+    val returnedText = stringResource(R.string.savings_money_returned)
+    val goalDeletedText = stringResource(R.string.savings_goal_deleted)
 
     Box(Modifier.fillMaxSize().background(c.background)) {
         Column(Modifier.fillMaxSize().statusBarsPadding()) {
@@ -63,9 +67,9 @@ fun GoalScreen(id: String, onBack: () -> Unit) {
                         canTakeBack = card.balance > 0,
                     )
                 }
-                item("historyLabel") { SectionLabel("History", Modifier.padding(top = 16.dp)) }
+                item("historyLabel") { SectionLabel(stringResource(R.string.savings_history), Modifier.padding(top = 16.dp)) }
                 if (state.rows.isEmpty()) item("empty") {
-                    Text("No money added yet", style = Penny.type.body, color = c.textSecondary, modifier = Modifier.padding(vertical = 24.dp))
+                    Text(stringResource(R.string.savings_history_empty), style = Penny.type.body, color = c.textSecondary, modifier = Modifier.padding(vertical = 24.dp))
                 }
                 items(state.rows, key = { it.tx.id }) { row -> TxRowItem(row, Modifier.animateItem()) }
                 item("bottom") { Spacer(Modifier.height(32.dp)) }
@@ -76,20 +80,20 @@ fun GoalScreen(id: String, onBack: () -> Unit) {
 
     when (dialog) {
         GoalDialog.ADD -> GoalMoneySheet(
-            title = "Add money", confirm = "Add to goal", accounts = state.accounts, outside = state.outside, initialAccount = state.suggestedFrom,
+            title = stringResource(R.string.savings_add_money), confirm = stringResource(R.string.savings_add_to_goal), accounts = state.accounts, outside = state.outside, initialAccount = state.suggestedFrom,
             showAvailable = true, onDismiss = { dialog = null },
         ) { cents, accountId ->
             dialog = null
             vm.addMoney(cents, accountId) { err, reached ->
-                if (err != null) snack.show(err) else if (reached) celebrate = true else snack.show("Added to ${card.goal.name}")
+                if (err != null) snack.show(err) else if (reached) celebrate = true else snack.show(addedText)
             }
         }
         GoalDialog.TAKE_BACK -> GoalMoneySheet(
-            title = "Take back", confirm = "Take back", accounts = state.accounts, outside = state.outside, initialAccount = state.suggestedBack,
+            title = stringResource(R.string.savings_take_back), confirm = stringResource(R.string.savings_take_back), accounts = state.accounts, outside = state.outside, initialAccount = state.suggestedBack,
             showAvailable = false, onDismiss = { dialog = null },
         ) { cents, accountId ->
             dialog = null
-            vm.takeBack(cents, accountId) { err -> snack.show(err ?: "Money returned") }
+            vm.takeBack(cents, accountId) { err -> snack.show(err ?: returnedText) }
         }
         GoalDialog.EDIT -> GoalSheet(card.goal, onDismiss = { dialog = null }) { name, icon, color, target, deadline, done ->
             vm.update(card.goal.copy(name = name, icon = icon, color = color, targetCents = target, deadline = deadline)) { err ->
@@ -98,14 +102,14 @@ fun GoalScreen(id: String, onBack: () -> Unit) {
             }
         }
         GoalDialog.DELETE -> ConfirmDialog(
-            title = "Delete ${card.goal.name}?", text = "Saved money returns to your accounts.", confirm = "Delete", danger = true,
+            title = stringResource(R.string.savings_delete_title, card.goal.name), text = stringResource(R.string.savings_delete_body), confirm = stringResource(R.string.action_delete), danger = true,
             onDismiss = { dialog = null },
         ) {
             dialog = null
             vm.delete { d ->
                 leave()
                 // The VM is gone after navigating back, so undo goes through the container's app scope.
-                if (d != null) snack.undo("Goal deleted") { container.appScope.launch { container.goals.undoDelete(d) } }
+                if (d != null) snack.undo(goalDeletedText) { container.appScope.launch { container.goals.undoDelete(d) } }
             }
         }
         null -> Unit

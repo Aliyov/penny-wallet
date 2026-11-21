@@ -31,7 +31,9 @@ import androidx.compose.ui.unit.dp
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
+import androidx.compose.ui.res.stringResource
 import com.penny.wallet.AppContainer
+import com.penny.wallet.R
 import com.penny.wallet.core.ui.components.LocalSnack
 import com.penny.wallet.core.ui.components.NavItem
 import com.penny.wallet.core.ui.components.PennyBottomBar
@@ -55,12 +57,21 @@ object Routes {
     fun goal(id: String) = "goal/$id"
 }
 
-private val tabs = listOf(
-    NavItem(Routes.HOME, "Home", Icons.Rounded.Home),
-    NavItem(Routes.EXPENSES, "Expenses", Icons.Rounded.DonutLarge),
-    NavItem(Routes.SAVINGS, "Savings", Icons.Rounded.Savings),
-    NavItem(Routes.SETTINGS, "Settings", Icons.Rounded.Tune),
-)
+@Composable
+private fun rememberTabs(): List<NavItem> {
+    val home = stringResource(R.string.nav_home)
+    val expenses = stringResource(R.string.nav_expenses)
+    val savings = stringResource(R.string.nav_savings)
+    val settings = stringResource(R.string.nav_settings)
+    return remember(home, expenses, savings, settings) {
+        listOf(
+            NavItem(Routes.HOME, home, Icons.Rounded.Home),
+            NavItem(Routes.EXPENSES, expenses, Icons.Rounded.DonutLarge),
+            NavItem(Routes.SAVINGS, savings, Icons.Rounded.Savings),
+            NavItem(Routes.SETTINGS, settings, Icons.Rounded.Tune),
+        )
+    }
+}
 
 class RootState {
     var quickAddOpen by mutableStateOf(false)
@@ -75,7 +86,8 @@ fun PennyRoot(container: AppContainer, quickAddRequest: Int = 0) {
     val nav = rememberNavController()
     val host = remember { SnackbarHostState() }
     val scope = rememberCoroutineScope()
-    val snack = remember { Snack(host, scope) }
+    val undoLabel = stringResource(R.string.action_undo)
+    val snack = remember(undoLabel) { Snack(host, scope, undoLabel) }
     val root = remember { RootState() }
     var handledRequest by rememberSaveable { mutableIntStateOf(0) }
     LaunchedEffect(quickAddRequest) {
@@ -85,6 +97,7 @@ fun PennyRoot(container: AppContainer, quickAddRequest: Int = 0) {
         }
     }
 
+    val tabs = rememberTabs()
     val entry by nav.currentBackStackEntryAsState()
     val route = entry?.destination?.route
     val showBar = route in tabs.map { it.route }

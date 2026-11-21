@@ -62,7 +62,6 @@
     <string name="sample_remove">Remove</string>
     <string name="sample_remove_title">Remove sample data?</string>
     <string name="sample_remove_body">Sample accounts, goals and entries are removed. Anything you added to a sample account or goal goes with it.</string>
-    <string name="action_cancel">Cancel</string>
 
     <string name="theme_title">Theme</string>
     <string name="theme_system">System</string>

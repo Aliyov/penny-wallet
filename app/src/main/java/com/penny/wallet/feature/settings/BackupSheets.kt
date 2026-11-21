@@ -8,6 +8,9 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.res.pluralStringResource
+import androidx.compose.ui.res.stringResource
+import com.penny.wallet.R
 import androidx.compose.ui.unit.dp
 import com.penny.wallet.data.backup.BackupSummary
 import com.penny.wallet.core.money.Formatters
@@ -25,30 +28,30 @@ import java.time.ZoneId
 internal fun RestoreSummarySheet(sum: BackupSummary, onDismiss: () -> Unit, onReplace: () -> Unit) {
     val c = Penny.colors
     val dates = dateText()
-    PennySheet(onDismiss = onDismiss, title = "Restore backup") {
+    PennySheet(onDismiss = onDismiss, title = stringResource(R.string.backup_restore_title)) {
         PennyCard(Modifier.fillMaxWidth()) {
-            SummaryLine("Exported", isoToDate(sum.exportedAt, dates))
-            SummaryLine("Accounts", sum.accounts.toString())
-            SummaryLine("Categories", sum.categories.toString())
-            SummaryLine("Goals", sum.goals.toString())
-            SummaryLine("Transactions", sum.transactions.toString())
-            SummaryLine("Recurring", sum.recurring.toString())
+            SummaryLine(stringResource(R.string.backup_sum_exported), isoToDate(sum.exportedAt, dates))
+            SummaryLine(stringResource(R.string.settings_accounts), sum.accounts.toString())
+            SummaryLine(stringResource(R.string.backup_sum_categories), sum.categories.toString())
+            SummaryLine(stringResource(R.string.backup_sum_goals), sum.goals.toString())
+            SummaryLine(stringResource(R.string.backup_sum_transactions), sum.transactions.toString())
+            SummaryLine(stringResource(R.string.backup_sum_recurring), sum.recurring.toString())
             if (sum.firstDate != null && sum.lastDate != null) {
-                SummaryLine("Date range", "${isoToDate(sum.firstDate, dates)} – ${isoToDate(sum.lastDate, dates)}")
+                SummaryLine(stringResource(R.string.backup_sum_date_range), stringResource(R.string.backup_date_range_value, isoToDate(sum.firstDate, dates), isoToDate(sum.lastDate, dates)))
             }
         }
         if (sum.danglingRefs > 0) {
             Text(
-                "${sum.danglingRefs} entries reference missing accounts, categories or goals. They will be restored anyway.",
+                pluralStringResource(R.plurals.backup_dangling, sum.danglingRefs, sum.danglingRefs),
                 style = Penny.type.caption, color = c.warning, modifier = Modifier.padding(top = 12.dp),
             )
         }
         Text(
-            "Restoring replaces all data currently on this phone.",
+            stringResource(R.string.backup_restore_note),
             style = Penny.type.caption, color = c.textSecondary, modifier = Modifier.padding(top = 12.dp),
         )
-        PennyButton("Replace all data", onReplace, Modifier.fillMaxWidth().padding(top = 16.dp), kind = ButtonKind.DANGER)
-        PennyButton("Cancel", onDismiss, Modifier.fillMaxWidth().padding(top = 8.dp), kind = ButtonKind.SECONDARY)
+        PennyButton(stringResource(R.string.backup_replace_all), onReplace, Modifier.fillMaxWidth().padding(top = 16.dp), kind = ButtonKind.DANGER)
+        PennyButton(stringResource(R.string.action_cancel), onDismiss, Modifier.fillMaxWidth().padding(top = 8.dp), kind = ButtonKind.SECONDARY)
     }
 }
 

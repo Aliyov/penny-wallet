@@ -46,7 +46,7 @@ object Scheduler {
         WorkManager.getInstance(context).enqueueUniqueWork(CATCH_UP, ExistingWorkPolicy.REPLACE, req)
     }
 
-    /** Periodic backup (SPEC §6) when a folder is set; cancelled otherwise. */
+    /** Periodic backup when a folder is set; cancelled otherwise. */
     fun scheduleBackup(context: Context, p: UserPrefs, replace: Boolean = false) {
         val wm = WorkManager.getInstance(context)
         if (p.backupFolderUri == null) { wm.cancelUniqueWork(BACKUP); return }
