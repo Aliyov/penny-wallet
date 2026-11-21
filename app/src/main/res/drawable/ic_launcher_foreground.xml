@@ -1,9 +1,0 @@
-<?xml version="1.0" encoding="utf-8"?>
-<!-- Neon "P" coin on the 108dp adaptive canvas (safe zone = central 66dp). -->
-<vector xmlns:android="http://schemas.android.com/apk/res/android"
-    android:width="108dp" android:height="108dp" android:viewportWidth="108" android:viewportHeight="108">
-    <path android:fillColor="#00000000" android:strokeColor="#39FF88" android:strokeWidth="3.5"
-        android:pathData="M54,25a29,29 0,1 1,0 58a29,29 0,1 1,0 -58z" />
-    <path android:fillColor="#39FF88"
-        android:pathData="M44,37h13.5c7.5,0 12.5,4.8 12.5,11.6c0,6.9 -5,11.7 -12.5,11.7h-6.3v10.7h-7.2zM51.2,43.3v10.7h5.8c3.6,0 5.8,-2 5.8,-5.4c0,-3.3 -2.2,-5.3 -5.8,-5.3z" />
-</vector>

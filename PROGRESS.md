@@ -14,6 +14,7 @@
 - [x] 11 Polish
 - [x] 12 Save-button fix + receipt scan (1.3)
 - [x] 13 Receipt scan works in release + OCR-slip tolerance (1.4)
+- [x] 14 New app icon (1.5)
 
 ## Phase plans
 ### 1 Scaffold
@@ -87,6 +88,11 @@
 - Parser: fuzzy "total" words (`TOTAL_FUZZY`, edit distance 1, 2 for 8+ letters, digit slips like T0TAL); a lost-comma total ("308") counts when the same amount appears elsewhere, otherwise it is offered but not confident; the trailing VAT rate is dropped in item rows ("0,49 22,00"); a fuzzy-only leader loses to a card line; plural discount words ("Sconti").
 - Tests: real phone capture as `RealReceiptRegressionTest` + 54 rule tests (211 total).
 - `smoke` build type (release + R8 + probe, separate app id `com.penny.wallet.smoke`) and `scripts/ocr-smoke.sh`: runs the real OCR on the connected phone against `Test_Recipe/*` and checks `Test_Recipe/expected.txt`. **Run it before every release that touches OCR.** Receipt photos are git-ignored (public repo).
+
+### 14 New app icon (1.5)
+- Source: `App_Icon.png` (1254² with its own rounded square on white). The adaptive foreground (`mipmap-*/ic_launcher_foreground.png`) is the wallet artwork on a navy gradient fitted from the image (least-squares, residual ≈2/255), so circle/squircle masks never show the white corners. Wallet ≈50 dp of 108 dp, inside the safe zone.
+- Themed icon (Android 13+): hand-built vector `drawable/ic_launcher_monochrome.xml` (wallet, coins, chart bars), because a silhouette derived from the painting was ragged.
+- The splash screen uses the same foreground. The old vector icon drawables were removed.
 
 ## Environment
 - JDK 25 system OpenJDK is a **JRE only (no javac)**. The build uses a **JDK 21 toolchain auto-downloaded by Gradle** (foojay resolver in `settings.gradle.kts`), so no sudo is needed. Alternative: `sudo dnf install java-25-openjdk-devel`.

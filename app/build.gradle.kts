@@ -18,8 +18,8 @@ android {
         // Real phones are ARM; dropping x86 (emulator-only) ML Kit native libs roughly halves the APK.
         ndk { abiFilters += listOf("arm64-v8a", "armeabi-v7a") }
         targetSdk = 35
-        versionCode = 5
-        versionName = "1.4"
+        versionCode = 6
+        versionName = "1.5"
     }
 
     buildTypes {
