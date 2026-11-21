@@ -8,7 +8,7 @@ import com.penny.wallet.data.db.entities.Goal
 import com.penny.wallet.data.db.entities.RecurringExpense
 import com.penny.wallet.data.db.entities.Transaction
 import com.penny.wallet.data.db.entities.TxType
-import com.penny.wallet.ui.theme.ItemPalette
+import com.penny.wallet.core.ui.theme.ItemPalette
 import java.time.LocalDate
 import java.util.Random
 import java.util.UUID

@@ -31,19 +31,19 @@
             </intent-filter>
         </activity>
 
-        <receiver android:name=".work.BootReceiver" android:exported="true">
+        <receiver android:name=".platform.work.BootReceiver" android:exported="true">
             <intent-filter>
                 <action android:name="android.intent.action.BOOT_COMPLETED" />
                 <action android:name="android.intent.action.MY_PACKAGE_REPLACED" />
             </intent-filter>
         </receiver>
-        <receiver android:name=".work.MarkPaidReceiver" android:exported="false" />
+        <receiver android:name=".platform.work.MarkPaidReceiver" android:exported="false" />
 
-        <receiver android:name=".widget.BalanceWidgetReceiver" android:exported="true" android:label="Penny balance">
+        <receiver android:name=".platform.widget.BalanceWidgetReceiver" android:exported="true" android:label="Penny balance">
             <intent-filter><action android:name="android.appwidget.action.APPWIDGET_UPDATE" /></intent-filter>
             <meta-data android:name="android.appwidget.provider" android:resource="@xml/balance_widget_info" />
         </receiver>
-        <receiver android:name=".widget.QuickAddWidgetReceiver" android:exported="true" android:label="Penny quick add">
+        <receiver android:name=".platform.widget.QuickAddWidgetReceiver" android:exported="true" android:label="Penny quick add">
             <intent-filter><action android:name="android.appwidget.action.APPWIDGET_UPDATE" /></intent-filter>
             <meta-data android:name="android.appwidget.provider" android:resource="@xml/quick_add_widget_info" />
         </receiver>

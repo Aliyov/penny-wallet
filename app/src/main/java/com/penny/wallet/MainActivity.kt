@@ -11,9 +11,9 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableIntStateOf
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.core.splashscreen.SplashScreen.Companion.installSplashScreen
-import com.penny.wallet.ui.lock.LockGate
-import com.penny.wallet.ui.nav.PennyRoot
-import com.penny.wallet.ui.theme.PennyTheme
+import com.penny.wallet.feature.lock.LockGate
+import com.penny.wallet.feature.nav.PennyRoot
+import com.penny.wallet.core.ui.theme.PennyTheme
 
 // AppCompatActivity (a FragmentActivity) so BiometricPrompt works.
 class MainActivity : AppCompatActivity() {

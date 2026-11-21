@@ -25,6 +25,15 @@
 - [ ] P6 Launch: closed test (12 testers / 14 days), production release
 
 ## Phase plans
+### P1 Foundations
+- Package move to `core/`, `feature/`, `platform/` (ARCHITECTURE §3), behaviour-neutral commit.
+- Comment cleanup (§11): drop comments that restate code, banners, spec-section references.
+- `ThemeMode` SYSTEM/LIGHT/DARK (default SYSTEM) with a light palette; "pure black" replaces AMOLED/dark grey; status bar icons follow the theme.
+- Currency: `UserPrefs.currencyCode` (suggested from the device region), fraction digits from `java.util.Currency`, locale-aware separators; changing it never converts amounts.
+- Strings: every UI string to `strings.xml` with `values-de` / `values-it`, plurals, locale-aware dates, `locales_config.xml`.
+- Clean first run: no seed; empty Home card "Add your first account" + "Try with sample data" (removable).
+- CI: GitHub Actions with lint, unit tests, `bundleRelease`, merged-manifest permission check, missing-translation check.
+
 ### 1 Scaffold
 - Gradle wrapper 9.9.2, AGP 9.5.2 (built-in Kotlin), Kotlin 2.4.21, KSP 2.3.14, Compose BOM 2026.11.01, version catalog.
 - Theme (§7) driven by `UserPrefs` from day one (colours, type scale, corners, density, motion, glow).
@@ -172,4 +181,4 @@
 **Configurable (Settings → Personalise)**: accent colour (presets + hex), AMOLED / dark grey, glow, HUD grid, corners, text size, density, animations, haptics, cents, number format, € position, privacy mode; Home section order/visibility, hero metric, recent count; quick add defaults (type, account, chip order, save on chip tap, note field); default chart, history months, first day of week, month start day (payday); goal layout and sort; reminder time, default days before, overdue badge, quiet mode; backup frequency and files kept; biometric lock and lock delay. Every option has a reset, plus "Reset all".
 
 ## Notes
-- Icon registry `ui/components/PennyIcons.kt`: 102 icons; keys are persisted, so never rename. Stand-ins: piggy=Toll, revolut=Payment, tax=ReceiptLong.
+- Icon registry `core/ui/components/PennyIcons.kt`: 102 icons; keys are persisted, so never rename. Stand-ins: piggy=Toll, revolut=Payment, tax=ReceiptLong.
