@@ -17,7 +17,7 @@
 - [x] 14 New app icon (1.5)
 
 ## Production roadmap (see docs/ARCHITECTURE.md §14)
-- [ ] P1 Foundations: package move, comment cleanup, strings EN/DE/IT, light/dark/system theme, currency choice, clean first run (no demo data), CI
+- [x] P1 Foundations: package move, comment cleanup, strings EN/DE/IT, light/dark/system theme, currency choice, clean first run (no demo data), CI
 - [ ] P2 Simplify: essential settings + More options, leaner Home, plain wording, empty states
 - [ ] P3 Features: monthly budget, "this month" insight, smarter receipt scan, category suggestions
 - [ ] P4 Support & trust: Support Penny (Play Billing tips), encrypted backups, crash report by email
@@ -116,6 +116,17 @@
 -  Android SDK at `~/Android/Sdk` (platforms 35/36/37 installed via sdkmanager, no sudo needed), adb at `~/Android/Sdk/platform-tools/adb` (not on PATH).
 
 ## Decisions
+- **P1 (2026-11-21):**
+  - Currency: `UserPrefs.currencyCode` (ISO 4217). New installs get the region's currency; installs from before P1 and old backups without the field become EUR. `numberFormat` and the new `symbolPosition` default to AUTO (from the locale); explicit EU/US and before/after stay as overrides. `symbolBefore` is ignored and kept for one release.
+  - Zero/three-decimal currencies: amounts stay minor units; the numpad types minor units; receipt results (parser works in 2 decimals) are rescaled with `ReceiptResult.inMinorUnits`.
+  - Theme: `themeMode` SYSTEM/LIGHT/DARK (default SYSTEM). The old `background` enum now means "pure black" (AMOLED) vs normal dark; new installs default to normal dark. The light palette darkens the accent until it reaches 4.5:1 on the background, and `onAccent` is picked by contrast. Widgets use day/night colour providers.
+  - First run: no demo data. 8 default categories are created in the current language. Sample data rows all have ids starting with `sample-`; removing it also removes anything entered on sample accounts/goals (the dialog says so). The FAB is hidden until the first account exists; the welcome card is the only action. No backup warning before there's real data.
+  - Strings live in per-area files (`strings_common/home/money/settings/personalise/platform.xml`), checked by `scripts/check-translations.py`. Per-app language via `generateLocaleConfig`. Italian plurals carry a `many` form (lint).
+  - Notes created by the app ("Balance set", "Returned from X") are stored in the language active at the time. CSV column headers stay English so other tools can read them.
+  - Repository input errors are typed (`InvalidInputException`, `InsufficientAvailableException`) and mapped by `AppContainer.userMessage`; ViewModel money text uses `moneyText` (user currency + locale).
+  - Monthly rules read "Every month on day 14" (ordinals differ per language).
+  - CI: `.github/workflows/ci.yml` runs the translation check, lint, unit tests, `bundleRelease` + `assembleRelease` and `scripts/check-manifest.sh`. It runs once pushed.
+  - Open for P5: targetSdk is 35; Play will require a newer target by launch.
 - **Production direction (2026-11-21):** free app, personal Play developer account, languages EN/DE/IT, tips via Play Billing consumables only, confirmed by the user; no external tip links in any build, GitHub APKs included. Architecture rules in `docs/ARCHITECTURE.md`.
 - Savings "Outside (not from balance)": SAVE/UNSAVE rows use the pseudo account id `external` (MoneyCalculator.EXTERNAL). Adds to the goal without reducing any account or Available to spend. No schema change, so old backups still restore.
 - **compileSdk 37.1** (`release(37) { minorApiLevel = 1 }`; Compose 1.13 requires it), targetSdk 35, minSdk 26.
@@ -166,7 +177,7 @@
 - R8 rules keep serializers and enum names (persisted in Room, backups and settings JSON).
 
 ## How to use / what's configurable
-**Install:** connect the phone with USB debugging on, then `./gradlew installRelease` (or copy `app/build/outputs/apk/release/penny-wallet-release.apk`, the fast optimised build; the debug APK is only for development). First launch seeds demo data (2 accounts, 6 categories, 2 goals, ~40 transactions, 2 recurring rules). Clear it any time: Settings → Reset all data.
+**Install:** connect the phone with USB debugging on, then `./gradlew installRelease` (or copy `app/build/outputs/apk/release/penny-wallet-release.apk`, the fast optimised build; the debug APK is only for development). A new install starts empty with 8 default categories; "Try with sample data" on Home adds a removable demo set.
 
 **Daily use**
 - `+` → type the amount on the numpad → tap a category chip: saved (3 taps), or tap **Save**.

@@ -44,8 +44,8 @@ That number is calculated live from your transaction history. It is never stored
 
 ### Customise almost everything
 
-Accent colour (presets or any hex) · AMOLED black or dark grey · glow strength · HUD grid · corner style · text size · density ·
-animations full/reduced/off · haptics · show cents · `1.234,56 €` or `€1,234.56` · privacy mode (amounts hidden until tapped) ·
+Light, dark or system theme · accent colour (presets or any hex) · pure black dark mode · glow strength · HUD grid · corner style · text size · density ·
+animations full/reduced/off · haptics · your currency (suggested from your region) · show cents · number format follows your language or `1.234,56` / `1,234.56` · privacy mode (amounts hidden until tapped) ·
 Home section order and visibility · what the hero number shows · quick-add defaults and chip order ·
 **month start day** (payday on the 27th → your "month" runs 27th–26th) · goal layout and sort · reminder time · quiet mode · backup frequency.
 
@@ -63,7 +63,7 @@ All of these apply live, and each has a reset.
 Copy the APK to your phone and open it, or install over USB with `./gradlew installRelease`.
 
 > The release build is signed with your local debug key, so it installs over a debug build without losing data.
-> The first launch fills the app with demo data; clear it under **Settings → Reset all data**.
+> The app starts empty with a few default categories. *Try with sample data* on the first screen fills in a demo set you can remove again with one tap.
 
 ### Requirements
 
@@ -87,7 +87,7 @@ Copy the APK to your phone and open it, or install over USB with `./gradlew inst
 
 ### How money is handled
 
-- **All money is `Long` cents.** No floats anywhere. Formatting happens only in the UI layer.
+- **All money is `Long` minor units** (cents, or whole yen for zero-decimal currencies). No floats anywhere. Formatting happens only in the UI layer.
 - **Nothing derived is stored.** Account balances, goal balances and "available" are computed from the transaction ledger by
   [`MoneyCalculator`](app/src/main/java/com/penny/wallet/domain/MoneyCalculator.kt), a pure Kotlin object with unit tests.
 - **Recurrence is unit-tested too** ([`Recurrence`](app/src/main/java/com/penny/wallet/domain/Recurrence.kt)): a rule on the 31st
@@ -98,12 +98,11 @@ Copy the APK to your phone and open it, or install over USB with `./gradlew inst
 
 ```
 app/src/main/java/com/penny/wallet/
-  data/      db (entities, DAOs, seed) · repo · backup · prefs
-  domain/    MoneyCalculator · Recurrence · Formatters      ← pure, unit-tested
-  ui/        theme · components · home · expenses · savings · quickadd · recurring · settings · account · lock
-  work/      DailyReminderWorker · WeeklyBackupWorker · BootReceiver · MarkPaidReceiver
-  widget/    BalanceWidget · QuickAddWidget · WidgetUpdater
-  notify/    Notifications
+  core/      money (Formatters) · ui (theme, components) · util (dates)
+  domain/    MoneyCalculator · Recurrence · receipt parsing   ← pure, unit-tested
+  data/      db (entities, DAOs, sample data) · repo · backup · prefs · ocr
+  feature/   home · add · expenses · savings · recurring · settings · lock · nav
+  platform/  notify · work (reminders, backups, boot) · widget
 ```
 
 ## Development
@@ -124,5 +123,5 @@ The only data that leaves the app is the backup or CSV file you write to a folde
 ---
 
 <div align="center">
-<sub>Built for one person's wallet. EUR only.</sub>
+<sub>Free, offline, in English, German and Italian.</sub>
 </div>
