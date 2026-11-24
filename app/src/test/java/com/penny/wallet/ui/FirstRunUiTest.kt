@@ -10,19 +10,21 @@ import androidx.compose.ui.test.performScrollTo
 import androidx.compose.ui.test.printToString
 import com.penny.wallet.MainActivity
 import com.penny.wallet.container
+import com.penny.wallet.platform.crash.CrashReporter
+import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.runBlocking
+import kotlinx.coroutines.withTimeoutOrNull
 import org.junit.Rule
 import org.junit.Test
 import org.junit.runner.RunWith
 import org.robolectric.RobolectricTestRunner
 import org.robolectric.annotation.Config
-import org.robolectric.annotation.GraphicsMode
 
 /** First composition under Robolectric takes several seconds on a busy machine. */
 private const val TIMEOUT = 30_000L
 
+/** Legacy graphics: with native graphics the layout stops updating after the first frame on headless runs. */
 @RunWith(RobolectricTestRunner::class)
-@GraphicsMode(GraphicsMode.Mode.NATIVE)
 @Config(application = TestPennyApp::class, qualifiers = "w411dp-h891dp-xxhdpi")
 class FirstRunUiTest {
     @get:Rule val compose = createAndroidComposeRule<MainActivity>()
@@ -32,8 +34,12 @@ class FirstRunUiTest {
         try {
             compose.waitUntil(TIMEOUT, condition)
         } catch (e: Throwable) {
-            val accounts = runBlocking { compose.activity.container.db.accounts().getAll().map { it.name } }
+            val c = compose.activity.container
+            val accounts = runBlocking { c.db.accounts().getAll().map { it.name } }
+            val observed = runBlocking { withTimeoutOrNull(5_000) { c.accounts.observe().first().map { "${it.name}/archived=${it.archived}" } } }
+            println("Observed accounts: $observed, prefs: ${c.settings.prefs.value}")
             println("Timed out waiting for $what. Accounts in db: $accounts")
+            println("Crash report: ${CrashReporter.pending(compose.activity)?.take(3000)}")
             println(compose.onRoot(useUnmergedTree = true).printToString())
             throw e
         }
