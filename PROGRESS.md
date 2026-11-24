@@ -18,10 +18,10 @@
 
 ## Production roadmap (see docs/ARCHITECTURE.md §14)
 - [x] P1 Foundations: package move, comment cleanup, strings EN/DE/IT, light/dark/system theme, currency choice, clean first run (no demo data), CI
-- [x] P2 Simplify: essential settings + More options, leaner Home, plain wording, empty states (phone check pending)
-- [x] P3 Features: monthly budget, "this month" insight, smarter receipt scan, category suggestions (phone check + ocr-smoke pending)
+- [x] P2 Simplify: essential settings + More options, leaner Home, plain wording, empty states (checked on phone 2026-11-24: settings, light/dark, EN/DE/IT)
+- [x] P3 Features: monthly budget, "this month" insight, smarter receipt scan, category suggestions (ocr-smoke OK, budget + insight checked on phone)
 - [x] P4 Support & trust: Support Penny (Play Billing tips), encrypted backups, crash report by email (phone check pending; tips testable only from a Play test track)
-- [ ] P5 Play readiness: upload key + AAB, accessibility, store listing EN/DE/IT, privacy policy, Data safety
+- [ ] P5 Play readiness: upload key + AAB, accessibility, store listing EN/DE/IT, privacy policy, Data safety (code + texts done 2026-11-24; waiting for Play Console setup, store graphics, key backup)
 - [ ] P6 Launch: closed test (12 testers / 14 days), production release
 
 ## Phase plans
