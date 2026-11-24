@@ -20,6 +20,7 @@ reorderable = "3.1.0"
 junit = "4.13.2"
 profileinstaller = "1.4.1"
 mlkitText = "16.0.1"
+billing = "8.0.0"
 
 [libraries]
 androidx-core-ktx = { module = "androidx.core:core-ktx", version.ref = "coreKtx" }
@@ -52,6 +53,7 @@ reorderable = { module = "sh.calvin.reorderable:reorderable", version.ref = "reo
 junit = { module = "junit:junit", version.ref = "junit" }
 androidx-profileinstaller = { module = "androidx.profileinstaller:profileinstaller", version.ref = "profileinstaller" }
 mlkit-text-recognition = { module = "com.google.mlkit:text-recognition", version.ref = "mlkitText" }
+play-billing = { module = "com.android.billingclient:billing-ktx", version.ref = "billing" }
 
 [plugins]
 android-application = { id = "com.android.application", version.ref = "agp" }

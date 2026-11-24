@@ -129,4 +129,14 @@
     <string name="backup_password_open">Open</string>
     <string name="backup_err_wrong_password">Wrong password</string>
     <string name="backup_err_password_lost">The backup password is no longer readable on this phone. Turn password protection off and on again.</string>
+
+    <string name="support_title">Support Penny</string>
+    <string name="support_sub">Free, no ads. A tip helps keep it that way</string>
+    <string name="support_body">Penny Wallet is free, has no ads and never collects your data. If it helps you, you can leave a small tip. It unlocks nothing; everything stays free.</string>
+    <string name="support_tip_tea">Buy me a tea</string>
+    <string name="support_tip_cappuccino">Cappuccino</string>
+    <string name="support_thanks">Thank you! That really means a lot.</string>
+    <string name="support_unavailable">Tips need the Google Play version of Penny Wallet. Everything else works the same.</string>
+    <string name="support_pending">Thanks! Your tip goes through once the payment is complete.</string>
+    <string name="support_failed">The tip didn\'t go through. Please try again later.</string>
 </resources>

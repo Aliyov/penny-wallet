@@ -129,4 +129,14 @@
     <string name="backup_password_open">Öffnen</string>
     <string name="backup_err_wrong_password">Falsches Passwort</string>
     <string name="backup_err_password_lost">Das Backup-Passwort ist auf diesem Handy nicht mehr lesbar. Schalte den Passwortschutz aus und wieder ein.</string>
+
+    <string name="support_title">Penny unterstützen</string>
+    <string name="support_sub">Kostenlos, ohne Werbung. Ein Trinkgeld hilft, dass es so bleibt</string>
+    <string name="support_body">Penny Wallet ist kostenlos, ohne Werbung und sammelt nie deine Daten. Wenn dir die App hilft, kannst du ein kleines Trinkgeld geben. Es schaltet nichts frei; alles bleibt kostenlos.</string>
+    <string name="support_tip_tea">Spendier mir einen Tee</string>
+    <string name="support_tip_cappuccino">Cappuccino</string>
+    <string name="support_thanks">Danke! Das bedeutet mir wirklich viel.</string>
+    <string name="support_unavailable">Trinkgeld geht nur mit der Google-Play-Version von Penny Wallet. Alles andere funktioniert genauso.</string>
+    <string name="support_pending">Danke! Dein Trinkgeld kommt an, sobald die Zahlung abgeschlossen ist.</string>
+    <string name="support_failed">Das Trinkgeld hat nicht geklappt. Bitte versuch es später noch einmal.</string>
 </resources>

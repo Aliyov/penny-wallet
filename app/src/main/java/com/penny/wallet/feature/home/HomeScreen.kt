@@ -1,5 +1,9 @@
 package com.penny.wallet.feature.home
 
+import androidx.compose.foundation.layout.Column
+import androidx.compose.material3.TextButton
+import androidx.compose.ui.platform.LocalContext
+import com.penny.wallet.platform.crash.CrashReporter
 import com.penny.wallet.core.ui.components.ButtonKind
 import com.penny.wallet.core.ui.components.EmptyState
 import androidx.compose.animation.animateContentSize
@@ -62,6 +66,9 @@ fun HomeScreen(
     val deletedText = stringResource(R.string.deleted)
     val recentLabel = stringResource(R.string.home_recent)
     val recentEmpty = stringResource(R.string.home_recent_empty)
+    val context = LocalContext.current
+    var crashReport by remember { mutableStateOf(CrashReporter.pending(context)) }
+    val noMailApp = stringResource(R.string.crash_no_mail_app)
 
     LazyColumn(
         Modifier.fillMaxSize().statusBarsPadding(),
@@ -78,6 +85,18 @@ fun HomeScreen(
         }
         if (state.hasSampleData) {
             item(key = "sample") { SampleBanner({ confirmRemoveSample = true }, Modifier.padding(horizontal = gutter, vertical = 4.dp)) }
+        }
+        crashReport?.let { report ->
+            item(key = "crash") {
+                CrashBanner(
+                    onSend = {
+                        if (CrashReporter.send(context, report)) CrashReporter.clear(context) else snack.show(noMailApp)
+                        crashReport = CrashReporter.pending(context)
+                    },
+                    onDismiss = { CrashReporter.clear(context); crashReport = null },
+                    modifier = Modifier.padding(horizontal = gutter, vertical = 4.dp),
+                )
+            }
         }
         if (state.backupWarning) {
             item(key = "backup") { BackupBanner(onOpenBackup, Modifier.padding(horizontal = gutter, vertical = 4.dp)) }
@@ -131,6 +150,18 @@ fun HomeScreen(
             onDismiss = { confirmRemoveSample = false },
             onConfirm = { vm.removeSampleData(); confirmRemoveSample = false },
         )
+    }
+}
+
+@Composable
+private fun CrashBanner(onSend: () -> Unit, onDismiss: () -> Unit, modifier: Modifier = Modifier) {
+    val c = Penny.colors
+    Column(modifier.fillMaxWidth().clip(Penny.dims.smallShape).background(c.surface1).padding(horizontal = 14.dp, vertical = 10.dp)) {
+        Text(stringResource(R.string.crash_banner), style = Penny.type.label, color = c.textPrimary)
+        Row(Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.End) {
+            TextButton(onClick = onDismiss) { Text(stringResource(R.string.crash_dismiss), color = c.textSecondary) }
+            TextButton(onClick = onSend) { Text(stringResource(R.string.crash_send), color = c.accent) }
+        }
     }
 }
 

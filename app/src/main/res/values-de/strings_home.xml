@@ -116,4 +116,9 @@
     <string name="insight_less">%1$d %% weniger als zur gleichen Zeit im Vormonat</string>
     <string name="insight_more">%1$d %% mehr als zur gleichen Zeit im Vormonat</string>
     <string name="insight_top">Am meisten für %1$s (%2$s)</string>
+
+    <string name="crash_banner">Penny Wallet wurde beim letzten Mal unerwartet beendet. Bericht senden, damit es behoben werden kann? Du siehst die E-Mail vor dem Senden.</string>
+    <string name="crash_send">Bericht senden</string>
+    <string name="crash_dismiss">Nicht jetzt</string>
+    <string name="crash_no_mail_app">Keine E-Mail-App gefunden</string>
 </resources>

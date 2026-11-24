@@ -20,7 +20,7 @@
 - [x] P1 Foundations: package move, comment cleanup, strings EN/DE/IT, light/dark/system theme, currency choice, clean first run (no demo data), CI
 - [x] P2 Simplify: essential settings + More options, leaner Home, plain wording, empty states (phone check pending)
 - [x] P3 Features: monthly budget, "this month" insight, smarter receipt scan, category suggestions (phone check + ocr-smoke pending)
-- [ ] P4 Support & trust: Support Penny (Play Billing tips), encrypted backups, crash report by email
+- [x] P4 Support & trust: Support Penny (Play Billing tips), encrypted backups, crash report by email (phone check pending; tips testable only from a Play test track)
 - [ ] P5 Play readiness: upload key + AAB, accessibility, store listing EN/DE/IT, privacy policy, Data safety
 - [ ] P6 Launch: closed test (12 testers / 14 days), production release
 
@@ -36,8 +36,8 @@
 
 ### P4 Support & trust
 - Encrypted backups: optional password (Backup screen), AES-GCM with PBKDF2 key, `format` marker in a JSON envelope so restore asks for the password; plain backups still restore.
-- Support Penny: Play Billing consumables behind `TipRepository` (needs product ids in Play Console).
-- Crash report by email: save the stack trace on crash, offer to send it on next launch via the mail app (needs a support address).
+- Support Penny: Play Billing consumables `tip_tea` (€2, "Buy me a tea") and `tip_cappuccino` (€4) behind `TipRepository`; Settings → Support Penny.
+- Crash report by email to aliyov.code@proton.me: stack trace saved on crash, Home offers to send it via the mail app on next start.
 
 ### P3 Features
 - `domain/Budget`: one monthly budget over all expenses (`UserPrefs.monthlyBudget`, minor units, 0 = none); left, per day, pace (on track / faster than planned / over).
@@ -142,6 +142,8 @@
   - Backup password is stored on the phone (Android Keystore-wrapped, separate private prefs, never in `UserPrefs` because prefs travel in backups) so scheduled backups stay encrypted. If it can't be unwrapped, the backup fails with a message instead of silently writing a plain file.
   - Encrypted files keep the `.json` name so pruning and the restore picker work unchanged. KDF iterations from a file are bounded (10k–2M).
   - Restoring a protected backup on a phone without a password keeps protection on with that password. Turning protection on or off never touches older files.
+  - Play Billing 8.0.0 adds only `com.android.vending.BILLING` to the merged manifest, no network permission (checked), so the §10 decision stands. Billing connects only while the Support screen is open; purchases are consumed (tips can repeat) and leftovers are consumed on the next visit. Prices come from Play, names from our strings.
+  - Crash reports leave out exception messages (they can quote user input): only class names, stack frames, app/OS version and phone model. The user sees the email before sending. Support address chosen by the user: aliyov.code@proton.me.
 - **P3 (2026-11-24):**
   - Budget lives in `UserPrefs` (default 0), so no Room migration and old backups restore unchanged. "Reset all options" keeps it. Changing currency does not convert it, like every other amount.
   - "Faster than planned" only shows once spending is more than 10 % ahead of an even daily pace, to avoid nagging. Colour is never the only signal: the text says it too.

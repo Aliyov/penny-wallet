@@ -53,6 +53,7 @@ object Routes {
     const val ACCOUNTS = "accounts"
     const val PERSONALISE = "personalise"
     const val BACKUP = "backup"
+    const val SUPPORT = "support"
     fun account(id: String) = "account/$id"
     fun goal(id: String) = "goal/$id"
 }

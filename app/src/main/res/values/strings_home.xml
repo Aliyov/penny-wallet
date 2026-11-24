@@ -117,4 +117,9 @@
     <string name="insight_less">%1$d%% less than this time last month</string>
     <string name="insight_more">%1$d%% more than this time last month</string>
     <string name="insight_top">Most on %1$s (%2$s)</string>
+
+    <string name="crash_banner">Penny Wallet closed unexpectedly last time. Send a report so it can be fixed? You\'ll see the email before it\'s sent.</string>
+    <string name="crash_send">Send report</string>
+    <string name="crash_dismiss">Not now</string>
+    <string name="crash_no_mail_app">No email app found</string>
 </resources>

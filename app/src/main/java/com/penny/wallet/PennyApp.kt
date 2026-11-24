@@ -1,5 +1,6 @@
 package com.penny.wallet
 
+import com.penny.wallet.platform.crash.CrashReporter
 import android.app.Application
 import com.penny.wallet.platform.notify.Notifications
 import com.penny.wallet.feature.lock.AppLock
@@ -16,6 +17,7 @@ class PennyApp : Application() {
 
     override fun onCreate() {
         super.onCreate()
+        CrashReporter.install(this)
         container = AppContainer(this)
         WidgetUpdater(this, container).start()
         AppLock.install { container.settings.prefs.value }

@@ -118,4 +118,9 @@
     <string name="insight_less">%1$d%% in meno rispetto allo stesso periodo del mese scorso</string>
     <string name="insight_more">%1$d%% in più rispetto allo stesso periodo del mese scorso</string>
     <string name="insight_top">Di più per %1$s (%2$s)</string>
+
+    <string name="crash_banner">Penny Wallet si è chiusa inaspettatamente l\'ultima volta. Inviare un rapporto per correggere il problema? Vedrai l\'email prima dell\'invio.</string>
+    <string name="crash_send">Invia rapporto</string>
+    <string name="crash_dismiss">Non ora</string>
+    <string name="crash_no_mail_app">Nessuna app email trovata</string>
 </resources>

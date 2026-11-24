@@ -104,6 +104,7 @@ dependencies {
     implementation(libs.androidx.profileinstaller)
     // On-device receipt OCR, Latin model bundled in the APK: works offline, no Play Services download.
     implementation(libs.mlkit.text.recognition)
+    implementation(libs.play.billing)
 
     testImplementation(libs.junit)
 }

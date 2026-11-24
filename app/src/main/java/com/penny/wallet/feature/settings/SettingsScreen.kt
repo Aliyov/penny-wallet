@@ -1,5 +1,6 @@
 package com.penny.wallet.feature.settings
 
+import androidx.compose.material.icons.rounded.Favorite
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
@@ -82,6 +83,11 @@ fun SettingsScreen(onOpen: (String) -> Unit) {
             SettingsRow(Icons.Rounded.Backup, stringResource(R.string.settings_backup), { onOpen("backup") }, sub, tint = if (backup.folderUri != null && !backup.folderOk) c.warning else Color(ItemPalette[7]))
             RowDivider()
             SettingsRow(Icons.Rounded.Tune, stringResource(R.string.settings_more), { onOpen("personalise") }, stringResource(R.string.settings_more_sub), tint = Color(ItemPalette[2]))
+        }
+
+        Spacer(Modifier.height(Penny.dims.gap))
+        RowGroup {
+            SettingsRow(Icons.Rounded.Favorite, stringResource(R.string.support_title), { onOpen("support") }, stringResource(R.string.support_sub), tint = Color(ItemPalette[0]))
         }
 
         Text(
