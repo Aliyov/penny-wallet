@@ -18,7 +18,7 @@
 
 ## Production roadmap (see docs/ARCHITECTURE.md §14)
 - [x] P1 Foundations: package move, comment cleanup, strings EN/DE/IT, light/dark/system theme, currency choice, clean first run (no demo data), CI
-- [ ] P2 Simplify: essential settings + More options, leaner Home, plain wording, empty states
+- [x] P2 Simplify: essential settings + More options, leaner Home, plain wording, empty states (phone check pending)
 - [ ] P3 Features: monthly budget, "this month" insight, smarter receipt scan, category suggestions
 - [ ] P4 Support & trust: Support Penny (Play Billing tips), encrypted backups, crash report by email
 - [ ] P5 Play readiness: upload key + AAB, accessibility, store listing EN/DE/IT, privacy policy, Data safety
@@ -33,6 +33,15 @@
 - Strings: every UI string to `strings.xml` with `values-de` / `values-it`, plurals, locale-aware dates, `locales_config.xml`.
 - Clean first run: no seed; empty Home card "Add your first account" + "Try with sample data" (removable).
 - CI: GitHub Actions with lint, unit tests, `bundleRelease`, merged-manifest permission check, missing-translation check.
+
+### P2 Simplify
+- Settings main screen: "Your money" (Accounts, Categories, Recurring bills) + essentials inline (Theme, Accent, Currency, Month starts on, Reminder time, Backup, App lock) + one "More options" row. Support Penny comes in P4.
+- "Personalise" becomes "More options": everything else (look details, Home layout, Quick add, Charts, Savings, reminder/backup details, number format), no duplicates of the essentials. "Erase all data" moves to the bottom of More options.
+- "Reset all options" keeps the currency (bug: it fell back to EUR).
+- Leaner Home for new installs: HUD grid off by default; upcoming only when there are bills (already); no other section removed.
+- Shared `EmptyState` (one sentence + one button) on every list: Home recent, account history, expenses, goal history, savings, categories, accounts, recurring.
+- Plain wording pass over EN strings, then DE/IT to match.
+- Tests for the prefs reset; verifier + translation check.
 
 ### 1 Scaffold
 - Gradle wrapper 9.9.2, AGP 9.5.2 (built-in Kotlin), Kotlin 2.4.21, KSP 2.3.14, Compose BOM 2026.11.01, version catalog.
@@ -116,6 +125,13 @@
 -  Android SDK at `~/Android/Sdk` (platforms 35/36/37 installed via sdkmanager, no sudo needed), adb at `~/Android/Sdk/platform-tools/adb` (not on PATH).
 
 ## Decisions
+- **P2 (2026-11-24):**
+  - Settings shows the essentials inline (Theme, Accent, Currency, Month starts on, Reminder time, App lock) plus Backup and More options. "Personalise" became "More options"; its duplicate Backup frequency/files-kept card was removed (the Backup screen has both). "Erase all data" sits at the bottom of More options.
+  - "Reset all options" (`UserPrefs.withDefaultOptions`) now keeps currency, backup schedule and app lock as well as state, so a reset never changes how amounts read, stops backups or unlocks the app.
+  - App lock switch is disabled with a hint when the phone has no screen lock; reminder time follows the phone's 12/24 h setting.
+  - HUD grid default is off. Prefs are stored with `encodeDefaults`, so existing installs keep their current value. No Home section was removed.
+  - Plain wording: "Recurring" is now "Bills & subscriptions" / "Bills", "Outside" is "Elsewhere", "Unarchive" is "Restore", "Reset all data" is "Erase all data". The CSV column value "Outside" is unchanged so files stay readable by other tools.
+  - `EmptyState` (core/ui/components) on every list; Home and Expenses offer "Add expense" (it only opens when an account exists).
 - **P1 (2026-11-21):**
   - Currency: `UserPrefs.currencyCode` (ISO 4217). New installs get the region's currency; installs from before P1 and old backups without the field become EUR. `numberFormat` and the new `symbolPosition` default to AUTO (from the locale); explicit EU/US and before/after stay as overrides. `symbolBefore` is ignored and kept for one release.
   - Zero/three-decimal currencies: amounts stay minor units; the numpad types minor units; receipt results (parser works in 2 decimals) are rescaled with `ReceiptResult.inMinorUnits`.

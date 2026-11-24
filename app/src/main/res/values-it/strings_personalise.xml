@@ -1,8 +1,8 @@
 <resources>
-    <string name="pers_title">Personalizza</string>
+    <string name="pers_title">Altre opzioni</string>
     <string name="pers_reset_all">Ripristina tutto</string>
     <string name="pers_reset_all_title">Ripristinare tutte le opzioni?</string>
-    <string name="pers_reset_all_body">Tutte le opzioni di Personalizza tornano ai valori predefiniti. I tuoi dati e la cartella di backup restano.</string>
+    <string name="pers_reset_all_body">Tutte le opzioni tornano ai valori predefiniti, compresi tema e colore. Dati, valuta, backup e blocco app restano come sono.</string>
     <string name="pers_off">No</string>
     <string name="pers_manual">Manuale</string>
 
@@ -24,24 +24,24 @@
     <string name="pers_glow">Bagliore</string>
     <string name="pers_glow_subtle">Leggero</string>
     <string name="pers_glow_strong">Forte</string>
-    <string name="pers_hud_grid">Griglia HUD nella Home</string>
-    <string name="pers_hud_grid_hint">Leggera griglia futuristica dietro la cifra grande</string>
+    <string name="pers_hud_grid">Griglia dietro il numero grande</string>
+    <string name="pers_hud_grid_hint">Linee sottili nella schermata Home</string>
     <string name="pers_corners">Angoli</string>
     <string name="pers_corners_round">Tondi</string>
     <string name="pers_corners_softer">Morbidi</string>
     <string name="pers_corners_sharp">Netti</string>
     <string name="pers_text_size">Dimensione testo</string>
-    <string name="pers_density">Densità</string>
-    <string name="pers_density_comfortable">Comoda</string>
+    <string name="pers_density">Spaziatura</string>
+    <string name="pers_density_comfortable">Ampia</string>
     <string name="pers_density_compact">Compatta</string>
     <string name="pers_animations">Animazioni</string>
     <string name="pers_anim_full">Complete</string>
     <string name="pers_anim_reduced">Ridotte</string>
-    <string name="pers_haptics">Vibrazione</string>
+    <string name="pers_haptics">Vibrazione al tocco</string>
     <string name="pers_show_cents">Mostra centesimi</string>
     <string name="pers_number_format">Formato numeri</string>
     <string name="pers_hide_amounts">Nascondi importi</string>
-    <string name="pers_hide_amounts_hint">Modalità privacy: mostra •••• finché non tocchi</string>
+    <string name="pers_hide_amounts_hint">Mostra •••• finché non tocchi un importo</string>
 
     <string name="pers_section_home">Home</string>
     <string name="pers_reset_layout">Ripristina disposizione</string>
@@ -65,8 +65,8 @@
     <string name="pers_chip_order">Ordine delle categorie</string>
     <string name="pers_chip_most_used">Più usate</string>
     <string name="pers_chip_az">A–Z</string>
-    <string name="pers_save_on_tap">Salva al tocco</string>
-    <string name="pers_save_on_tap_hint">Toccare una categoria salva subito</string>
+    <string name="pers_save_on_tap">Salva quando tocchi una categoria</string>
+    <string name="pers_save_on_tap_hint">Non serve premere Salva</string>
     <string name="pers_show_note">Mostra campo nota</string>
 
     <string name="pers_section_charts">Spese e grafici</string>
@@ -75,7 +75,7 @@
     <string name="pers_chart_bars">Barre</string>
     <string name="pers_history_months">Mesi nello storico</string>
     <string name="pers_first_day_week">Primo giorno della settimana</string>
-    <string name="pers_month_start">Inizio del mese</string>
+    <string name="pers_month_start">Il mese inizia il giorno</string>
     <string name="pers_month_start_hint">Per esempio, scegli 27 se ricevi lo stipendio il 27</string>
     <string name="pers_month_runs">Il mese va dal giorno %1$d al giorno %2$d</string>
 
@@ -88,31 +88,22 @@
     <string name="pers_sort_deadline">Scadenza</string>
 
     <string name="pers_section_reminders">Promemoria</string>
-    <string name="pers_reminder_time">Ora del promemoria</string>
+    <string name="pers_reminder_time">Ora dei promemoria</string>
     <string name="pers_set">Imposta</string>
-    <string name="pers_days_before">Giorni di anticipo predefiniti</string>
-    <string name="pers_days_before_hint">Vale per le nuove voci ricorrenti</string>
+    <string name="pers_days_before">Avvisami prima di una bolletta</string>
+    <string name="pers_days_before_hint">Vale per le nuove bollette</string>
     <string name="pers_same_day">Stesso giorno</string>
     <plurals name="pers_days_count">
         <item quantity="one">%d giorno</item>
         <item quantity="other">%d giorni</item>
         <item quantity="many">%d giorni</item>
     </plurals>
-    <string name="pers_overdue_badge">Segnala scadute</string>
+    <string name="pers_overdue_badge">Mostra le bollette scadute in Home</string>
     <string name="pers_quiet_mode">Modalità silenziosa</string>
     <string name="pers_quiet_mode_hint">Nessuna notifica</string>
 
-    <string name="pers_section_backup">Backup</string>
-    <string name="pers_backup_frequency">Frequenza</string>
-    <string name="pers_daily">Ogni giorno</string>
-    <string name="pers_weekly">Ogni settimana</string>
-    <string name="pers_monthly">Ogni mese</string>
-    <string name="pers_backup_frequency_hint">Scegli la cartella di backup nella schermata Backup</string>
-    <string name="pers_files_kept">File da tenere</string>
-    <string name="pers_files_kept_hint">I backup più vecchi vengono eliminati</string>
 
-    <string name="pers_section_security">Sicurezza</string>
-    <string name="pers_biometric">Blocco biometrico</string>
+    <string name="pers_biometric">Blocco app</string>
     <string name="pers_biometric_hint">Impronta, volto o PIN del dispositivo</string>
     <string name="pers_lock_after">Blocca dopo</string>
     <string name="pers_lock_immediately">Subito</string>
@@ -121,4 +112,6 @@
         <item quantity="other">%d min</item>
         <item quantity="many">%d min</item>
     </plurals>
+    <string name="pers_reminder_time_hint">Quando arrivano i promemoria delle bollette</string>
+    <string name="pers_biometric_unavailable">Imposta prima un blocco schermo sul telefono</string>
 </resources>

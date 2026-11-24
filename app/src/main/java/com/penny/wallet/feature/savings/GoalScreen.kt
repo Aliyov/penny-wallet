@@ -1,5 +1,6 @@
 package com.penny.wallet.feature.savings
 
+import com.penny.wallet.core.ui.components.EmptyState
 import com.penny.wallet.R
 import androidx.compose.ui.res.stringResource
 import androidx.compose.foundation.background
@@ -69,7 +70,7 @@ fun GoalScreen(id: String, onBack: () -> Unit) {
                 }
                 item("historyLabel") { SectionLabel(stringResource(R.string.savings_history), Modifier.padding(top = 16.dp)) }
                 if (state.rows.isEmpty()) item("empty") {
-                    Text(stringResource(R.string.savings_history_empty), style = Penny.type.body, color = c.textSecondary, modifier = Modifier.padding(vertical = 24.dp))
+                    EmptyState(stringResource(R.string.savings_history_empty))
                 }
                 items(state.rows, key = { it.tx.id }) { row -> TxRowItem(row, Modifier.animateItem()) }
                 item("bottom") { Spacer(Modifier.height(32.dp)) }

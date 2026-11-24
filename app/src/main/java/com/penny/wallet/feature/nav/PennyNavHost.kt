@@ -1,5 +1,7 @@
 package com.penny.wallet.feature.nav
 
+import kotlinx.coroutines.launch
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.animation.AnimatedContentTransitionScope
 import androidx.compose.animation.EnterTransition
 import androidx.compose.animation.ExitTransition
@@ -31,6 +33,8 @@ private val pop: AnimatedContentTransitionScope<NavBackStackEntry>.() -> ExitTra
 @Composable
 fun PennyNavHost(nav: NavHostController, container: AppContainer, root: RootState) {
     val editTx: (String) -> Unit = { root.openEdit(it) }
+    val scope = rememberCoroutineScope()
+    val addExpense: () -> Unit = { scope.launch { if (container.accounts.all().isNotEmpty()) root.openNew() } }
     NavHost(nav, startDestination = Routes.HOME, enterTransition = { fadeIn() }, exitTransition = { fadeOut() }) {
         composable(Routes.HOME) {
             HomeScreen(
@@ -38,9 +42,10 @@ fun PennyNavHost(nav: NavHostController, container: AppContainer, root: RootStat
                 onOpenRecurring = { nav.navigate(Routes.RECURRING) },
                 onEditTransaction = editTx,
                 onOpenBackup = { nav.navigate(Routes.BACKUP) },
+                onAddExpense = addExpense,
             )
         }
-        composable(Routes.EXPENSES) { ExpensesScreen(onOpenRecurring = { nav.navigate(Routes.RECURRING) }, onEditTransaction = editTx) }
+        composable(Routes.EXPENSES) { ExpensesScreen(onOpenRecurring = { nav.navigate(Routes.RECURRING) }, onEditTransaction = editTx, onAddExpense = addExpense) }
         composable(Routes.SAVINGS) { SavingsScreen(onOpenGoal = { nav.navigate(Routes.goal(it)) }) }
         composable(Routes.SETTINGS) { SettingsScreen(onOpen = { nav.navigate(it) }) }
         composable(

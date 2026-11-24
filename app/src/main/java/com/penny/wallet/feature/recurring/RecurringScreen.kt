@@ -1,5 +1,7 @@
 package com.penny.wallet.feature.recurring
 
+import com.penny.wallet.core.ui.components.ButtonKind
+import com.penny.wallet.core.ui.components.EmptyState
 import com.penny.wallet.R
 import androidx.compose.ui.res.pluralStringResource
 import androidx.compose.ui.res.stringResource
@@ -68,7 +70,13 @@ fun RecurringScreen(onBack: () -> Unit) {
             verticalArrangement = Arrangement.spacedBy(Penny.dims.gap),
         ) {
             if (state.rows.isEmpty()) {
-                item("empty") { EmptyState { editing = RuleDraft(remindDaysBefore = state.defaultRemindDays) } }
+                item("empty") {
+                    EmptyState(
+                        stringResource(R.string.recurring_empty_body), Modifier.padding(top = 40.dp),
+                        title = stringResource(R.string.recurring_empty_title), action = stringResource(R.string.recurring_add),
+                        kind = ButtonKind.PRIMARY, onAction = { editing = RuleDraft(remindDaysBefore = state.defaultRemindDays) },
+                    )
+                }
             } else {
                 item("header") { HeaderCard(state) }
                 item("label") { SectionLabel(stringResource(R.string.recurring_rules), Modifier.padding(top = 8.dp)) }
@@ -119,19 +127,5 @@ private fun HeaderCard(state: RecurringState) {
             pluralStringResource(R.plurals.recurring_active_rules, active, active),
             style = Penny.type.caption, color = c.textSecondary, modifier = Modifier.padding(top = 4.dp),
         )
-    }
-}
-
-@Composable
-private fun EmptyState(onAdd: () -> Unit) {
-    val c = Penny.colors
-    Column(Modifier.fillMaxWidth().padding(top = 64.dp), horizontalAlignment = Alignment.CenterHorizontally) {
-        Text(stringResource(R.string.recurring_empty_title), style = Penny.type.title, color = c.textPrimary)
-        Text(
-            stringResource(R.string.recurring_empty_body),
-            style = Penny.type.body, color = c.textSecondary, textAlign = TextAlign.Center,
-            modifier = Modifier.padding(top = 8.dp, bottom = 24.dp),
-        )
-        PennyButton(stringResource(R.string.recurring_add), onAdd)
     }
 }

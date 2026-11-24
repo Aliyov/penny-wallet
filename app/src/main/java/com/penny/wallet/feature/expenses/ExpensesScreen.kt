@@ -1,5 +1,6 @@
 package com.penny.wallet.feature.expenses
 
+import com.penny.wallet.core.ui.components.EmptyState
 import com.penny.wallet.R
 import androidx.compose.ui.res.pluralStringResource
 import androidx.compose.ui.res.stringResource
@@ -28,7 +29,7 @@ import com.penny.wallet.core.ui.pennyViewModel
 import com.penny.wallet.core.ui.theme.Penny
 
 @Composable
-fun ExpensesScreen(onOpenRecurring: () -> Unit, onEditTransaction: (String) -> Unit) {
+fun ExpensesScreen(onOpenRecurring: () -> Unit, onEditTransaction: (String) -> Unit, onAddExpense: () -> Unit) {
     val vm = pennyViewModel { ExpensesViewModel(it) }
     val state by vm.state.collectAsStateWithLifecycle()
     val snack = LocalSnack.current
@@ -75,9 +76,10 @@ fun ExpensesScreen(onOpenRecurring: () -> Unit, onEditTransaction: (String) -> U
         }
         if (state.days.isEmpty()) {
             item(key = "tx_empty") {
-                Text(
-                    stringResource(if (state.query.isNotBlank() || state.filterCategoryId != null) R.string.expenses_none_matching else R.string.expenses_none_month),
-                    style = Penny.type.body, color = c.textSecondary, modifier = hPad.padding(vertical = 12.dp),
+                val filtered = state.query.isNotBlank() || state.filterCategoryId != null
+                EmptyState(
+                    stringResource(if (filtered) R.string.expenses_none_matching else R.string.expenses_none_month), hPad,
+                    action = if (filtered) null else stringResource(R.string.expenses_add), onAction = onAddExpense,
                 )
             }
         }

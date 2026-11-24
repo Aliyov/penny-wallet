@@ -13,7 +13,7 @@
     <string name="home_all">Alle</string>
     <string name="home_overdue">Überfällig</string>
     <string name="home_recent">Zuletzt</string>
-    <string name="home_recent_empty">Noch keine Buchungen. Tippe auf +, um die erste hinzuzufügen.</string>
+    <string name="home_recent_empty">Noch nichts erfasst. Fang mit deiner ersten Ausgabe an.</string>
     <string name="home_backup_warning">Seit über 10 Tagen kein Backup</string>
     <string name="home_back_up">Sichern</string>
     <string name="home_new_account">Neues Konto</string>
@@ -24,7 +24,7 @@
     <string name="home_account_deleted">Konto gelöscht</string>
     <string name="home_transaction_deleted">Buchung gelöscht</string>
     <string name="home_history">Verlauf</string>
-    <string name="home_no_transactions">Noch keine Buchungen</string>
+    <string name="home_no_transactions">Hier ist noch nichts</string>
     <string name="home_delete_account_title">%1$s löschen?</string>
     <string name="home_delete_account_body">Das kannst du ein paar Sekunden lang rückgängig machen.</string>
     <string name="home_cant_delete_title">Löschen nicht möglich</string>
@@ -43,7 +43,7 @@
     <string name="home_error_archive_allocated">Hol zuerst das Geld dieses Kontos aus deinen Zielen zurück</string>
     <string name="home_name_archived">%1$s (archiviert)</string>
     <string name="home_more">Mehr</string>
-    <string name="home_rename_icon">Umbenennen / Symbol</string>
+    <string name="home_rename_icon">Umbenennen oder Symbol ändern</string>
     <string name="home_unarchive">Wiederherstellen</string>
     <string name="home_transfer_needs_account">Füge zuerst ein weiteres Konto hinzu, um Geld zwischen Konten zu verschieben.</string>
     <string name="home_transfer_to">Nach</string>
@@ -68,7 +68,7 @@
     <string name="add_saved_income">Einnahme · %1$s</string>
     <string name="add_saved_transfer">Umbuchung · %1$s</string>
     <string name="add_saved_save">Gespart · %1$s</string>
-    <string name="add_recurring_default">Wiederkehrend</string>
+    <string name="add_recurring_default">Rechnung</string>
     <string name="add_updated">Aktualisiert</string>
     <string name="add_scan_no_camera">Keine Kamera-App gefunden. Wähle stattdessen ein Foto aus der Galerie.</string>
     <string name="add_scan_no_gallery">Keine Galerie-App gefunden.</string>
@@ -93,7 +93,7 @@
     <string name="add_to">Nach</string>
     <string name="add_no_goals">Lege zuerst unter Sparen ein Ziel an</string>
     <string name="add_no_other_account">Füge zuerst ein weiteres Konto hinzu</string>
-    <string name="add_make_recurring">Wiederkehrend</string>
+    <string name="add_make_recurring">Als Rechnung wiederholen</string>
     <string name="add_from_account">Von %1$s</string>
     <plurals name="home_days_left">
         <item quantity="one">Tag übrig</item>

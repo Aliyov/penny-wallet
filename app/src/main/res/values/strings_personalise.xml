@@ -1,8 +1,8 @@
 <resources>
-    <string name="pers_title">Personalise</string>
+    <string name="pers_title">More options</string>
     <string name="pers_reset_all">Reset all</string>
     <string name="pers_reset_all_title">Reset all options?</string>
-    <string name="pers_reset_all_body">Every Personalise option goes back to its default. Your data and backup folder are kept.</string>
+    <string name="pers_reset_all_body">Every option goes back to its default, theme and colour included. Your data, currency, backup and app lock stay as they are.</string>
     <string name="pers_off">Off</string>
     <string name="pers_manual">Manual</string>
 
@@ -24,24 +24,24 @@
     <string name="pers_glow">Glow</string>
     <string name="pers_glow_subtle">Subtle</string>
     <string name="pers_glow_strong">Strong</string>
-    <string name="pers_hud_grid">HUD grid on Home</string>
-    <string name="pers_hud_grid_hint">Faint futuristic grid behind the big number</string>
+    <string name="pers_hud_grid">Grid behind the big number</string>
+    <string name="pers_hud_grid_hint">Faint lines on the Home screen</string>
     <string name="pers_corners">Corners</string>
     <string name="pers_corners_round">Round</string>
     <string name="pers_corners_softer">Softer</string>
     <string name="pers_corners_sharp">Sharp</string>
     <string name="pers_text_size">Text size</string>
-    <string name="pers_density">Density</string>
-    <string name="pers_density_comfortable">Comfortable</string>
+    <string name="pers_density">Spacing</string>
+    <string name="pers_density_comfortable">Roomy</string>
     <string name="pers_density_compact">Compact</string>
     <string name="pers_animations">Animations</string>
     <string name="pers_anim_full">Full</string>
     <string name="pers_anim_reduced">Reduced</string>
-    <string name="pers_haptics">Haptics</string>
+    <string name="pers_haptics">Vibrate on tap</string>
     <string name="pers_show_cents">Show cents</string>
     <string name="pers_number_format">Number format</string>
     <string name="pers_hide_amounts">Hide amounts</string>
-    <string name="pers_hide_amounts_hint">Privacy mode: shows •••• until tapped</string>
+    <string name="pers_hide_amounts_hint">Shows •••• until you tap an amount</string>
 
     <string name="pers_section_home">Home</string>
     <string name="pers_reset_layout">Reset layout</string>
@@ -62,11 +62,11 @@
     <string name="pers_default_type">Default type</string>
     <string name="pers_default_account">Default account</string>
     <string name="pers_last_used">Last used</string>
-    <string name="pers_chip_order">Category chip order</string>
+    <string name="pers_chip_order">Category order</string>
     <string name="pers_chip_most_used">Most used</string>
     <string name="pers_chip_az">A–Z</string>
-    <string name="pers_save_on_tap">Save on chip tap</string>
-    <string name="pers_save_on_tap_hint">Tapping a category saves immediately</string>
+    <string name="pers_save_on_tap">Save when a category is tapped</string>
+    <string name="pers_save_on_tap_hint">No extra Save button needed</string>
     <string name="pers_show_note">Show note field</string>
 
     <string name="pers_section_charts">Expenses &amp; charts</string>
@@ -75,7 +75,7 @@
     <string name="pers_chart_bars">Bars</string>
     <string name="pers_history_months">Months in history</string>
     <string name="pers_first_day_week">First day of week</string>
-    <string name="pers_month_start">Month start day</string>
+    <string name="pers_month_start">Month starts on day</string>
     <string name="pers_month_start_hint">For example, pick 27 if you get paid on the 27th</string>
     <string name="pers_month_runs">Month runs from day %1$d to day %2$d</string>
 
@@ -90,28 +90,19 @@
     <string name="pers_section_reminders">Reminders</string>
     <string name="pers_reminder_time">Reminder time</string>
     <string name="pers_set">Set</string>
-    <string name="pers_days_before">Default days before</string>
-    <string name="pers_days_before_hint">Used for new recurring rules</string>
+    <string name="pers_days_before">Remind me before a bill</string>
+    <string name="pers_days_before_hint">Used for new bills</string>
     <string name="pers_same_day">Same day</string>
     <plurals name="pers_days_count">
         <item quantity="one">%d day</item>
         <item quantity="other">%d days</item>
     </plurals>
-    <string name="pers_overdue_badge">Overdue badge</string>
+    <string name="pers_overdue_badge">Show late bills on Home</string>
     <string name="pers_quiet_mode">Quiet mode</string>
     <string name="pers_quiet_mode_hint">No notifications at all</string>
 
-    <string name="pers_section_backup">Backup</string>
-    <string name="pers_backup_frequency">Frequency</string>
-    <string name="pers_daily">Daily</string>
-    <string name="pers_weekly">Weekly</string>
-    <string name="pers_monthly">Monthly</string>
-    <string name="pers_backup_frequency_hint">Choose the backup folder on the Backup screen</string>
-    <string name="pers_files_kept">Files kept</string>
-    <string name="pers_files_kept_hint">Older backups are deleted</string>
 
-    <string name="pers_section_security">Security</string>
-    <string name="pers_biometric">Biometric app lock</string>
+    <string name="pers_biometric">App lock</string>
     <string name="pers_biometric_hint">Fingerprint, face or device PIN</string>
     <string name="pers_lock_after">Lock after</string>
     <string name="pers_lock_immediately">Immediately</string>
@@ -119,4 +110,6 @@
         <item quantity="one">%d min</item>
         <item quantity="other">%d min</item>
     </plurals>
+    <string name="pers_reminder_time_hint">When bill reminders arrive</string>
+    <string name="pers_biometric_unavailable">Set a screen lock on your phone first</string>
 </resources>

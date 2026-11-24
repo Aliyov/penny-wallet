@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <string name="notif_channel_name">Promemoria</string>
-    <string name="notif_channel_desc">Spese ricorrenti in arrivo e in scadenza</string>
+    <string name="notif_channel_desc">Bollette in arrivo e in scadenza</string>
     <plurals name="notif_due_in_days">
         <item quantity="one">Domani: %2$s %3$s</item>
         <item quantity="other">Tra %1$d giorni: %2$s %3$s</item>

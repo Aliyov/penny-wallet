@@ -1,26 +1,22 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <string name="settings_title">Impostazioni</string>
-    <string name="settings_section_money">Soldi</string>
+    <string name="settings_section_money">I tuoi soldi</string>
     <string name="settings_section_app">App</string>
-    <string name="settings_section_danger">Zona pericolosa</string>
     <string name="settings_categories">Categorie di spesa</string>
-    <string name="settings_categories_sub">Aggiungi, modifica, riordina, archivia</string>
+    <string name="settings_categories_sub">Aggiungi, modifica, riordina</string>
     <string name="settings_accounts">Conti</string>
-    <string name="settings_accounts_sub">Riordina, archivia, aggiungi</string>
-    <string name="settings_recurring">Spese ricorrenti</string>
-    <string name="settings_recurring_sub">Bollette, abbonamenti, promemoria</string>
-    <string name="settings_personalise">Personalizza</string>
-    <string name="settings_personalise_sub">Tema, layout, animazioni, privacy</string>
+    <string name="settings_accounts_sub">Aggiungi, rinomina, riordina</string>
+    <string name="settings_recurring">Bollette e abbonamenti</string>
+    <string name="settings_recurring_sub">Affitto, abbonamenti, promemoria</string>
     <string name="settings_backup">Backup</string>
     <string name="settings_backup_not_set_up">Non configurato</string>
     <string name="settings_backup_never">Nessun backup finora</string>
-    <string name="settings_number_format">Formato numeri</string>
     <string name="settings_reset">Cancella tutti i dati</string>
     <string name="settings_reset_sub">Elimina tutto da questo telefono</string>
     <string name="settings_footer">Penny Wallet %1$s · tutti i dati restano su questo telefono</string>
     <string name="settings_reset_title">Cancellare tutti i dati?</string>
-    <string name="settings_reset_body">Conti, categorie, obiettivi, movimenti e spese ricorrenti verranno eliminati. Fai prima un backup se pensi di volerli recuperare.</string>
+    <string name="settings_reset_body">Conti, categorie, obiettivi, movimenti e bollette verranno cancellati. Fai prima un backup se potresti volerli recuperare.</string>
     <string name="settings_reset_continue">Continua</string>
     <string name="settings_reset_done">Tutti i dati cancellati</string>
     <string name="settings_reset_word">ELIMINA</string>
@@ -36,7 +32,7 @@
     <string name="manage_restored_msg">%1$s ripristinato</string>
     <string name="manage_deleted_msg">%1$s eliminato</string>
     <string name="manage_moved_deleted_msg">Spostate in %1$s, %2$s eliminato</string>
-    <string name="manage_accounts_empty">Ancora nessun conto. Tocca + per aggiungerne uno.</string>
+    <string name="manage_accounts_empty">Nessun conto. Aggiungi dove tieni i soldi, ad esempio conto in banca o contanti.</string>
     <string name="manage_account_cant_delete_title">Impossibile eliminare %1$s</string>
     <string name="manage_account_cant_delete_body">Si possono eliminare solo conti vuoti e senza storico. Vuoi archiviarlo?</string>
     <string name="manage_account_has_goal_money">Prima riprendi dai tuoi obiettivi i soldi di questo conto</string>
@@ -47,8 +43,8 @@
         <item quantity="other">%d movimenti</item>
         <item quantity="many">%d movimenti</item>
     </plurals>
-    <string name="manage_categories_hint">Trascina la maniglia per riordinare. Questo ordine vale per i chip quando l\'ordinamento è Manuale.</string>
-    <string name="manage_categories_empty">Ancora nessuna categoria. Tocca + per aggiungerne una.</string>
+    <string name="manage_categories_hint">Trascina la maniglia per riordinare. L\'aggiunta rapida usa questo ordine quando l\'ordine delle categorie è Manuale.</string>
+    <string name="manage_categories_empty">Nessuna categoria. Aggiungine una per ordinare le spese.</string>
     <plurals name="manage_expenses">
         <item quantity="one">%d spesa</item>
         <item quantity="other">%d spese</item>
@@ -106,7 +102,7 @@
     <string name="backup_sum_categories">Categorie</string>
     <string name="backup_sum_goals">Obiettivi</string>
     <string name="backup_sum_transactions">Movimenti</string>
-    <string name="backup_sum_recurring">Ricorrenti</string>
+    <string name="backup_sum_recurring">Bollette</string>
     <string name="backup_sum_date_range">Periodo</string>
     <string name="backup_date_range_value">%1$s – %2$s</string>
     <plurals name="backup_dangling">
@@ -116,4 +112,7 @@
     </plurals>
     <string name="backup_restore_note">Il ripristino sostituisce tutti i dati presenti su questo telefono.</string>
     <string name="backup_replace_all">Sostituisci tutti i dati</string>
+    <string name="settings_more">Altre opzioni</string>
+    <string name="settings_more_sub">Aspetto, Home, aggiunta rapida, grafici e altro</string>
+    <string name="manage_add_category">Aggiungi categoria</string>
 </resources>

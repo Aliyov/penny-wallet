@@ -9,7 +9,7 @@ data class UserPrefs(
     val accentArgb: Long = 0xFF39FF88,
     val background: BackgroundStyle = BackgroundStyle.DARK_GREY,
     val glow: GlowLevel = GlowLevel.SUBTLE,
-    val hudGrid: Boolean = true,
+    val hudGrid: Boolean = false,
     val corners: CornerStyle = CornerStyle.ROUND,
     val textSize: TextSize = TextSize.M,
     val density: Density = Density.COMFORTABLE,
@@ -52,6 +52,19 @@ data class UserPrefs(
     val biometricLock: Boolean = false,
     val lockAfter: LockAfter = LockAfter.IMMEDIATELY,
     val seeded: Boolean = false,
+)
+
+/**
+ * "Reset all options": look and behaviour go back to defaults. Kept: state (backup folder, last used, permission asked,
+ * seeded), the currency (amounts are stored without one), backup schedule and app lock (resetting must not silently
+ * stop backups or unlock the app).
+ */
+fun UserPrefs.withDefaultOptions(): UserPrefs = UserPrefs().copy(
+    currencyCode = currencyCode,
+    backupFolderUri = backupFolderUri, lastBackupAt = lastBackupAt, backupFrequency = backupFrequency, backupKeep = backupKeep,
+    biometricLock = biometricLock, lockAfter = lockAfter,
+    lastAccountId = lastAccountId, lastCategoryId = lastCategoryId,
+    notificationPermissionAsked = notificationPermissionAsked, seeded = seeded,
 )
 
 enum class ThemeMode { SYSTEM, LIGHT, DARK }

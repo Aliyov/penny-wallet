@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <string name="notif_channel_name">Erinnerungen</string>
-    <string name="notif_channel_desc">Anstehende und fällige wiederkehrende Ausgaben</string>
+    <string name="notif_channel_desc">Anstehende und fällige Rechnungen</string>
     <plurals name="notif_due_in_days">
         <item quantity="one">Morgen: %2$s %3$s</item>
         <item quantity="other">In %1$d Tagen: %2$s %3$s</item>

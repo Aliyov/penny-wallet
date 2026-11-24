@@ -1,5 +1,6 @@
 package com.penny.wallet.feature.home
 
+import com.penny.wallet.core.ui.components.EmptyState
 import com.penny.wallet.core.util.dateText
 import androidx.compose.animation.animateContentSize
 import androidx.compose.foundation.background
@@ -89,7 +90,7 @@ fun AccountScreen(id: String, onBack: () -> Unit, onEditTransaction: (String) ->
             item("actions") { ActionRow { action = it } }
             item("historyLabel") { SectionLabel(historyLabel, Modifier.padding(top = 16.dp)) }
             if (groups.isEmpty()) item("empty") {
-                Text(emptyText, style = Penny.type.body, color = c.textSecondary, modifier = Modifier.padding(vertical = 24.dp))
+                EmptyState(emptyText)
             }
             groups.forEach { (day, rows) ->
                 item("day-$day") {

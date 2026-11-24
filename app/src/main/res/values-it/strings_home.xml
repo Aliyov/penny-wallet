@@ -13,7 +13,7 @@
     <string name="home_all">Tutti</string>
     <string name="home_overdue">Scaduto</string>
     <string name="home_recent">Recenti</string>
-    <string name="home_recent_empty">Ancora nessun movimento. Tocca + per aggiungere il primo.</string>
+    <string name="home_recent_empty">Ancora niente. Inizia dalla tua prima spesa.</string>
     <string name="home_backup_warning">Nessun backup da oltre 10 giorni</string>
     <string name="home_back_up">Fai backup</string>
     <string name="home_new_account">Nuovo conto</string>
@@ -24,7 +24,7 @@
     <string name="home_account_deleted">Conto eliminato</string>
     <string name="home_transaction_deleted">Movimento eliminato</string>
     <string name="home_history">Cronologia</string>
-    <string name="home_no_transactions">Ancora nessun movimento</string>
+    <string name="home_no_transactions">Qui non c\'è ancora niente</string>
     <string name="home_delete_account_title">Eliminare %1$s?</string>
     <string name="home_delete_account_body">Puoi annullare per qualche secondo.</string>
     <string name="home_cant_delete_title">Impossibile eliminare</string>
@@ -43,7 +43,7 @@
     <string name="home_error_archive_allocated">Prima riprendi i soldi di questo conto dai tuoi obiettivi</string>
     <string name="home_name_archived">%1$s (archiviato)</string>
     <string name="home_more">Altro</string>
-    <string name="home_rename_icon">Rinomina / icona</string>
+    <string name="home_rename_icon">Rinomina o cambia icona</string>
     <string name="home_unarchive">Ripristina</string>
     <string name="home_transfer_needs_account">Aggiungi prima un altro conto per spostare soldi tra i conti.</string>
     <string name="home_transfer_to">A</string>
@@ -68,7 +68,7 @@
     <string name="add_saved_income">Entrata · %1$s</string>
     <string name="add_saved_transfer">Trasferimento · %1$s</string>
     <string name="add_saved_save">Risparmiati · %1$s</string>
-    <string name="add_recurring_default">Ricorrente</string>
+    <string name="add_recurring_default">Bolletta</string>
     <string name="add_updated">Aggiornato</string>
     <string name="add_scan_no_camera">Nessuna app fotocamera trovata. Scegli invece una foto dalla galleria.</string>
     <string name="add_scan_no_gallery">Nessuna app galleria trovata.</string>
@@ -93,7 +93,7 @@
     <string name="add_to">A</string>
     <string name="add_no_goals">Crea prima un obiettivo in Risparmi</string>
     <string name="add_no_other_account">Aggiungi prima un altro conto</string>
-    <string name="add_make_recurring">Rendi ricorrente</string>
+    <string name="add_make_recurring">Ripeti come bolletta</string>
     <string name="add_from_account">Da %1$s</string>
     <plurals name="home_days_left">
         <item quantity="one">giorno rimasto</item>

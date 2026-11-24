@@ -1,26 +1,22 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <string name="settings_title">Einstellungen</string>
-    <string name="settings_section_money">Geld</string>
+    <string name="settings_section_money">Dein Geld</string>
     <string name="settings_section_app">App</string>
-    <string name="settings_section_danger">Gefahrenzone</string>
     <string name="settings_categories">Ausgabenkategorien</string>
-    <string name="settings_categories_sub">Hinzufügen, bearbeiten, sortieren, archivieren</string>
+    <string name="settings_categories_sub">Hinzufügen, bearbeiten, sortieren</string>
     <string name="settings_accounts">Konten</string>
-    <string name="settings_accounts_sub">Sortieren, archivieren, hinzufügen</string>
-    <string name="settings_recurring">Wiederkehrende Ausgaben</string>
-    <string name="settings_recurring_sub">Rechnungen, Abos, Erinnerungen</string>
-    <string name="settings_personalise">Anpassen</string>
-    <string name="settings_personalise_sub">Design, Layout, Animationen, Privatsphäre</string>
+    <string name="settings_accounts_sub">Hinzufügen, umbenennen, sortieren</string>
+    <string name="settings_recurring">Rechnungen &amp; Abos</string>
+    <string name="settings_recurring_sub">Miete, Abos, Erinnerungen</string>
     <string name="settings_backup">Sicherung</string>
     <string name="settings_backup_not_set_up">Nicht eingerichtet</string>
     <string name="settings_backup_never">Noch nie gesichert</string>
-    <string name="settings_number_format">Zahlenformat</string>
     <string name="settings_reset">Alle Daten löschen</string>
     <string name="settings_reset_sub">Löscht alles auf diesem Handy</string>
     <string name="settings_footer">Penny Wallet %1$s · alle Daten bleiben auf diesem Handy</string>
     <string name="settings_reset_title">Alle Daten löschen?</string>
-    <string name="settings_reset_body">Konten, Kategorien, Ziele, Buchungen und wiederkehrende Ausgaben werden gelöscht. Mach vorher eine Sicherung, falls du sie noch brauchst.</string>
+    <string name="settings_reset_body">Konten, Kategorien, Ziele, Einträge und Rechnungen werden gelöscht. Mach vorher ein Backup, falls du sie zurückhaben möchtest.</string>
     <string name="settings_reset_continue">Weiter</string>
     <string name="settings_reset_done">Alle Daten gelöscht</string>
     <string name="settings_reset_word">LÖSCHEN</string>
@@ -36,7 +32,7 @@
     <string name="manage_restored_msg">%1$s wiederhergestellt</string>
     <string name="manage_deleted_msg">%1$s gelöscht</string>
     <string name="manage_moved_deleted_msg">Nach %1$s verschoben, %2$s gelöscht</string>
-    <string name="manage_accounts_empty">Noch keine Konten. Tippe auf +, um eins hinzuzufügen.</string>
+    <string name="manage_accounts_empty">Noch keine Konten. Füge hinzu, wo dein Geld ist, z. B. Bankkonto oder Bargeld.</string>
     <string name="manage_account_cant_delete_title">%1$s kann nicht gelöscht werden</string>
     <string name="manage_account_cant_delete_body">Nur leere Konten ohne Verlauf lassen sich löschen. Stattdessen archivieren?</string>
     <string name="manage_account_has_goal_money">Hol dir zuerst das Geld dieses Kontos aus deinen Zielen zurück</string>
@@ -46,8 +42,8 @@
         <item quantity="one">%d Buchung</item>
         <item quantity="other">%d Buchungen</item>
     </plurals>
-    <string name="manage_categories_hint">Zum Sortieren am Griff ziehen. Diese Reihenfolge gilt für die Chips, wenn die Sortierung auf Manuell steht.</string>
-    <string name="manage_categories_empty">Noch keine Kategorien. Tippe auf +, um eine hinzuzufügen.</string>
+    <string name="manage_categories_hint">Zum Sortieren am Griff ziehen. Schnell erfassen nutzt diese Reihenfolge, wenn die Reihenfolge der Kategorien auf Manuell steht.</string>
+    <string name="manage_categories_empty">Noch keine Kategorien. Füge eine hinzu, um Ausgaben zu sortieren.</string>
     <plurals name="manage_expenses">
         <item quantity="one">%d Ausgabe</item>
         <item quantity="other">%d Ausgaben</item>
@@ -102,7 +98,7 @@
     <string name="backup_sum_categories">Kategorien</string>
     <string name="backup_sum_goals">Ziele</string>
     <string name="backup_sum_transactions">Buchungen</string>
-    <string name="backup_sum_recurring">Wiederkehrend</string>
+    <string name="backup_sum_recurring">Rechnungen</string>
     <string name="backup_sum_date_range">Zeitraum</string>
     <string name="backup_date_range_value">%1$s – %2$s</string>
     <plurals name="backup_dangling">
@@ -111,4 +107,7 @@
     </plurals>
     <string name="backup_restore_note">Beim Wiederherstellen werden alle Daten auf diesem Handy ersetzt.</string>
     <string name="backup_replace_all">Alle Daten ersetzen</string>
+    <string name="settings_more">Weitere Optionen</string>
+    <string name="settings_more_sub">Aussehen, Start, Schnell erfassen, Diagramme und mehr</string>
+    <string name="manage_add_category">Kategorie hinzufügen</string>
 </resources>

@@ -1,5 +1,6 @@
 package com.penny.wallet.feature.lock
 
+import android.content.Context
 import androidx.biometric.BiometricManager
 import androidx.biometric.BiometricManager.Authenticators.BIOMETRIC_WEAK
 import androidx.biometric.BiometricManager.Authenticators.DEVICE_CREDENTIAL
@@ -36,8 +37,8 @@ import com.penny.wallet.core.ui.theme.glow
 private const val AUTH = BIOMETRIC_WEAK or DEVICE_CREDENTIAL
 
 /** True if the phone can verify the user (fingerprint/face or PIN/pattern). */
-fun canLock(activity: FragmentActivity): Boolean =
-    BiometricManager.from(activity).canAuthenticate(AUTH) == BiometricManager.BIOMETRIC_SUCCESS
+fun canLock(context: Context): Boolean =
+    BiometricManager.from(context).canAuthenticate(AUTH) == BiometricManager.BIOMETRIC_SUCCESS
 
 fun promptUnlock(activity: FragmentActivity, onSuccess: () -> Unit) {
     val prompt = BiometricPrompt(activity, ContextCompat.getMainExecutor(activity), object : BiometricPrompt.AuthenticationCallback() {

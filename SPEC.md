@@ -225,7 +225,7 @@ Always pair colour with icon + label.
 
 ---
 
-## 7a. Customization (Settings → Personalise)
+## 7a. Customization (Settings essentials + More options)
 
 All stored in DataStore (`SettingsStore`), exposed as one `StateFlow<UserPrefs>` and applied live (no restart). Every option has a sensible default and a "Reset to default".
 
@@ -304,13 +304,10 @@ All stored in DataStore (`SettingsStore`), exposed as one `StateFlow<UserPrefs>`
 - "+ New goal" card (name, icon, colour, **target**, optional deadline).
 
 **Settings**
-- Expense categories (add, edit, drag to reorder, archive, delete with reassign).
-- Accounts.
-- Recurring expenses.
-- Personalise (§7a).
+- Your money: Accounts, Expense categories (add, edit, drag to reorder, archive, delete with reassign), Bills & subscriptions.
+- Essentials inline: Theme, Accent, Currency, Month starts on, Reminder time, App lock.
 - Backup (§6).
-- Number formatting (EUR fixed).
-- Reset all data (double confirm).
+- More options (§7a): everything else, plus Erase all data (double confirm) at the bottom.
 
 ### Phases
 1. **Scaffold**: Compose project, theme (§7), fonts, bottom nav + empty screens, Room DB + DAOs, seed data on first launch (2 accounts, 6 categories, 2 goals, ~40 transactions over 3 months, 2 recurring rules).

@@ -12,7 +12,6 @@ import com.penny.wallet.data.prefs.GoalLayout
 import com.penny.wallet.data.prefs.GoalSort
 import com.penny.wallet.data.prefs.QuickType
 import com.penny.wallet.core.ui.components.ChoiceRow
-import com.penny.wallet.core.ui.components.StepperRow
 import com.penny.wallet.core.ui.components.SwitchRow
 
 internal fun LazyListScope.quickAddSection(x: PrefsCtx, accounts: List<Account>) {
@@ -72,12 +71,6 @@ internal fun LazyListScope.chartsSection(x: PrefsCtx) {
             listOf(1 to dateText().weekday(DayOfWeek.MONDAY), 7 to dateText().weekday(DayOfWeek.SUNDAY)), p.firstDayOfWeek,
             { v -> x.set { it.copy(firstDayOfWeek = v) } },
             onReset = x.reset(p.firstDayOfWeek, d.firstDayOfWeek) { it.copy(firstDayOfWeek = d.firstDayOfWeek) },
-        )
-        StepperRow(
-            stringResource(R.string.pers_month_start), p.monthStartDay, 1..28, { v -> x.set { it.copy(monthStartDay = v) } },
-            subtitle = if (p.monthStartDay == 1) stringResource(R.string.pers_month_start_hint)
-            else stringResource(R.string.pers_month_runs, p.monthStartDay, p.monthStartDay - 1),
-            onReset = x.reset(p.monthStartDay, d.monthStartDay) { it.copy(monthStartDay = d.monthStartDay) },
         )
     }
 }

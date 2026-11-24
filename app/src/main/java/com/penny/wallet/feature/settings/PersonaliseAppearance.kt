@@ -54,9 +54,6 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.res.stringResource
 import com.penny.wallet.R
 import com.penny.wallet.data.prefs.SymbolPosition
-import com.penny.wallet.data.prefs.ThemeMode
-import com.penny.wallet.core.ui.components.CurrencyPickerSheet
-import com.penny.wallet.core.ui.components.NavRow
 import com.penny.wallet.core.ui.theme.Penny
 
 internal fun LazyListScope.appearanceSection(x: PrefsCtx) {
@@ -64,16 +61,6 @@ internal fun LazyListScope.appearanceSection(x: PrefsCtx) {
     val d = x.d
     item("preview") { PreviewCard(x) }
     settingsCard("appearance", R.string.pers_section_appearance) {
-        ChoiceRow(
-            stringResource(R.string.theme_title),
-            listOf(
-                ThemeMode.SYSTEM to stringResource(R.string.theme_system), ThemeMode.LIGHT to stringResource(R.string.theme_light),
-                ThemeMode.DARK to stringResource(R.string.theme_dark),
-            ),
-            p.themeMode, { v -> x.set { it.copy(themeMode = v) } },
-            onReset = x.reset(p.themeMode, d.themeMode) { it.copy(themeMode = d.themeMode) },
-        )
-        AccentPicker(x)
         SwitchRow(
             stringResource(R.string.theme_pure_black), p.background == BackgroundStyle.AMOLED,
             { v -> x.set { it.copy(background = if (v) BackgroundStyle.AMOLED else BackgroundStyle.DARK_GREY) } },
@@ -120,7 +107,6 @@ internal fun LazyListScope.appearanceSection(x: PrefsCtx) {
             stringResource(R.string.pers_show_cents), p.showCents, { v -> x.set { it.copy(showCents = v) } },
             onReset = x.reset(p.showCents, d.showCents) { it.copy(showCents = d.showCents) },
         )
-        CurrencySetting(x)
         ChoiceRow(
             stringResource(R.string.pers_number_format),
             listOf(NumberFormatStyle.AUTO to stringResource(R.string.format_auto), NumberFormatStyle.EU to "1.234,56", NumberFormatStyle.US to "1,234.56"), p.numberFormat,
@@ -144,19 +130,6 @@ internal fun LazyListScope.appearanceSection(x: PrefsCtx) {
 }
 
 @Composable
-private fun CurrencySetting(x: PrefsCtx) {
-    var open by rememberSaveable { mutableStateOf(false) }
-    val code = x.p.currencyCode.ifEmpty { Formatters.DEFAULT_CURRENCY }
-    NavRow(stringResource(R.string.currency_title), code, { open = true })
-    if (open) {
-        CurrencyPickerSheet(
-            code, { open = false }, { v -> x.set { it.copy(currencyCode = v) }; open = false },
-            note = stringResource(R.string.currency_change_note),
-        )
-    }
-}
-
-@Composable
 private fun PreviewCard(x: PrefsCtx) {
     val c = Penny.colors
     val shape = RoundedCornerShape(x.p.corners.dp.dp)
@@ -172,7 +145,7 @@ private fun PreviewCard(x: PrefsCtx) {
 
 @OptIn(ExperimentalLayoutApi::class)
 @Composable
-private fun AccentPicker(x: PrefsCtx) {
+internal fun AccentPicker(x: PrefsCtx) {
     val c = Penny.colors
     var editing by rememberSaveable { mutableStateOf(false) }
     val isPreset = AccentPresets.any { it.second == x.p.accentArgb }

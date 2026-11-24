@@ -1,5 +1,6 @@
 package com.penny.wallet.feature.settings
 
+import com.penny.wallet.core.ui.components.EmptyState
 import androidx.compose.ui.platform.LocalResources
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Spacer
@@ -87,7 +88,7 @@ fun CategoriesScreen(onBack: () -> Unit) {
                     modifier = Modifier.padding(bottom = 8.dp))
             }
             if (order.isEmpty()) item("empty") {
-                Text(stringResource(R.string.manage_categories_empty), style = Penny.type.body, color = c.textSecondary, modifier = Modifier.padding(vertical = 24.dp))
+                EmptyState(stringResource(R.string.manage_categories_empty), action = stringResource(R.string.manage_add_category), onAction = { sheet = CatSheet.New })
             }
             items(order, key = { it.category.id }) { item ->
                 ReorderableItem(reorder, key = item.category.id) { dragging ->

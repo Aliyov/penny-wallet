@@ -1,8 +1,8 @@
 <resources>
     <string name="expenses_title">Spese</string>
-    <string name="expenses_recurring">Ricorrenti</string>
+    <string name="expenses_recurring">Bollette</string>
     <string name="expenses_empty_title">Nessuna spesa per ora</string>
-    <string name="expenses_empty_body">Le spese di questo mese compariranno qui.</string>
+    <string name="expenses_empty_body">Le spese di questo mese appariranno qui.</string>
     <string name="expenses_spent">spesi</string>
     <string name="expenses_categories">Categorie</string>
     <plurals name="expenses_last_months">
@@ -24,7 +24,7 @@
         <item quantity="other">su %1$s per %2$d obiettivi</item>
         <item quantity="many">su %1$s per %2$d obiettivi</item>
     </plurals>
-    <string name="savings_empty_hint">Crea un obiettivo per iniziare a risparmiare</string>
+    <string name="savings_empty_hint">Nessun obiettivo. Metti da parte soldi per qualcosa che desideri.</string>
     <string name="savings_new_goal">Nuovo obiettivo</string>
     <string name="savings_edit_goal">Modifica obiettivo</string>
     <string name="savings_create_goal">Crea obiettivo</string>
@@ -33,7 +33,7 @@
     <string name="savings_reached">Raggiunto ✓</string>
     <string name="savings_per_month">%1$s/mese</string>
     <string name="savings_to_go">Mancano %1$s</string>
-    <string name="savings_monthly_for_deadline">%1$s/mese per rispettare la scadenza</string>
+    <string name="savings_monthly_for_deadline">%1$s/mese per farcela in tempo</string>
     <string name="savings_deadline_on">Scadenza %1$s</string>
     <string name="savings_more">Altre opzioni</string>
     <string name="savings_add_money">Aggiungi soldi</string>
@@ -42,10 +42,10 @@
     <string name="savings_from">Da</string>
     <string name="savings_back_to">Torna su</string>
     <string name="savings_account_amount">%1$s · %2$s</string>
-    <string name="savings_outside_add">Esterno (non dal saldo)</string>
-    <string name="savings_outside_amount">Esterno · %1$s</string>
+    <string name="savings_outside_add">Da altrove (non da un conto)</string>
+    <string name="savings_outside_amount">Altrove · %1$s</string>
     <string name="savings_history">Cronologia</string>
-    <string name="savings_history_empty">Ancora nessun versamento</string>
+    <string name="savings_history_empty">Nessun importo aggiunto</string>
     <string name="savings_added_to">Aggiunto a %1$s</string>
     <string name="savings_money_returned">Soldi restituiti</string>
     <string name="savings_delete_title">Eliminare %1$s?</string>
@@ -59,9 +59,9 @@
     <string name="savings_error_target">L\'obiettivo deve essere maggiore di zero</string>
     <string name="savings_error_only_available">Disponibili solo %1$s</string>
 
-    <string name="recurring_title">Ricorrenti</string>
-    <string name="recurring_add">Aggiungi spesa ricorrente</string>
-    <string name="recurring_rules">Regole</string>
+    <string name="recurring_title">Bollette e abbonamenti</string>
+    <string name="recurring_add">Aggiungi bolletta</string>
+    <string name="recurring_rules">Le tue bollette</string>
     <string name="recurring_per_month_label">Al mese</string>
     <string name="recurring_per_month_suffix">" / mese"</string>
     <plurals name="recurring_active_rules">
@@ -69,15 +69,15 @@
         <item quantity="other">%d regole attive</item>
         <item quantity="many">%d regole attive</item>
     </plurals>
-    <string name="recurring_empty_title">Nessuna spesa ricorrente</string>
-    <string name="recurring_empty_body">Aggiungi abbonamenti, affitto o ricariche telefoniche. Penny te lo ricorda prima della scadenza e può registrarle in automatico.</string>
+    <string name="recurring_empty_title">Nessuna bolletta</string>
+    <string name="recurring_empty_body">Aggiungi affitto, abbonamenti o il piano telefonico. Penny ti avvisa prima della scadenza.</string>
     <string name="recurring_paid">%1$s pagato</string>
     <string name="recurring_already_paid">Già pagato</string>
     <string name="recurring_paused">In pausa</string>
     <string name="recurring_next">Prossima: %1$s</string>
     <string name="recurring_overdue">Scaduta</string>
     <string name="recurring_due_today">Scade oggi</string>
-    <string name="recurring_auto_pay">Pagamento automatico</string>
+    <string name="recurring_auto_pay">Registra automaticamente</string>
     <string name="recurring_more">Altre opzioni</string>
     <string name="recurring_pause">Metti in pausa</string>
     <string name="recurring_resume">Riprendi</string>
@@ -85,8 +85,8 @@
     <string name="recurring_every_weekday">Ogni %1$s</string>
     <string name="recurring_every_month_on">Ogni mese il giorno %1$d</string>
     <string name="recurring_every_year_on">Ogni anno il %1$s</string>
-    <string name="recurring_new_title">Nuova spesa ricorrente</string>
-    <string name="recurring_edit_title">Modifica spesa ricorrente</string>
+    <string name="recurring_new_title">Nuova bolletta</string>
+    <string name="recurring_edit_title">Modifica bolletta</string>
     <string name="recurring_name_hint">es. Ricarica telefonica</string>
     <string name="recurring_tap_amount">Tocca l\'importo per modificarlo</string>
     <string name="recurring_repeats">Ripetizione</string>
@@ -112,7 +112,7 @@
     <string name="recurring_auto_pay_off">Riceverai un promemoria per segnarla come pagata</string>
     <string name="recurring_active">Attiva</string>
     <string name="recurring_active_on">Promemoria e pagamenti sono attivi</string>
-    <string name="recurring_active_off">In pausa: non succede nulla finché non riprendi</string>
+    <string name="recurring_active_off">In pausa: niente promemoria né pagamenti finché non riprendi</string>
     <string name="recurring_error_name">Dagli un nome</string>
     <string name="recurring_error_amount">Inserisci un importo</string>
     <string name="recurring_error_category">Scegli una categoria</string>
@@ -123,7 +123,7 @@
     <string name="ui_numpad_backspace">Cancella ultima cifra</string>
     <string name="ui_amount_negative">− Negativo</string>
     <string name="ui_amount_positive">± Positivo</string>
-    <string name="ui_tx_outside">esterno</string>
+    <string name="ui_tx_outside">altrove</string>
     <string name="ui_tx_pair">%1$s · %2$s</string>
     <string name="ui_tx_route">%1$s → %2$s</string>
     <string name="ui_tx_withdrawal">Prelievo</string>
@@ -133,4 +133,5 @@
     <string name="ui_tx_taken_from">Ripreso da %1$s</string>
     <string name="ui_tx_from_account">da %1$s</string>
     <string name="ui_tx_to_account">su %1$s</string>
+    <string name="expenses_add">Aggiungi spesa</string>
 </resources>

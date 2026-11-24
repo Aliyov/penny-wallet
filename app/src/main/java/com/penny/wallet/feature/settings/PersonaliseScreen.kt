@@ -67,8 +67,7 @@ fun PersonaliseScreen(onBack: () -> Unit) {
             chartsSection(ctx)
             savingsSection(ctx)
             remindersSection(ctx)
-            backupSection(ctx)
-            securitySection(ctx)
+            item("erase") { Column { Spacer(Modifier.height(8.dp)); EraseAllData() } }
             item("bottom") { Spacer(Modifier.height(32.dp)) }
         }
     }

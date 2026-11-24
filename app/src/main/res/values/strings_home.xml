@@ -14,7 +14,7 @@
     <string name="home_all">All</string>
     <string name="home_overdue">Overdue</string>
     <string name="home_recent">Recent</string>
-    <string name="home_recent_empty">No transactions yet. Tap + to add your first one.</string>
+    <string name="home_recent_empty">Nothing added yet. Start with your first expense.</string>
     <string name="home_backup_warning">No backup in over 10 days</string>
     <string name="home_back_up">Back up</string>
     <string name="home_new_account">New account</string>
@@ -25,7 +25,7 @@
     <string name="home_account_deleted">Account deleted</string>
     <string name="home_transaction_deleted">Transaction deleted</string>
     <string name="home_history">History</string>
-    <string name="home_no_transactions">No transactions yet</string>
+    <string name="home_no_transactions">Nothing here yet</string>
     <string name="home_delete_account_title">Delete %1$s?</string>
     <string name="home_delete_account_body">This can be undone for a few seconds.</string>
     <string name="home_cant_delete_title">Can\'t delete</string>
@@ -44,8 +44,8 @@
     <string name="home_error_archive_allocated">Take this account\'s money back from your goals first</string>
     <string name="home_name_archived">%1$s (archived)</string>
     <string name="home_more">More</string>
-    <string name="home_rename_icon">Rename / icon</string>
-    <string name="home_unarchive">Unarchive</string>
+    <string name="home_rename_icon">Rename or change icon</string>
+    <string name="home_unarchive">Restore</string>
     <string name="home_transfer_needs_account">Add another account first to transfer money between accounts.</string>
     <string name="home_transfer_to">To</string>
     <string name="home_note_optional">Note (optional)</string>
@@ -69,7 +69,7 @@
     <string name="add_saved_income">Income · %1$s</string>
     <string name="add_saved_transfer">Transfer · %1$s</string>
     <string name="add_saved_save">Saved · %1$s</string>
-    <string name="add_recurring_default">Recurring</string>
+    <string name="add_recurring_default">Bill</string>
     <string name="add_updated">Updated</string>
     <string name="add_scan_no_camera">No camera app found. Choose a photo from the gallery instead.</string>
     <string name="add_scan_no_gallery">No gallery app found.</string>
@@ -94,7 +94,7 @@
     <string name="add_to">To</string>
     <string name="add_no_goals">Create a goal in Savings first</string>
     <string name="add_no_other_account">Add another account first</string>
-    <string name="add_make_recurring">Make recurring</string>
+    <string name="add_make_recurring">Repeat as a bill</string>
     <string name="add_from_account">From %1$s</string>
     <plurals name="home_days_left">
         <item quantity="one">day left</item>

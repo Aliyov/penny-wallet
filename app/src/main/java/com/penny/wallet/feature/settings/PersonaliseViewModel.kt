@@ -7,6 +7,7 @@ import androidx.lifecycle.viewModelScope
 import com.penny.wallet.AppContainer
 import com.penny.wallet.data.db.entities.Account
 import com.penny.wallet.data.prefs.UserPrefs
+import com.penny.wallet.data.prefs.withDefaultOptions
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.stateIn
@@ -19,11 +20,5 @@ class PersonaliseViewModel(private val c: AppContainer) : ViewModel() {
 
     fun set(transform: (UserPrefs) -> UserPrefs) = viewModelScope.launch { c.settings.update(transform) }
 
-    /** Keeps fields that are state rather than options (backup folder, last used, permission asked, seeded). */
-    fun resetAll() = set { cur ->
-        UserPrefs().copy(
-            backupFolderUri = cur.backupFolderUri, lastBackupAt = cur.lastBackupAt, lastAccountId = cur.lastAccountId,
-            lastCategoryId = cur.lastCategoryId, notificationPermissionAsked = cur.notificationPermissionAsked, seeded = cur.seeded,
-        )
-    }
+    fun resetAll() = set { it.withDefaultOptions() }
 }

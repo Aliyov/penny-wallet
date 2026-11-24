@@ -1,5 +1,7 @@
 package com.penny.wallet.feature.home
 
+import com.penny.wallet.core.ui.components.ButtonKind
+import com.penny.wallet.core.ui.components.EmptyState
 import androidx.compose.animation.animateContentSize
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
@@ -45,6 +47,7 @@ fun HomeScreen(
     onOpenRecurring: () -> Unit,
     onEditTransaction: (String) -> Unit,
     onOpenBackup: () -> Unit,
+    onAddExpense: () -> Unit,
 ) {
     val vm = pennyViewModel { HomeViewModel(it) }
     val state by vm.state.collectAsStateWithLifecycle()
@@ -93,10 +96,9 @@ fun HomeScreen(
                     item(key = "recent_label") { SectionLabel(recentLabel, Modifier.padding(horizontal = gutter)) }
                     if (state.recent.isEmpty() && !state.loading) {
                         item(key = "recent_empty") {
-                            Text(
-                                recentEmpty,
-                                style = Penny.type.body, color = Penny.colors.textSecondary,
-                                modifier = Modifier.padding(horizontal = gutter, vertical = 12.dp),
+                            EmptyState(
+                                recentEmpty, Modifier.padding(horizontal = gutter),
+                                action = stringResource(R.string.expenses_add), kind = ButtonKind.PRIMARY, onAction = onAddExpense,
                             )
                         }
                     }

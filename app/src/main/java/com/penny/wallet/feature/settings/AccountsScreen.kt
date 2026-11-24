@@ -1,5 +1,6 @@
 package com.penny.wallet.feature.settings
 
+import com.penny.wallet.core.ui.components.EmptyState
 import androidx.compose.ui.platform.LocalResources
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
@@ -96,7 +97,7 @@ fun AccountsScreen(onBack: () -> Unit, onOpenAccount: (String) -> Unit) {
         SettingsTopBar(stringResource(R.string.settings_accounts), onBack, onAdd = { adding = true })
         LazyColumn(state = listState, modifier = Modifier.fillMaxSize().padding(horizontal = Penny.dims.gutter).navigationBarsPadding()) {
             if (order.isEmpty()) item("empty") {
-                Text(stringResource(R.string.manage_accounts_empty), style = Penny.type.body, color = c.textSecondary, modifier = Modifier.padding(vertical = 24.dp))
+                EmptyState(stringResource(R.string.manage_accounts_empty), action = stringResource(R.string.manage_add_account), onAction = { adding = true })
             }
             items(order, key = { it.account.id }) { item ->
                 ReorderableItem(reorder, key = item.account.id) { dragging ->

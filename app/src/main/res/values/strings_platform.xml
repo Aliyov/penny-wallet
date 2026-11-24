@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <string name="notif_channel_name">Reminders</string>
-    <string name="notif_channel_desc">Upcoming and due recurring expenses</string>
+    <string name="notif_channel_desc">Upcoming and due bills</string>
     <plurals name="notif_due_in_days">
         <item quantity="one">Tomorrow: %2$s %3$s</item>
         <item quantity="other">In %1$d days: %2$s %3$s</item>
