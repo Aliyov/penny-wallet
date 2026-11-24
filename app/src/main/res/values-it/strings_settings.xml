@@ -113,7 +113,7 @@
     <string name="backup_restore_note">Il ripristino sostituisce tutti i dati presenti su questo telefono.</string>
     <string name="backup_replace_all">Sostituisci tutti i dati</string>
     <string name="settings_more">Altre opzioni</string>
-    <string name="settings_more_sub">Aspetto, Home, aggiunta rapida, grafici e altro</string>
+    <string name="settings_more_sub">Aspetto, Home, grafici</string>
     <string name="manage_add_category">Aggiungi categoria</string>
 
     <string name="backup_password">Protezione con password</string>
@@ -136,7 +136,7 @@
     <string name="backup_err_password_lost">La password dei backup non è più leggibile su questo telefono. Disattiva e riattiva la protezione con password.</string>
 
     <string name="support_title">Sostieni Penny</string>
-    <string name="support_sub">Gratis, senza pubblicità. Una mancia aiuta a mantenerla così</string>
+    <string name="support_sub">Lascia una mancia, se vuoi</string>
     <string name="support_body">Penny Wallet è gratuita, senza pubblicità e non raccoglie mai i tuoi dati. Se ti è utile puoi lasciare una piccola mancia. Non sblocca nulla: tutto resta gratuito.</string>
     <string name="support_tip_tea">Offrimi un tè</string>
     <string name="support_tip_cappuccino">Cappuccino</string>

@@ -28,7 +28,6 @@
     <string name="savings_new_goal">Nuovo obiettivo</string>
     <string name="savings_edit_goal">Modifica obiettivo</string>
     <string name="savings_create_goal">Crea obiettivo</string>
-    <string name="savings_saved_of_target">%1$s / %2$s</string>
     <string name="savings_of_target">su %1$s</string>
     <string name="savings_reached">Raggiunto ✓</string>
     <string name="savings_per_month">%1$s/mese</string>

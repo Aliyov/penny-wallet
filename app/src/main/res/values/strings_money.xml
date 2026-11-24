@@ -26,7 +26,6 @@
     <string name="savings_new_goal">New goal</string>
     <string name="savings_edit_goal">Edit goal</string>
     <string name="savings_create_goal">Create goal</string>
-    <string name="savings_saved_of_target">%1$s / %2$s</string>
     <string name="savings_of_target">of %1$s</string>
     <string name="savings_reached">Reached ✓</string>
     <string name="savings_per_month">%1$s/month</string>

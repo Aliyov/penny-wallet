@@ -108,7 +108,7 @@
     <string name="backup_restore_note">Beim Wiederherstellen werden alle Daten auf diesem Handy ersetzt.</string>
     <string name="backup_replace_all">Alle Daten ersetzen</string>
     <string name="settings_more">Weitere Optionen</string>
-    <string name="settings_more_sub">Aussehen, Start, Schnell erfassen, Diagramme und mehr</string>
+    <string name="settings_more_sub">Aussehen, Start, Diagramme</string>
     <string name="manage_add_category">Kategorie hinzufügen</string>
 
     <string name="backup_password">Passwortschutz</string>
@@ -131,7 +131,7 @@
     <string name="backup_err_password_lost">Das Backup-Passwort ist auf diesem Handy nicht mehr lesbar. Schalte den Passwortschutz aus und wieder ein.</string>
 
     <string name="support_title">Penny unterstützen</string>
-    <string name="support_sub">Kostenlos, ohne Werbung. Ein Trinkgeld hilft, dass es so bleibt</string>
+    <string name="support_sub">Trinkgeld geben, wenn du magst</string>
     <string name="support_body">Penny Wallet ist kostenlos, ohne Werbung und sammelt nie deine Daten. Wenn dir die App hilft, kannst du ein kleines Trinkgeld geben. Es schaltet nichts frei; alles bleibt kostenlos.</string>
     <string name="support_tip_tea">Spendier mir einen Tee</string>
     <string name="support_tip_cappuccino">Cappuccino</string>

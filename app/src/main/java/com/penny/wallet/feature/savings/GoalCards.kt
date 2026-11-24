@@ -71,7 +71,8 @@ private fun GoalRing(card: GoalCard, color: Color, modifier: Modifier, stroke: I
 @Composable
 private fun GoalDetails(card: GoalCard, color: Color) {
     val c = Penny.colors
-    Text(stringResource(R.string.savings_saved_of_target, money(card.balance), money(card.goal.targetCents)), style = Penny.type.label, color = c.textSecondary, maxLines = 1)
+    Text(money(card.balance), style = Penny.type.bodyStrong, color = c.textPrimary, maxLines = 1, overflow = TextOverflow.Ellipsis)
+    Text(stringResource(R.string.savings_of_target, money(card.goal.targetCents)), style = Penny.type.label, color = c.textSecondary, maxLines = 1, overflow = TextOverflow.Ellipsis)
     Row(verticalAlignment = Alignment.CenterVertically, horizontalArrangement = Arrangement.spacedBy(8.dp)) {
         Text(Formatters.percent(card.progress, currentLocale()), style = Penny.type.bodyStrong, color = color)
         if (card.reached) Text(stringResource(R.string.savings_reached), style = Penny.type.label, color = c.accent)

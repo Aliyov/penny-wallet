@@ -1,5 +1,6 @@
 package com.penny.wallet.feature.expenses
 
+import com.penny.wallet.core.ui.components.money
 import androidx.compose.ui.semantics.clearAndSetSemantics
 import androidx.compose.ui.semantics.contentDescription
 import androidx.compose.ui.semantics.semantics
@@ -79,11 +80,11 @@ private fun DonutChart(state: ExpensesState, selected: Int?, onSelect: (Int?) ->
         AnimatedContent(sel, transitionSpec = { fadeIn() togetherWith fadeOut() }, label = "donutCenter") { s ->
             Column(horizontalAlignment = Alignment.CenterHorizontally, modifier = Modifier.padding(horizontal = 36.dp)) {
                 if (s == null) {
-                    MoneyText(state.total, Penny.type.amountLarge, c.textPrimary)
+                    CenterAmount(state.total)
                     Text(stringResource(R.string.expenses_spent), style = Penny.type.label, color = c.textSecondary)
                 } else {
                     Text(s.name, style = Penny.type.label, color = Color(s.color), maxLines = 1, overflow = TextOverflow.Ellipsis)
-                    MoneyText(s.amount, Penny.type.amountLarge, c.textPrimary)
+                    CenterAmount(s.amount)
                     Text(Formatters.percent(s.share, currentLocale()), style = Penny.type.label, color = c.textSecondary)
                 }
             }
@@ -169,4 +170,13 @@ internal fun MonthSwitcher(state: ExpensesState, onPrev: () -> Unit, onNext: () 
                 .semantics { contentDescription = nextLabel }.padding(horizontal = 16.dp, vertical = 8.dp),
         )
     }
+}
+
+/** The ring's inner width fits about 8 large digits; longer amounts ("$12,345.67", "1.094,00 USD") shrink to stay whole. */
+@Composable
+private fun CenterAmount(cents: Long) {
+    val base = Penny.type.amountLarge
+    val len = money(cents).length
+    val style = if (len <= 8) base else base.copy(fontSize = base.fontSize * (8f / len).coerceAtLeast(0.55f))
+    MoneyText(cents, style, Penny.colors.textPrimary)
 }
