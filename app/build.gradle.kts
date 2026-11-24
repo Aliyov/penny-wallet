@@ -17,9 +17,23 @@ android {
         minSdk = 26
         // Real phones are ARM; dropping x86 (emulator-only) ML Kit native libs roughly halves the APK.
         ndk { abiFilters += listOf("arm64-v8a", "armeabi-v7a") }
-        targetSdk = 35
-        versionCode = 6
-        versionName = "1.5"
+        targetSdk = 36
+        versionCode = 7
+        versionName = "2.0"
+    }
+
+    // The Play bundle is signed with the upload key only when asked (-Ppenny.signUpload=true), so local release
+    // APKs keep the debug signature and install over the existing app without losing data.
+    val signUpload = providers.gradleProperty("penny.signUpload").orNull == "true"
+    signingConfigs {
+        if (signUpload) create("upload") {
+            fun prop(name: String) = providers.gradleProperty(name).orNull
+                ?: error("$name missing in ~/.gradle/gradle.properties (needed for -Ppenny.signUpload=true)")
+            storeFile = file(prop("PENNY_UPLOAD_STORE_FILE"))
+            storePassword = prop("PENNY_UPLOAD_STORE_PASSWORD")
+            keyAlias = prop("PENNY_UPLOAD_KEY_ALIAS")
+            keyPassword = prop("PENNY_UPLOAD_KEY_PASSWORD")
+        }
     }
 
     buildTypes {
@@ -28,9 +42,7 @@ android {
             isMinifyEnabled = true
             isShrinkResources = true
             proguardFiles(getDefaultProguardFile("proguard-android-optimize.txt"), "proguard-rules.pro")
-            // Personal sideloaded app: sign with the local debug key so the release APK installs over the
-            // debug one (same signature) and keeps all data.
-            signingConfig = signingConfigs.getByName("debug")
+            signingConfig = signingConfigs.getByName(if (signUpload) "upload" else "debug")
         }
         // Release build (same R8 shrinking) plus the OCR probe, installed as a separate app so on-phone
         // receipt tests never touch the real app's data. Used by scripts/ocr-smoke.sh.

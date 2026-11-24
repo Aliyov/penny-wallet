@@ -29,4 +29,7 @@
     <string name="error_same_accounts">Pick two different accounts</string>
     <string name="data_note_balance_set">Balance set</string>
     <string name="data_note_returned_from">Returned from %1$s</string>
+    <string name="a11y_prev_month">Previous month</string>
+    <string name="a11y_next_month">Next month</string>
+    <string name="a11y_colour">Colour %1$d</string>
 </resources>

@@ -1,5 +1,6 @@
 package com.penny.wallet.feature.recurring
 
+import androidx.compose.material3.minimumInteractiveComponentSize
 import com.penny.wallet.core.util.currentLocale
 import com.penny.wallet.R
 import androidx.compose.ui.res.stringResource
@@ -93,7 +94,7 @@ internal fun RuleCard(
             Box {
                 Icon(
                     Icons.Rounded.MoreVert, stringResource(R.string.recurring_more), tint = c.textSecondary,
-                    modifier = Modifier.padding(start = 4.dp).clip(RoundedCornerShape(50)).clickable { menu = true }.padding(4.dp).size(20.dp),
+                    modifier = Modifier.padding(start = 4.dp).minimumInteractiveComponentSize().clip(RoundedCornerShape(50)).clickable { menu = true }.padding(4.dp).size(20.dp),
                 )
                 DropdownMenu(expanded = menu, onDismissRequest = { menu = false }, containerColor = c.surface2) {
                     DropdownMenuItem(text = { Text(stringResource(R.string.action_edit), color = c.textPrimary) }, onClick = { menu = false; onEdit() })

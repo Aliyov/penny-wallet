@@ -29,4 +29,7 @@
     <string name="error_same_accounts">Scegli due conti diversi</string>
     <string name="data_note_balance_set">Saldo impostato</string>
     <string name="data_note_returned_from">Restituito da %1$s</string>
+    <string name="a11y_prev_month">Mese precedente</string>
+    <string name="a11y_next_month">Mese successivo</string>
+    <string name="a11y_colour">Colore %1$d</string>
 </resources>

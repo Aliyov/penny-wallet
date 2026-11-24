@@ -1,5 +1,10 @@
 package com.penny.wallet.feature.savings
 
+import androidx.compose.foundation.selection.selectable
+import androidx.compose.ui.semantics.Role
+import androidx.compose.ui.semantics.contentDescription
+import androidx.compose.ui.semantics.semantics
+import androidx.compose.material3.minimumInteractiveComponentSize
 import com.penny.wallet.R
 import androidx.compose.ui.res.stringResource
 import androidx.compose.foundation.background
@@ -112,7 +117,7 @@ private fun IconGrid(selected: String, tint: Color, onPick: (String) -> Unit) {
                 Modifier.size(44.dp).clip(CircleShape)
                     .background(if (sel) tint.copy(alpha = 0.18f) else c.surface1)
                     .border(if (sel) 1.5.dp else 0.75.dp, if (sel) tint else c.hairline, CircleShape)
-                    .clickable { onPick(k) },
+                    .selectable(sel, role = Role.RadioButton) { onPick(k) },
                 contentAlignment = Alignment.Center,
             ) { Icon(v, k, tint = if (sel) tint else c.textPrimary, modifier = Modifier.size(22.dp)) }
         }
@@ -125,10 +130,12 @@ private fun ColourRow(selected: Long, onPick: (Long) -> Unit) {
     FlowRow(horizontalArrangement = Arrangement.spacedBy(10.dp), verticalArrangement = Arrangement.spacedBy(10.dp)) {
         ItemPalette.forEach { argb ->
             val sel = argb == selected
+            val colourDesc = stringResource(R.string.a11y_colour, ItemPalette.indexOf(argb) + 1)
             Box(
-                Modifier.size(36.dp).clip(CircleShape)
+                Modifier.minimumInteractiveComponentSize().size(36.dp).clip(CircleShape)
                     .border(if (sel) 2.dp else 0.dp, if (sel) c.textPrimary else Color.Transparent, CircleShape)
-                    .padding(4.dp).clip(CircleShape).background(Color(argb)).clickable { onPick(argb) },
+                    .selectable(sel, role = Role.RadioButton) { onPick(argb) }.semantics { contentDescription = colourDesc }
+                    .padding(4.dp).clip(CircleShape).background(Color(argb)),
             )
         }
     }

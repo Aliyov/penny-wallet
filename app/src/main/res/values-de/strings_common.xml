@@ -29,4 +29,7 @@
     <string name="error_same_accounts">Wähle zwei verschiedene Konten</string>
     <string name="data_note_balance_set">Kontostand gesetzt</string>
     <string name="data_note_returned_from">Zurück aus %1$s</string>
+    <string name="a11y_prev_month">Vorheriger Monat</string>
+    <string name="a11y_next_month">Nächster Monat</string>
+    <string name="a11y_colour">Farbe %1$d</string>
 </resources>

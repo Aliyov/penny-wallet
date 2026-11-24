@@ -1,5 +1,9 @@
 package com.penny.wallet.feature.expenses
 
+import androidx.compose.ui.semantics.clearAndSetSemantics
+import androidx.compose.ui.semantics.contentDescription
+import androidx.compose.ui.semantics.semantics
+import androidx.compose.material3.minimumInteractiveComponentSize
 import com.penny.wallet.R
 import androidx.compose.ui.res.stringResource
 import com.penny.wallet.core.util.currentLocale
@@ -149,14 +153,20 @@ internal fun MonthSwitcher(state: ExpensesState, onPrev: () -> Unit, onNext: () 
     val c = Penny.colors
     val dates = dateText()
     Row(modifier.fillMaxWidth(), verticalAlignment = Alignment.CenterVertically) {
-        Text("‹", style = Penny.type.title, color = c.textPrimary, modifier = Modifier.clickableNoRipple(onPrev).padding(horizontal = 16.dp, vertical = 8.dp))
+        val prevLabel = stringResource(R.string.a11y_prev_month)
+        val nextLabel = stringResource(R.string.a11y_next_month)
+        Text(
+            "‹", style = Penny.type.title, color = c.textPrimary,
+            modifier = Modifier.minimumInteractiveComponentSize().clickableNoRipple(onPrev).semantics { contentDescription = prevLabel }.padding(horizontal = 16.dp, vertical = 8.dp),
+        )
         AnimatedContent(state.period?.label, modifier = Modifier.weight(1f), label = "month",
             transitionSpec = { fadeIn() togetherWith fadeOut() }) { ym ->
             Text(ym?.let(dates::month) ?: "", style = Penny.type.title, color = c.textPrimary, textAlign = TextAlign.Center, modifier = Modifier.fillMaxWidth())
         }
         Text(
             "›", style = Penny.type.title, color = if (state.isCurrent) c.textSecondary.copy(alpha = 0.3f) else c.textPrimary,
-            modifier = (if (state.isCurrent) Modifier else Modifier.clickableNoRipple(onNext)).padding(horizontal = 16.dp, vertical = 8.dp),
+            modifier = Modifier.minimumInteractiveComponentSize().then(if (state.isCurrent) Modifier.clearAndSetSemantics {} else Modifier.clickableNoRipple(onNext))
+                .semantics { contentDescription = nextLabel }.padding(horizontal = 16.dp, vertical = 8.dp),
         )
     }
 }

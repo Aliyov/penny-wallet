@@ -1,5 +1,10 @@
 package com.penny.wallet.feature.settings
 
+import androidx.compose.foundation.selection.selectable
+import androidx.compose.ui.semantics.Role
+import androidx.compose.ui.semantics.contentDescription
+import androidx.compose.ui.semantics.semantics
+import androidx.compose.material3.minimumInteractiveComponentSize
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
@@ -87,7 +92,7 @@ internal fun IconPicker(keys: List<String>, selected: String, tint: Color, onPic
                 Modifier.size(46.dp).clip(CircleShape)
                     .background(if (sel) tint.copy(alpha = 0.18f) else c.surface1)
                     .border(if (sel) 1.5.dp else 0.75.dp, if (sel) tint else c.hairline, CircleShape)
-                    .clickable { onPick(k) },
+                    .selectable(sel, role = Role.RadioButton) { onPick(k) },
                 contentAlignment = Alignment.Center,
             ) { Icon(PennyIcons.get(k), k, tint = if (sel) tint else c.textPrimary, modifier = Modifier.size(22.dp)) }
         }
@@ -100,10 +105,11 @@ internal fun ColorSwatches(selected: Long, onPick: (Long) -> Unit) {
     FlowRow(horizontalArrangement = Arrangement.spacedBy(10.dp), verticalArrangement = Arrangement.spacedBy(10.dp)) {
         ItemPalette.forEach { argb ->
             val sel = argb == selected
+            val colourDesc = stringResource(R.string.a11y_colour, ItemPalette.indexOf(argb) + 1)
             Box(
-                Modifier.size(36.dp).clip(CircleShape).background(Color(argb))
+                Modifier.minimumInteractiveComponentSize().size(36.dp).clip(CircleShape).background(Color(argb))
                     .border(if (sel) 2.dp else 0.dp, if (sel) c.textPrimary else Color.Transparent, CircleShape)
-                    .clickable { onPick(argb) },
+                    .selectable(sel, role = Role.RadioButton) { onPick(argb) }.semantics { contentDescription = colourDesc },
                 contentAlignment = Alignment.Center,
             ) { if (sel) Icon(Icons.Rounded.Check, null, tint = c.background, modifier = Modifier.size(18.dp)) }
         }

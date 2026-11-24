@@ -34,6 +34,13 @@
 - Clean first run: no seed; empty Home card "Add your first account" + "Try with sample data" (removable).
 - CI: GitHub Actions with lint, unit tests, `bundleRelease`, merged-manifest permission check, missing-translation check.
 
+### P5 Play readiness
+- targetSdk 36 (Play requirement), version 2.0 (code 7).
+- Upload key `~/penny-wallet-keys/upload.jks`, passwords in `~/.gradle/gradle.properties`; bundle signed only with `-Ppenny.signUpload=true`.
+- Accessibility: labelled month arrows and colour swatches, 48dp targets on small icons, selectable roles on pickers, button role on text links.
+- `docs/PRIVACY.md` (EN/DE/IT), `docs/store/listing.md` (EN/DE/IT), `docs/store/play-console.md` (Data safety, content rating, products, release steps).
+- Store screenshots from a separate sample-data install (smoke package), never real data.
+
 ### P4 Support & trust
 - Encrypted backups: optional password (Backup screen), AES-GCM with PBKDF2 key, `format` marker in a JSON envelope so restore asks for the password; plain backups still restore.
 - Support Penny: Play Billing consumables `tip_tea` (€2, "Buy me a tea") and `tip_cappuccino` (€4) behind `TipRepository`; Settings → Support Penny.
@@ -138,6 +145,11 @@
 -  Android SDK at `~/Android/Sdk` (platforms 35/36/37 installed via sdkmanager, no sudo needed), adb at `~/Android/Sdk/platform-tools/adb` (not on PATH).
 
 ## Decisions
+- **P5 (2026-11-24):**
+  - Local release builds stay debug-signed so they install over the existing sideloaded app without data loss; only the Play bundle uses the upload key (opt-in flag). Moving from the sideloaded app to the Play version means backup → install from Play → restore (different signature).
+  - targetSdk 36: the app is already edge-to-edge and has no custom back handling; the test phone runs Android 15, so Android 16-only behaviour is unverified on a device.
+  - Privacy policy is hosted as `docs/PRIVACY.md` in the public repository (GitHub URL), no separate site.
+  - Data safety: "no data collected"; crash reports are user-sent email (fallback declaration noted in play-console.md).
 - **P4 (2026-11-24):**
   - Backup password is stored on the phone (Android Keystore-wrapped, separate private prefs, never in `UserPrefs` because prefs travel in backups) so scheduled backups stay encrypted. If it can't be unwrapped, the backup fails with a message instead of silently writing a plain file.
   - Encrypted files keep the `.json` name so pruning and the restore picker work unchanged. KDF iterations from a file are bounded (10k–2M).

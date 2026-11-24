@@ -1,5 +1,6 @@
 package com.penny.wallet.core.ui.components
 
+import androidx.compose.ui.semantics.Role
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.runtime.Composable
@@ -11,7 +12,7 @@ import com.penny.wallet.core.ui.theme.Penny
 
 @Composable
 fun Modifier.clickableNoRipple(onClick: () -> Unit): Modifier =
-    clickable(interactionSource = remember { MutableInteractionSource() }, indication = null, onClick = onClick)
+    clickable(interactionSource = remember { MutableInteractionSource() }, indication = null, role = Role.Button, onClick = onClick)
 
 /** Haptic tick that respects the Haptics setting. */
 @Composable
