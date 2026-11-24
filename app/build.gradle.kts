@@ -60,6 +60,15 @@ android {
     buildFeatures {
         compose = true
     }
+    testOptions {
+        unitTests {
+            isIncludeAndroidResources = true
+            all {
+                it.maxHeapSize = "1536m"
+                it.systemProperty("penny.writeFixtures", providers.gradleProperty("penny.writeFixtures").getOrElse("false"))
+            }
+        }
+    }
     androidResources {
         generateLocaleConfig = true
         localeFilters += listOf("en", "de", "it")
@@ -119,4 +128,9 @@ dependencies {
     implementation(libs.play.billing)
 
     testImplementation(libs.junit)
+    testImplementation(libs.robolectric)
+    testImplementation(libs.androidx.test.core)
+    testImplementation(platform(libs.compose.bom))
+    testImplementation(libs.compose.ui.test.junit4)
+    debugImplementation(libs.compose.ui.test.manifest)
 }

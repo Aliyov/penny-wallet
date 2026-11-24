@@ -21,6 +21,8 @@ junit = "4.13.2"
 profileinstaller = "1.4.1"
 mlkitText = "16.0.1"
 billing = "8.0.0"
+robolectric = "4.14.1"
+androidxTestCore = "1.6.1"
 
 [libraries]
 androidx-core-ktx = { module = "androidx.core:core-ktx", version.ref = "coreKtx" }
@@ -53,6 +55,10 @@ reorderable = { module = "sh.calvin.reorderable:reorderable", version.ref = "reo
 junit = { module = "junit:junit", version.ref = "junit" }
 androidx-profileinstaller = { module = "androidx.profileinstaller:profileinstaller", version.ref = "profileinstaller" }
 mlkit-text-recognition = { module = "com.google.mlkit:text-recognition", version.ref = "mlkitText" }
+robolectric = { module = "org.robolectric:robolectric", version.ref = "robolectric" }
+androidx-test-core = { module = "androidx.test:core-ktx", version.ref = "androidxTestCore" }
+compose-ui-test-junit4 = { module = "androidx.compose.ui:ui-test-junit4" }
+compose-ui-test-manifest = { module = "androidx.compose.ui:ui-test-manifest" }
 play-billing = { module = "com.android.billingclient:billing-ktx", version.ref = "billing" }
 
 [plugins]

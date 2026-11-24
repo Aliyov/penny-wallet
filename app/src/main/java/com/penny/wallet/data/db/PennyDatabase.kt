@@ -5,6 +5,7 @@ import androidx.room.Database
 import androidx.room.Room
 import androidx.room.RoomDatabase
 import androidx.room.TypeConverters
+import androidx.room.migration.Migration
 import com.penny.wallet.data.db.dao.AccountDao
 import com.penny.wallet.data.db.dao.CategoryDao
 import com.penny.wallet.data.db.dao.GoalDao
@@ -30,7 +31,10 @@ abstract class PennyDatabase : RoomDatabase() {
     abstract fun recurring(): RecurringDao
 
     companion object {
+        /** Every step from v1 on; MigrationTest runs each against the exported schemas. */
+        val MIGRATIONS: Array<Migration> = emptyArray()
+
         fun build(context: Context): PennyDatabase =
-            Room.databaseBuilder(context, PennyDatabase::class.java, "penny.db").build()
+            Room.databaseBuilder(context, PennyDatabase::class.java, "penny.db").addMigrations(*MIGRATIONS).build()
     }
 }

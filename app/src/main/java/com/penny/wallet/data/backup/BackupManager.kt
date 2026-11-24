@@ -14,7 +14,7 @@ import com.penny.wallet.data.prefs.UserPrefs
 import com.penny.wallet.data.repo.ChangeListener
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
-import kotlinx.serialization.json.Json
+import java.io.IOException
 import java.time.Instant
 import java.time.LocalDate
 
@@ -27,7 +27,6 @@ class BackupManager(
     private val listener: ChangeListener,
 ) {
     val password = BackupPasswordStore(context)
-    private val json = Json { ignoreUnknownKeys = true; encodeDefaults = true; prettyPrint = true; coerceInputValues = true }
 
     companion object {
         const val PREFIX = "penny-wallet-backup-"
@@ -47,7 +46,7 @@ class BackupManager(
         )
     }
 
-    fun encode(b: Backup): String = json.encodeToString(Backup.serializer(), b)
+    fun encode(b: Backup): String = BackupCodec.encode(b)
 
     /** Persist access to the folder the user picked with ACTION_OPEN_DOCUMENT_TREE. */
     suspend fun setFolder(tree: Uri) {
@@ -99,27 +98,25 @@ class BackupManager(
             .forEach { it.delete() }
     }
 
-    /** Reads and validates a backup file chosen with ACTION_OPEN_DOCUMENT. Throws with a readable message. */
-    /** Throws [PasswordNeededException] for a password-protected file when [pw] is null. */
+    /** Reads and validates a backup file chosen with ACTION_OPEN_DOCUMENT. Throws [PasswordNeededException] for a
+     *  password-protected file when [pw] is null, otherwise an exception with a readable message. */
     suspend fun read(uri: Uri, pw: CharArray? = null): Pair<Backup, BackupSummary> = withContext(Dispatchers.IO) {
-        val raw = context.contentResolver.openInputStream(uri)?.use { it.readBytes().decodeToString() }
-            ?: throw IllegalArgumentException(context.getString(R.string.backup_err_open_file))
-        val text = if (BackupCrypto.isEncrypted(raw)) {
-            if (pw == null) throw PasswordNeededException()
-            try {
-                BackupCrypto.decrypt(raw, pw)
-            } catch (_: WrongPasswordException) {
-                throw IllegalArgumentException(context.getString(R.string.backup_err_wrong_password))
-            } catch (_: Exception) {
-                throw IllegalArgumentException(context.getString(R.string.backup_err_not_backup))
+        val raw = try {
+            context.contentResolver.openInputStream(uri)?.use { it.readBytes().decodeToString() }
+        } catch (_: IOException) {
+            null
+        } catch (_: SecurityException) {
+            null
+        } ?: throw IllegalArgumentException(context.getString(R.string.backup_err_open_file))
+        val b = try {
+            BackupCodec.decode(raw, pw)
+        } catch (e: BackupProblem) {
+            throw when (e) {
+                is BackupProblem.PasswordNeeded -> PasswordNeededException()
+                is BackupProblem.WrongPassword -> IllegalArgumentException(context.getString(R.string.backup_err_wrong_password))
+                is BackupProblem.TooNew -> IllegalArgumentException(context.getString(R.string.backup_err_too_new, e.version, Backup.CURRENT_SCHEMA))
+                is BackupProblem.NotABackup -> IllegalArgumentException(context.getString(R.string.backup_err_not_backup))
             }
-        } else {
-            raw
-        }
-        val b = runCatching { json.decodeFromString(Backup.serializer(), text) }
-            .getOrElse { throw IllegalArgumentException(context.getString(R.string.backup_err_not_backup)) }
-        require(b.schemaVersion in 1..Backup.CURRENT_SCHEMA) {
-            context.getString(R.string.backup_err_too_new, b.schemaVersion, Backup.CURRENT_SCHEMA)
         }
         b to summarize(b)
     }

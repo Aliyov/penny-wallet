@@ -11,7 +11,7 @@ import kotlinx.coroutines.flow.drop
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.launch
 
-class PennyApp : Application() {
+open class PennyApp : Application() {
     lateinit var container: AppContainer
         private set
 
