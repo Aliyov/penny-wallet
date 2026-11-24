@@ -18,12 +18,15 @@ import kotlinx.serialization.json.Json
 import java.time.Instant
 import java.time.LocalDate
 
+class PasswordNeededException : Exception()
+
 class BackupManager(
     private val context: Context,
     private val db: PennyDatabase,
     private val settings: SettingsStore,
     private val listener: ChangeListener,
 ) {
+    val password = BackupPasswordStore(context)
     private val json = Json { ignoreUnknownKeys = true; encodeDefaults = true; prettyPrint = true; coerceInputValues = true }
 
     companion object {
@@ -69,7 +72,13 @@ class BackupManager(
         if (!hasFolderAccess(p)) return@withContext BackupResult.Failed(context.getString(R.string.backup_err_lost_access))
         val dir = DocumentFile.fromTreeUri(context, tree) ?: return@withContext BackupResult.Failed(context.getString(R.string.backup_err_folder_not_found))
         runCatching {
-            val data = encode(snapshot()).toByteArray()
+            val plain = encode(snapshot())
+            val data = if (password.isSet) {
+                val pw = password.get() ?: error(context.getString(R.string.backup_err_password_lost))
+                BackupCrypto.encrypt(plain, pw).also { pw.fill(' ') }
+            } else {
+                plain
+            }.toByteArray()
             val name = fileName()
             dir.findFile(name)?.delete()
             val file = dir.createFile("application/json", name.removeSuffix(".json"))
@@ -91,9 +100,22 @@ class BackupManager(
     }
 
     /** Reads and validates a backup file chosen with ACTION_OPEN_DOCUMENT. Throws with a readable message. */
-    suspend fun read(uri: Uri): Pair<Backup, BackupSummary> = withContext(Dispatchers.IO) {
-        val text = context.contentResolver.openInputStream(uri)?.use { it.readBytes().decodeToString() }
+    /** Throws [PasswordNeededException] for a password-protected file when [pw] is null. */
+    suspend fun read(uri: Uri, pw: CharArray? = null): Pair<Backup, BackupSummary> = withContext(Dispatchers.IO) {
+        val raw = context.contentResolver.openInputStream(uri)?.use { it.readBytes().decodeToString() }
             ?: throw IllegalArgumentException(context.getString(R.string.backup_err_open_file))
+        val text = if (BackupCrypto.isEncrypted(raw)) {
+            if (pw == null) throw PasswordNeededException()
+            try {
+                BackupCrypto.decrypt(raw, pw)
+            } catch (_: WrongPasswordException) {
+                throw IllegalArgumentException(context.getString(R.string.backup_err_wrong_password))
+            } catch (_: Exception) {
+                throw IllegalArgumentException(context.getString(R.string.backup_err_not_backup))
+            }
+        } else {
+            raw
+        }
         val b = runCatching { json.decodeFromString(Backup.serializer(), text) }
             .getOrElse { throw IllegalArgumentException(context.getString(R.string.backup_err_not_backup)) }
         require(b.schemaVersion in 1..Backup.CURRENT_SCHEMA) {

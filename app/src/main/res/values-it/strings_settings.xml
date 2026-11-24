@@ -115,4 +115,23 @@
     <string name="settings_more">Altre opzioni</string>
     <string name="settings_more_sub">Aspetto, Home, aggiunta rapida, grafici e altro</string>
     <string name="manage_add_category">Aggiungi categoria</string>
+
+    <string name="backup_password">Protezione con password</string>
+    <string name="backup_password_on">I nuovi backup sono cifrati con la tua password</string>
+    <string name="backup_password_off">Chiunque abbia il file può leggerlo</string>
+    <string name="backup_password_set_title">Proteggi i backup con una password</string>
+    <string name="backup_password_warning">Se dimentichi questa password, i backup protetti non si potranno aprire. Penny non può recuperarla. I backup precedenti restano come sono.</string>
+    <string name="backup_password_new">Password</string>
+    <string name="backup_password_repeat">Ripeti la password</string>
+    <string name="backup_password_too_short">Almeno %1$d caratteri</string>
+    <string name="backup_password_mismatch">Le password non coincidono</string>
+    <string name="backup_password_turn_on">Attiva</string>
+    <string name="backup_password_remove_title">Disattivare la protezione con password?</string>
+    <string name="backup_password_remove_body">I nuovi backup verranno salvati senza password. Quelli protetti richiedono ancora la loro password.</string>
+    <string name="backup_password_remove">Disattiva</string>
+    <string name="backup_password_enter_title">Serve la password</string>
+    <string name="backup_password_enter_body">Questo backup è protetto. Inserisci la password con cui è stato salvato.</string>
+    <string name="backup_password_open">Apri</string>
+    <string name="backup_err_wrong_password">Password errata</string>
+    <string name="backup_err_password_lost">La password dei backup non è più leggibile su questo telefono. Disattiva e riattiva la protezione con password.</string>
 </resources>

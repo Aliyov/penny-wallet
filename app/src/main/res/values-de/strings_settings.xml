@@ -110,4 +110,23 @@
     <string name="settings_more">Weitere Optionen</string>
     <string name="settings_more_sub">Aussehen, Start, Schnell erfassen, Diagramme und mehr</string>
     <string name="manage_add_category">Kategorie hinzufügen</string>
+
+    <string name="backup_password">Passwortschutz</string>
+    <string name="backup_password_on">Neue Backups werden mit deinem Passwort verschlüsselt</string>
+    <string name="backup_password_off">Jeder mit der Datei kann sie lesen</string>
+    <string name="backup_password_set_title">Backups mit Passwort schützen</string>
+    <string name="backup_password_warning">Wenn du dieses Passwort vergisst, lassen sich geschützte Backups nicht mehr öffnen. Penny kann es nicht wiederherstellen. Ältere Backups bleiben, wie sie sind.</string>
+    <string name="backup_password_new">Passwort</string>
+    <string name="backup_password_repeat">Passwort wiederholen</string>
+    <string name="backup_password_too_short">Mindestens %1$d Zeichen</string>
+    <string name="backup_password_mismatch">Die Passwörter stimmen nicht überein</string>
+    <string name="backup_password_turn_on">Einschalten</string>
+    <string name="backup_password_remove_title">Passwortschutz ausschalten?</string>
+    <string name="backup_password_remove_body">Neue Backups werden ohne Passwort gespeichert. Geschützte Backups brauchen weiterhin ihr Passwort.</string>
+    <string name="backup_password_remove">Ausschalten</string>
+    <string name="backup_password_enter_title">Passwort nötig</string>
+    <string name="backup_password_enter_body">Dieses Backup ist geschützt. Gib das Passwort ein, mit dem es gespeichert wurde.</string>
+    <string name="backup_password_open">Öffnen</string>
+    <string name="backup_err_wrong_password">Falsches Passwort</string>
+    <string name="backup_err_password_lost">Das Backup-Passwort ist auf diesem Handy nicht mehr lesbar. Schalte den Passwortschutz aus und wieder ein.</string>
 </resources>

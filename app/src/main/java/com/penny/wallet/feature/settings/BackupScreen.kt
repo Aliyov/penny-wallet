@@ -81,7 +81,7 @@ fun BackupScreen(onBack: () -> Unit) {
                 stringResource(R.string.backup_tip),
                 style = Penny.type.caption, color = c.textSecondary,
             )
-            s.error?.let { Text(it, style = Penny.type.label, color = c.danger) }
+            s.error?.takeIf { s.restoreNeedsPassword == null }?.let { Text(it, style = Penny.type.label, color = c.danger) }
 
             PennyButton(stringResource(if (s.folderUri == null) R.string.backup_pick_folder else R.string.backup_change_folder), { pickFolder.launch(null) }, Modifier.fillMaxWidth(),
                 kind = if (s.folderUri == null) ButtonKind.PRIMARY else ButtonKind.SECONDARY)
@@ -91,12 +91,17 @@ fun BackupScreen(onBack: () -> Unit) {
             val freqs = BackupFrequency.entries
             SegmentedControl(listOf(stringResource(R.string.backup_daily), stringResource(R.string.backup_weekly), stringResource(R.string.backup_monthly)), freqs.indexOf(s.frequency).coerceAtLeast(0), { vm.setFrequency(freqs[it]) })
             KeepStepper(s.keep, vm::setKeep)
+            PasswordCard(s.passwordOn, vm::setPassword, vm::removePassword)
 
             SectionLabel(stringResource(R.string.backup_restore_export), Modifier.padding(top = 8.dp))
             PennyButton(stringResource(R.string.backup_restore_file), { pickRestore.launch(BackupViewModel.MIME_TYPES) }, Modifier.fillMaxWidth(), kind = ButtonKind.SECONDARY, enabled = !s.busy)
             PennyButton(stringResource(R.string.backup_export_csv), { createCsv.launch(vm.csvFileName) }, Modifier.fillMaxWidth(), kind = ButtonKind.SECONDARY)
             Spacer(Modifier.height(32.dp))
         }
+    }
+
+    s.restoreNeedsPassword?.let {
+        RestorePasswordDialog(s.error, s.busy, onDismiss = vm::cancelRestore, onSubmit = vm::submitRestorePassword)
     }
 
     val pending = s.pendingRestore

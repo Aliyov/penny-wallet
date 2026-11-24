@@ -1,5 +1,6 @@
 package com.penny.wallet.feature.settings
 
+import com.penny.wallet.data.backup.PasswordNeededException
 import com.penny.wallet.core.ui.userMessage
 import com.penny.wallet.core.ui.moneyText
 import kotlinx.coroutines.flow.flowOn
@@ -31,10 +32,15 @@ data class BackupUi(
     val justBackedUp: String? = null,
     val error: String? = null,
     val pendingRestore: Pair<Backup, BackupSummary>? = null,
+    val passwordOn: Boolean = false,
+    /** A password-protected file waiting for its password. */
+    val restoreNeedsPassword: Uri? = null,
 )
 
 class BackupViewModel(private val c: AppContainer) : ViewModel() {
-    private val transient = MutableStateFlow(BackupUi())
+    private val transient = MutableStateFlow(BackupUi(passwordOn = c.backup.password.isSet))
+    /** Password that opened the pending restore; kept on the phone afterwards if none is set yet. */
+    private var restorePassword: CharArray? = null
 
     val state: StateFlow<BackupUi> = combine(c.settings.prefs, transient) { p, t ->
         t.copy(folderUri = p.backupFolderUri, folderOk = c.backup.hasFolderAccess(p), lastBackupAt = p.lastBackupAt,
@@ -63,19 +69,55 @@ class BackupViewModel(private val c: AppContainer) : ViewModel() {
     fun setFrequency(f: BackupFrequency) = viewModelScope.launch { c.settings.update { it.copy(backupFrequency = f) } }
     fun setKeep(n: Int) = viewModelScope.launch { c.settings.update { it.copy(backupKeep = n.coerceIn(1, 60)) } }
 
-    fun onRestoreFilePicked(uri: Uri?) = viewModelScope.launch {
+    fun onRestoreFilePicked(uri: Uri?) = openRestore(uri, null)
+
+    fun submitRestorePassword(pw: CharArray) = openRestore(transient.value.restoreNeedsPassword, pw)
+
+    private fun openRestore(uri: Uri?, pw: CharArray?) = viewModelScope.launch {
         uri ?: return@launch
         transient.update { it.copy(busy = true, error = null) }
-        val r = runCatching { c.backup.read(uri) }
-        transient.update { r.fold({ ok -> it.copy(busy = false, pendingRestore = ok) }, { e -> it.copy(busy = false, error = c.userMessage(e)) }) }
+        val r = runCatching { c.backup.read(uri, pw) }
+        restorePassword = pw.takeIf { r.isSuccess }
+        transient.update {
+            r.fold(
+                { ok -> it.copy(busy = false, pendingRestore = ok, restoreNeedsPassword = null) },
+                { e ->
+                    if (e is PasswordNeededException) it.copy(busy = false, restoreNeedsPassword = uri)
+                    else it.copy(busy = false, error = c.userMessage(e), restoreNeedsPassword = if (pw != null) uri else null)
+                },
+            )
+        }
     }
 
-    fun cancelRestore() = transient.update { it.copy(pendingRestore = null) }
+    fun cancelRestore() {
+        restorePassword = null
+        transient.update { it.copy(pendingRestore = null, restoreNeedsPassword = null) }
+    }
+
+    fun setPassword(pw: CharArray) = viewModelScope.launch {
+        c.backup.password.set(pw)
+        pw.fill(' ')
+        transient.update { it.copy(passwordOn = true) }
+        if (state.value.folderUri != null) backupNow()
+    }
+
+    fun removePassword() {
+        c.backup.password.clear()
+        transient.update { it.copy(passwordOn = false) }
+    }
 
     fun confirmRestore(done: (String?) -> Unit) = viewModelScope.launch {
         val b = transient.value.pendingRestore?.first ?: return@launch
         transient.update { it.copy(busy = true) }
         val err = runCatching { c.backup.restore(b) }.exceptionOrNull()?.let(c::userMessage)
+        restorePassword?.let { pw ->
+            if (err == null && !c.backup.password.isSet) {
+                c.backup.password.set(pw)
+                transient.update { it.copy(passwordOn = true) }
+            }
+            pw.fill(' ')
+        }
+        restorePassword = null
         transient.update { it.copy(busy = false, pendingRestore = null, error = err) }
         done(err)
     }

@@ -110,4 +110,23 @@
     <string name="settings_more">More options</string>
     <string name="settings_more_sub">Look, Home, quick add, charts and more</string>
     <string name="manage_add_category">Add category</string>
+
+    <string name="backup_password">Password protection</string>
+    <string name="backup_password_on">New backups are encrypted with your password</string>
+    <string name="backup_password_off">Anyone with the file can read it</string>
+    <string name="backup_password_set_title">Protect backups with a password</string>
+    <string name="backup_password_warning">If you forget this password, protected backups can\'t be opened. Penny can\'t recover it. Older backups stay as they are.</string>
+    <string name="backup_password_new">Password</string>
+    <string name="backup_password_repeat">Repeat password</string>
+    <string name="backup_password_too_short">Use at least %1$d characters</string>
+    <string name="backup_password_mismatch">The passwords don\'t match</string>
+    <string name="backup_password_turn_on">Turn on</string>
+    <string name="backup_password_remove_title">Turn off password protection?</string>
+    <string name="backup_password_remove_body">New backups will be saved without a password. Protected backups still need their password to open.</string>
+    <string name="backup_password_remove">Turn off</string>
+    <string name="backup_password_enter_title">Password needed</string>
+    <string name="backup_password_enter_body">This backup is protected. Enter the password it was saved with.</string>
+    <string name="backup_password_open">Open</string>
+    <string name="backup_err_wrong_password">Wrong password</string>
+    <string name="backup_err_password_lost">The backup password is no longer readable on this phone. Turn password protection off and on again.</string>
 </resources>

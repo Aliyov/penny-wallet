@@ -34,6 +34,11 @@
 - Clean first run: no seed; empty Home card "Add your first account" + "Try with sample data" (removable).
 - CI: GitHub Actions with lint, unit tests, `bundleRelease`, merged-manifest permission check, missing-translation check.
 
+### P4 Support & trust
+- Encrypted backups: optional password (Backup screen), AES-GCM with PBKDF2 key, `format` marker in a JSON envelope so restore asks for the password; plain backups still restore.
+- Support Penny: Play Billing consumables behind `TipRepository` (needs product ids in Play Console).
+- Crash report by email: save the stack trace on crash, offer to send it on next launch via the mail app (needs a support address).
+
 ### P3 Features
 - `domain/Budget`: one monthly budget over all expenses (`UserPrefs.monthlyBudget`, minor units, 0 = none); left, per day, pace (on track / faster than planned / over).
 - `domain/Insights`: spending so far vs the same number of days last period, plus the biggest category; shown in the Home month card.
@@ -133,6 +138,10 @@
 -  Android SDK at `~/Android/Sdk` (platforms 35/36/37 installed via sdkmanager, no sudo needed), adb at `~/Android/Sdk/platform-tools/adb` (not on PATH).
 
 ## Decisions
+- **P4 (2026-11-24):**
+  - Backup password is stored on the phone (Android Keystore-wrapped, separate private prefs, never in `UserPrefs` because prefs travel in backups) so scheduled backups stay encrypted. If it can't be unwrapped, the backup fails with a message instead of silently writing a plain file.
+  - Encrypted files keep the `.json` name so pruning and the restore picker work unchanged. KDF iterations from a file are bounded (10k–2M).
+  - Restoring a protected backup on a phone without a password keeps protection on with that password. Turning protection on or off never touches older files.
 - **P3 (2026-11-24):**
   - Budget lives in `UserPrefs` (default 0), so no Room migration and old backups restore unchanged. "Reset all options" keeps it. Changing currency does not convert it, like every other amount.
   - "Faster than planned" only shows once spending is more than 10 % ahead of an even daily pace, to avoid nagging. Colour is never the only signal: the text says it too.
