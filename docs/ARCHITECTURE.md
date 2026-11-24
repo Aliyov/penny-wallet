@@ -185,6 +185,8 @@ Composable  →  ViewModel  →  Repository  →  Room / DataStore / ML Kit / Bi
 | Formatting | currency and locale formats for EN/DE/IT | `src/test` |
 | Data | Room migrations, backup upgrade + restore for every version | `src/test` (bundled SQLite driver) |
 | UI | key flows: first run, add expense, scan confirm, budget, backup/restore | Compose UI tests on JVM (Robolectric) |
+| Parsers | CSV import and receipt parsing: real samples plus fuzzing (random input never crashes) | `src/test` |
+| Performance | 20 000-entry data set: Home state, search and summaries within time limits | `src/test` + smoke app on the phone |
 | Release build | R8 + ML Kit + Billing actually work | `scripts/ocr-smoke.sh` and an install-and-launch check on a real phone |
 
 **Continuous integration** (GitHub Actions, on every push and pull request): lint, unit + UI tests, `bundleRelease`, a merged-manifest check (fails on `INTERNET` / `ACCESS_NETWORK_STATE`), a string check (no missing DE/IT translations).
@@ -215,5 +217,6 @@ Tracked with checkboxes in `PROGRESS.md`:
 3. **P3 Features:** monthly budget, "this month" insight card, smarter receipt scan (shop name, date, learned category), habit-based category suggestions.
 4. **P4 Support & trust:** Support Penny (Play Billing), encrypted backups, crash report by email (no SDK).
 5. **P5 Play readiness:** upload key + AAB, accessibility pass, store listing EN/DE/IT, privacy policy, Data safety.
-6. **P6 Launch:** closed test (12 testers / 14 days), fixes, production release.
-7. **Later:** app-icon shortcuts and Quick Settings tile, more languages.
+6. **P5a/P5b Compete:** language row, CSV import, category budgets, bill detection, shortcuts + Quick Settings tile, "Your data stays here", split expenses, debts, budget widget; then all-time search, year overview, calendar, FR/ES/PT/PL/TR, monthly summary, tablet layouts.
+7. **P6 Launch:** closed test (12 testers / 14 days), fixes, production release.
+8. **Later:** tags/trips, receipt photos attached to expenses.

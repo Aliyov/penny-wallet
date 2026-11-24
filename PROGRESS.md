@@ -22,6 +22,8 @@
 - [x] P3 Features: monthly budget, "this month" insight, smarter receipt scan, category suggestions (ocr-smoke OK, budget + insight checked on phone)
 - [x] P4 Support & trust: Support Penny (Play Billing tips), encrypted backups, crash report by email (phone check pending; tips testable only from a Play test track)
 - [ ] P5 Play readiness: upload key + AAB, accessibility, store listing EN/DE/IT, privacy policy, Data safety (code + texts done 2026-11-24; waiting for Play Console setup, store graphics, key backup)
+- [ ] P5a Compete (before the closed test): test infrastructure, language row, CSV import, category budgets, bill detection, shortcuts + Quick Settings tile, "Your data stays here", split expenses, debts, budget widget
+- [ ] P5b Compete (during the closed test): all-time search, year overview, calendar, FR/ES/PT/PL/TR, monthly summary, tablet/foldable layout
 - [ ] P6 Launch: closed test (12 testers / 14 days), production release
 
 ## Phase plans
@@ -33,6 +35,28 @@
 - Strings: every UI string to `strings.xml` with `values-de` / `values-it`, plurals, locale-aware dates, `locales_config.xml`.
 - Clean first run: no seed; empty Home card "Add your first account" + "Try with sample data" (removable).
 - CI: GitHub Actions with lint, unit tests, `bundleRelease`, merged-manifest permission check, missing-translation check.
+
+### P5a / P5b Compete (user decision 2026-11-24: features 1–10, 12, 14–17; not tags, not receipt photos)
+Order (each step is one commit, and each must pass the full gate below before the next starts):
+1. **Test infrastructure first:** Robolectric + Room testing + Compose UI tests on the JVM; a migration test from the exported v1 schema; backup fixtures (v1 JSON, encrypted v1) that must keep restoring; a 20 000-entry data generator with time limits on summary, search and Home state; CI runs them all.
+2. **One database change for all new data (Room v1 → v2, backup schema 2):** `Category.monthlyBudget`, `Transaction.splitId`, `Transaction.importId`, new `Debt` table. A single migration, tested from v1 with real-looking data; v1 backups restore into v2; v2 → v1 restore is refused with a clear message.
+3. Small items: Language row (opens the system per-app language screen on Android 13+, in-app list below), "Your data stays here" screen, app shortcuts + Quick Settings tile, budget widget.
+4. Category budgets (domain `Budget` per category, Expenses bars, edit in category sheet).
+5. Bill detection (`domain/BillDetector`: same payee/category and similar amount on a monthly rhythm, ≥3 occurrences, suggestion dismissible forever).
+6. Split expenses (one receipt → several categories sharing a `splitId`; edit/delete/undo act on the whole split; totals unchanged).
+7. Debts ("I owe" / "owed to me", partial repayments, optional reminder; not linked to account balances unless the user records the payment).
+8. CSV import (parser for comma/semicolon/tab, quotes, EU/US numbers, several date formats, column mapping with preview, duplicate detection, whole import undoable via `importId`; profiles for Money Manager, Monefy, Wallet and Penny's own CSV).
+P5b: all-time search with amount/date filters; year overview; calendar; FR/ES/PT/PL/TR; opt-in monthly summary on the 1st; tablet/foldable layouts (list-detail, two panes ≥600dp).
+
+**Test gate per step (nothing moves on with a red item):**
+- Domain: JUnit for every rule incl. edge cases (month ends, leap years, start day 27, zero/three-decimal currencies, negative and huge amounts, empty data).
+- Parsers (CSV, receipt): table tests with real-world samples + a fuzz test (thousands of random/garbled inputs must never crash, only return errors).
+- Data: Room migration tests, backup restore of every older fixture, round trip backup → restore → identical data.
+- UI (Robolectric Compose): first run, add/edit/undo expense, split, budget, debt, import with preview, backup/restore.
+- Performance: 20 000 entries, Home state and search within set limits on the JVM; on the phone, the smoke app with the same data must stay smooth.
+- Review: `/code-review` at high effort on each step's diff before committing; every finding fixed or explained in Decisions.
+- Phone: release build installed, `ocr-smoke.sh`, the step's screens checked in light + dark and EN/DE/IT on the sample-data smoke install (never the real app's data).
+- CI on GitHub green before the next step.
 
 ### P5 Play readiness
 - targetSdk 36 (Play requirement), version 2.0 (code 7).
@@ -145,6 +169,7 @@
 -  Android SDK at `~/Android/Sdk` (platforms 35/36/37 installed via sdkmanager, no sudo needed), adb at `~/Android/Sdk/platform-tools/adb` (not on PATH).
 
 ## Decisions
+- **P5a/P5b scope (2026-11-24):** user chose features 1–10, 12, 14–17 (no tags, no receipt photos). Debts are personal records ("I owe X"), not shared-expense splitting, so §1's out-of-scope list still holds. Languages: FR, ES, PT, PL, TR (Azerbaijani/Russian offered, not chosen yet). All new data goes into one Room migration (v1 → v2) and backup schema 2 so there is only one upgrade path to test.
 - **P5 (2026-11-24):**
   - Local release builds stay debug-signed so they install over the existing sideloaded app without data loss; only the Play bundle uses the upload key (opt-in flag). Moving from the sideloaded app to the Play version means backup → install from Play → restore (different signature).
   - targetSdk 36: the app is already edge-to-edge and has no custom back handling; the test phone runs Android 15, so Android 16-only behaviour is unverified on a device.
