@@ -105,4 +105,17 @@
         <item quantity="other">%1$d scaduti</item>
         <item quantity="many">%1$d scaduti</item>
     </plurals>
+
+    <string name="budget_title">Budget mensile</string>
+    <string name="budget_per_month">%1$s al mese</string>
+    <string name="budget_not_set">Non impostato</string>
+    <string name="budget_hint">Quanto vuoi spendere ogni mese. La Home mostra quanto ti resta.</string>
+    <string name="budget_remove">Rimuovi budget</string>
+    <string name="budget_left">Restano %1$s · circa %2$s al giorno</string>
+    <string name="budget_left_fast">Restano %1$s · stai spendendo più del previsto, circa %2$s al giorno</string>
+    <string name="budget_over">%1$s oltre il budget</string>
+    <string name="insight_same">Più o meno come lo stesso periodo del mese scorso</string>
+    <string name="insight_less">%1$d%% in meno rispetto allo stesso periodo del mese scorso</string>
+    <string name="insight_more">%1$d%% in più rispetto allo stesso periodo del mese scorso</string>
+    <string name="insight_top">Di più per %1$s (%2$s)</string>
 </resources>

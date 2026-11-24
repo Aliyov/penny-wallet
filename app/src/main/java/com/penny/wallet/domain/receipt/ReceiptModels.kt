@@ -1,5 +1,7 @@
 package com.penny.wallet.domain.receipt
 
+import java.time.LocalDate
+
 /**
  * One recognised text line in image pixel coordinates (y grows downwards).
  * [slope] is the line's tilt as dy/dx, measured from its top edge (0 for a straight photo).
@@ -23,6 +25,9 @@ data class ReceiptResult(
     val totalCents: Long?,
     val candidates: List<Long>,
     val confident: Boolean,
+    /** Shop name from the receipt header, when one could be read. */
+    val merchant: String? = null,
+    val date: LocalDate? = null,
 ) {
     /** The parser reads amounts with 2 decimals; currencies with other minor units (JPY 0, BHD 3) are rescaled. */
     fun inMinorUnits(fractionDigits: Int): ReceiptResult {
@@ -31,7 +36,7 @@ data class ReceiptResult(
             fractionDigits < 2 -> { var d = 1L; repeat(2 - fractionDigits) { d *= 10 }; (c + d / 2) / d }
             else -> { var m = 1L; repeat(fractionDigits - 2) { m *= 10 }; c * m }
         }
-        return ReceiptResult(totalCents?.let(::scale), candidates.map(::scale).distinct(), confident)
+        return copy(totalCents = totalCents?.let(::scale), candidates = candidates.map(::scale).distinct())
     }
 
     companion object {

@@ -19,7 +19,7 @@
 ## Production roadmap (see docs/ARCHITECTURE.md §14)
 - [x] P1 Foundations: package move, comment cleanup, strings EN/DE/IT, light/dark/system theme, currency choice, clean first run (no demo data), CI
 - [x] P2 Simplify: essential settings + More options, leaner Home, plain wording, empty states (phone check pending)
-- [ ] P3 Features: monthly budget, "this month" insight, smarter receipt scan, category suggestions
+- [x] P3 Features: monthly budget, "this month" insight, smarter receipt scan, category suggestions (phone check + ocr-smoke pending)
 - [ ] P4 Support & trust: Support Penny (Play Billing tips), encrypted backups, crash report by email
 - [ ] P5 Play readiness: upload key + AAB, accessibility, store listing EN/DE/IT, privacy policy, Data safety
 - [ ] P6 Launch: closed test (12 testers / 14 days), production release
@@ -33,6 +33,14 @@
 - Strings: every UI string to `strings.xml` with `values-de` / `values-it`, plurals, locale-aware dates, `locales_config.xml`.
 - Clean first run: no seed; empty Home card "Add your first account" + "Try with sample data" (removable).
 - CI: GitHub Actions with lint, unit tests, `bundleRelease`, merged-manifest permission check, missing-translation check.
+
+### P3 Features
+- `domain/Budget`: one monthly budget over all expenses (`UserPrefs.monthlyBudget`, minor units, 0 = none); left, per day, pace (on track / faster than planned / over).
+- `domain/Insights`: spending so far vs the same number of days last period, plus the biggest category; shown in the Home month card.
+- Settings → Your money → Monthly budget (amount sheet, Remove budget).
+- Receipt scan reads the shop name (header rows) and date; Accept fills note, recent date and the category last used for that shop.
+- `domain/CategorySuggest`: learned shop → category; time-of-day habit puts the likely category first (Most used order only).
+- Unit tests for all four; EN/DE/IT strings.
 
 ### P2 Simplify
 - Settings main screen: "Your money" (Accounts, Categories, Recurring bills) + essentials inline (Theme, Accent, Currency, Month starts on, Reminder time, Backup, App lock) + one "More options" row. Support Penny comes in P4.
@@ -125,6 +133,13 @@
 -  Android SDK at `~/Android/Sdk` (platforms 35/36/37 installed via sdkmanager, no sudo needed), adb at `~/Android/Sdk/platform-tools/adb` (not on PATH).
 
 ## Decisions
+- **P3 (2026-11-24):**
+  - Budget lives in `UserPrefs` (default 0), so no Room migration and old backups restore unchanged. "Reset all options" keeps it. Changing currency does not convert it, like every other amount.
+  - "Faster than planned" only shows once spending is more than 10 % ahead of an even daily pace, to avoid nagging. Colour is never the only signal: the text says it too.
+  - Insight compares the same number of days (capped at the shorter month's end); "about the same" below 5 %.
+  - Receipt dates: day-first unless only month-first is possible; ignored if in the future or older than a year, and the form only takes dates from the last 60 days. Shop name: first of the top 4 rows that is mostly letters and not a title, contact, tax id or street line.
+  - Category learning only reads the user's own notes and categories on the phone. A learned category is preselected but never auto-saved.
+  - Time habit uses `createdAt` (entry time) from the last 90 days; needs 8+ expenses, 3+ votes and a 40 % share, else falls back to last used.
 - **P2 (2026-11-24):**
   - Settings shows the essentials inline (Theme, Accent, Currency, Month starts on, Reminder time, App lock) plus Backup and More options. "Personalise" became "More options"; its duplicate Backup frequency/files-kept card was removed (the Backup screen has both). "Erase all data" sits at the bottom of More options.
   - "Reset all options" (`UserPrefs.withDefaultOptions`) now keeps currency, backup schedule and app lock as well as state, so a reset never changes how amounts read, stops backups or unlocks the app.

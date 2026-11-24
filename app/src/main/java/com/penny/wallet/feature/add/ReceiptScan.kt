@@ -1,5 +1,6 @@
 package com.penny.wallet.feature.add
 
+import com.penny.wallet.core.util.dateText
 import android.content.ActivityNotFoundException
 import android.net.Uri
 import androidx.activity.compose.rememberLauncherForActivityResult
@@ -144,6 +145,8 @@ private fun ConfirmAmount(result: ReceiptResult, vm: QuickAddViewModel, launcher
         onDismiss = vm::closeScan,
         body = {
             Column(verticalArrangement = Arrangement.spacedBy(10.dp)) {
+                val details = listOfNotNull(result.merchant, result.date?.let { dateText().day(it) }).joinToString(" · ")
+                if (details.isNotEmpty()) Text(details, style = Penny.type.bodyStrong, color = c.textPrimary)
                 if (!result.confident) {
                     Text(stringResource(R.string.add_scan_not_confident), style = Penny.type.caption, color = c.textSecondary)
                 }
@@ -173,7 +176,7 @@ private fun ConfirmAmount(result: ReceiptResult, vm: QuickAddViewModel, launcher
     ) {
         DialogButton(stringResource(R.string.add_scan_decline), vm::closeScan, muted = true)
         DialogButton(stringResource(R.string.add_scan_retake), launchers.camera, muted = true)
-        DialogButton(stringResource(R.string.add_scan_accept), { cents?.let(vm::acceptReceipt) }, enabled = cents != null)
+        DialogButton(stringResource(R.string.add_scan_accept), { cents?.let { vm.acceptReceipt(it, result) } }, enabled = cents != null)
     }
 }
 

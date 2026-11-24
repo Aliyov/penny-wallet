@@ -37,6 +37,8 @@ data class UserPrefs(
     val historyMonths: Int = 6,
     val firstDayOfWeek: Int = 1,
     val monthStartDay: Int = 1,
+    /** Monthly spending budget in minor units; 0 = none. */
+    val monthlyBudget: Long = 0,
     val goalLayout: GoalLayout = GoalLayout.GRID,
     val goalSort: GoalSort = GoalSort.MANUAL,
     val reminderHour: Int = 9,
@@ -56,11 +58,11 @@ data class UserPrefs(
 
 /**
  * "Reset all options": look and behaviour go back to defaults. Kept: state (backup folder, last used, permission asked,
- * seeded), the currency (amounts are stored without one), backup schedule and app lock (resetting must not silently
+ * seeded), the currency (amounts are stored without one), the budget (an amount, not an option), backup schedule and app lock (resetting must not silently
  * stop backups or unlock the app).
  */
 fun UserPrefs.withDefaultOptions(): UserPrefs = UserPrefs().copy(
-    currencyCode = currencyCode,
+    currencyCode = currencyCode, monthlyBudget = monthlyBudget,
     backupFolderUri = backupFolderUri, lastBackupAt = lastBackupAt, backupFrequency = backupFrequency, backupKeep = backupKeep,
     biometricLock = biometricLock, lockAfter = lockAfter,
     lastAccountId = lastAccountId, lastCategoryId = lastCategoryId,

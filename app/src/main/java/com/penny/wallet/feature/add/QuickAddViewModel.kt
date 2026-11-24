@@ -1,5 +1,9 @@
 package com.penny.wallet.feature.add
 
+import java.time.ZoneId
+import java.time.LocalDateTime
+import com.penny.wallet.domain.receipt.ReceiptResult
+import com.penny.wallet.domain.CategorySuggest
 import com.penny.wallet.core.ui.userMessage
 import com.penny.wallet.core.ui.moneyText
 import kotlinx.coroutines.flow.flowOn
@@ -78,9 +82,10 @@ class QuickAddViewModel(private val c: AppContainer) : ViewModel() {
             ChipOrder.MANUAL -> visible.sortedBy { it.sortOrder }
             ChipOrder.ALPHABETICAL -> visible.sortedBy { it.name.lowercase() }
             ChipOrder.MOST_USED -> visible.sortedWith(compareByDescending<Category> { usage[it.id] ?: 0 }.thenBy { it.sortOrder })
-        }.let { list -> // last used first
-            val last = prefs.lastCategoryId
-            if (prefs.chipOrder == ChipOrder.MOST_USED && last != null) list.sortedByDescending { it.id == last } else list
+        }.let { list ->
+            if (prefs.chipOrder != ChipOrder.MOST_USED) return@let list
+            val first = CategorySuggest.forTime(txs, LocalDateTime.now(), ZoneId.systemDefault()) ?: prefs.lastCategoryId
+            if (first != null) list.sortedByDescending { it.id == first } else list
         }
         val summary = MoneyCalculator.summary(accounts, goals, txs)
         QuickData(live, ordered, goals.filterNot { it.archived }, summary.perAccount.mapValues { it.value.available },
@@ -131,10 +136,28 @@ class QuickAddViewModel(private val c: AppContainer) : ViewModel() {
         }
     }
 
-    /** Accepted amount goes into the form; the user still picks a category, then it saves as usual. */
-    fun acceptReceipt(cents: Long) {
-        if (cents > 0) _form.update { it.copy(digits = NumpadDigits.of(cents), type = QuickType.EXPENSE) }
+    /**
+     * Accepted amount goes into the form, with the shop as note, the receipt's date when it is recent, and the category
+     * last used for that shop. Nothing is saved until the user confirms.
+     */
+    fun acceptReceipt(cents: Long, receipt: ReceiptResult) {
         closeScan()
+        if (cents <= 0) return
+        viewModelScope.launch {
+            val merchant = receipt.merchant
+            val learned = merchant?.let { CategorySuggest.forMerchant(it, c.transactions.all()) }
+            val today = LocalDate.now()
+            val date = receipt.date?.takeIf { !it.isBefore(today.minusDays(RECEIPT_DATE_DAYS)) && !it.isAfter(today) }
+            val known = learned?.takeIf { id -> data.value.categories.any { it.id == id } }
+            _form.update { f ->
+                f.copy(
+                    digits = NumpadDigits.of(cents), type = QuickType.EXPENSE,
+                    note = f.note.ifBlank { merchant.orEmpty() },
+                    date = date ?: f.date,
+                    categoryId = f.categoryId ?: known,
+                )
+            }
+        }
     }
 
     fun scanFailed(message: String) {
@@ -249,5 +272,8 @@ class QuickAddViewModel(private val c: AppContainer) : ViewModel() {
 
     private fun text(id: Int, vararg args: Any): String = c.context.getString(id, *args)
 }
+
+/** Older receipt dates are more likely misreads than real purchases, so the form keeps today. */
+private const val RECEIPT_DATE_DAYS = 60L
 
 object NumpadDigits { fun of(cents: Long) = if (cents <= 0) "" else cents.toString() }

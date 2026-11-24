@@ -19,7 +19,13 @@ import androidx.compose.ui.res.pluralStringResource
 import androidx.compose.ui.res.stringResource
 import com.penny.wallet.R
 import com.penny.wallet.core.money.Formatters
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.rounded.Savings
+import androidx.compose.ui.graphics.Color
+import com.penny.wallet.core.ui.components.AmountSheet
 import com.penny.wallet.core.ui.components.ChoiceRow
+import com.penny.wallet.core.ui.components.money
+import com.penny.wallet.core.ui.theme.ItemPalette
 import com.penny.wallet.core.ui.components.CurrencyPickerSheet
 import com.penny.wallet.core.ui.components.NavRow
 import com.penny.wallet.core.ui.components.StepperRow
@@ -55,6 +61,31 @@ internal fun CurrencySetting(x: PrefsCtx) {
             code, { open = false }, { v -> x.set { it.copy(currencyCode = v) }; open = false },
             note = stringResource(R.string.currency_change_note),
         )
+    }
+}
+
+@Composable
+internal fun BudgetSetting(x: PrefsCtx) {
+    var open by rememberSaveable { mutableStateOf(false) }
+    val budget = x.p.monthlyBudget
+    SettingsRow(
+        Icons.Rounded.Savings, stringResource(R.string.budget_title), { open = true },
+        if (budget > 0) stringResource(R.string.budget_per_month, money(budget, ignorePrivacy = true)) else stringResource(R.string.budget_not_set),
+        tint = Color(ItemPalette[5]),
+    )
+    if (open) {
+        AmountSheet(
+            stringResource(R.string.budget_title), onDismiss = { open = false }, confirmLabel = stringResource(R.string.action_save),
+            initialCents = budget,
+            extra = {
+                Text(stringResource(R.string.budget_hint), style = Penny.type.caption, color = Penny.colors.textSecondary)
+                if (budget > 0) {
+                    TextButton(onClick = { x.set { it.copy(monthlyBudget = 0) }; open = false }) {
+                        Text(stringResource(R.string.budget_remove), color = Penny.colors.danger)
+                    }
+                }
+            },
+        ) { cents -> x.set { it.copy(monthlyBudget = cents) }; open = false }
     }
 }
 

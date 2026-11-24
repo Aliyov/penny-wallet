@@ -8,6 +8,10 @@ import com.penny.wallet.AppContainer
 import com.penny.wallet.data.db.entities.Account
 import com.penny.wallet.data.db.entities.Transaction
 import com.penny.wallet.domain.AccountMoney
+import com.penny.wallet.domain.Budget
+import com.penny.wallet.domain.BudgetStatus
+import com.penny.wallet.domain.Insights
+import com.penny.wallet.domain.MonthInsight
 import com.penny.wallet.domain.DueState
 import com.penny.wallet.domain.MoneyCalculator
 import com.penny.wallet.domain.MoneySummary
@@ -42,6 +46,9 @@ data class HomeState(
     val firstRun: Boolean = false,
     val hasSampleData: Boolean = false,
     val currencyCode: String = "",
+    val budget: BudgetStatus? = null,
+    val insight: MonthInsight? = null,
+    val topCategoryName: String? = null,
 )
 
 class HomeViewModel(private val c: AppContainer) : ViewModel() {
@@ -54,11 +61,13 @@ class HomeViewModel(private val c: AppContainer) : ViewModel() {
         val period = MoneyCalculator.periodOf(today, prefs.monthStartDay)
         val upcoming = upcomingItems(rules, cats, today)
         val lastBackup = prefs.lastBackupAt
+        val spent = MoneyCalculator.monthSpent(txs, period)
+        val insight = Insights.month(txs, period, prefs.monthStartDay, today)
         HomeState(
             loading = false,
             summary = summary,
             period = period,
-            spentThisMonth = MoneyCalculator.monthSpent(txs, period),
+            spentThisMonth = spent,
             daysLeft = ChronoUnit.DAYS.between(today, period.end).toInt() + 1,
             dueThisMonth = Recurrence.dueInPeriod(rules, period.end),
             accounts = accounts.filterNot { it.archived }.map { AccountCard(it, summary.account(it.id)) },
@@ -70,6 +79,9 @@ class HomeViewModel(private val c: AppContainer) : ViewModel() {
             firstRun = accounts.isEmpty(),
             hasSampleData = hasSample,
             currencyCode = prefs.currencyCode,
+            budget = Budget.status(prefs.monthlyBudget, spent, period, today),
+            insight = insight,
+            topCategoryName = insight?.topCategoryId?.let { id -> cats.firstOrNull { it.id == id }?.name },
         )
     }.flowOn(Dispatchers.Default).stateIn(viewModelScope, SharingStarted.WhileSubscribed(5_000), HomeState())
 

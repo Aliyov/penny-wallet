@@ -104,4 +104,17 @@
         <item quantity="one">%1$d overdue</item>
         <item quantity="other">%1$d overdue</item>
     </plurals>
+
+    <string name="budget_title">Monthly budget</string>
+    <string name="budget_per_month">%1$s a month</string>
+    <string name="budget_not_set">Not set</string>
+    <string name="budget_hint">How much you want to spend on expenses each month. Home shows how much is left.</string>
+    <string name="budget_remove">Remove budget</string>
+    <string name="budget_left">%1$s left · about %2$s a day</string>
+    <string name="budget_left_fast">%1$s left · spending faster than planned, about %2$s a day</string>
+    <string name="budget_over">%1$s over budget</string>
+    <string name="insight_same">About the same as this time last month</string>
+    <string name="insight_less">%1$d%% less than this time last month</string>
+    <string name="insight_more">%1$d%% more than this time last month</string>
+    <string name="insight_top">Most on %1$s (%2$s)</string>
 </resources>

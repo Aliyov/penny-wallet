@@ -57,6 +57,8 @@ fun MonthCard(state: HomeState, modifier: Modifier = Modifier) {
                 Text(stringResource(R.string.home_due_this_month), style = Penny.type.label, color = c.textSecondary)
             }
         }
+        state.budget?.let { BudgetBar(it) }
+        state.insight?.let { InsightLine(it, state.topCategoryName) }
     }
 }
 

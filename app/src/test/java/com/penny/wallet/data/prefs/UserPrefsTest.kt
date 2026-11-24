@@ -6,7 +6,7 @@ import org.junit.Test
 class UserPrefsTest {
     private val custom = UserPrefs(
         themeMode = ThemeMode.LIGHT, accentArgb = 0xFF123456, hudGrid = true, textSize = TextSize.L,
-        currencyCode = "CHF", monthStartDay = 27, reminderHour = 20, quietMode = true,
+        currencyCode = "CHF", monthlyBudget = 150_000, monthStartDay = 27, reminderHour = 20, quietMode = true,
         backupFrequency = BackupFrequency.DAILY, backupFolderUri = "content://folder", backupKeep = 3, lastBackupAt = 42L,
         biometricLock = true, lockAfter = LockAfter.FIVE_MIN,
         lastAccountId = "a1", lastCategoryId = "c1", notificationPermissionAsked = true, seeded = true,
@@ -24,9 +24,10 @@ class UserPrefsTest {
         assertEquals(d.quietMode, r.quietMode)
     }
 
-    @Test fun resetKeepsCurrencyBackupLockAndState() {
+    @Test fun resetKeepsCurrencyBudgetBackupLockAndState() {
         val r = custom.withDefaultOptions()
         assertEquals("CHF", r.currencyCode)
+        assertEquals(150_000L, r.monthlyBudget)
         assertEquals(BackupFrequency.DAILY, r.backupFrequency)
         assertEquals("content://folder", r.backupFolderUri)
         assertEquals(3, r.backupKeep)

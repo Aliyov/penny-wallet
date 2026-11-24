@@ -1,5 +1,7 @@
 package com.penny.wallet.domain.receipt
 
+import java.time.LocalDate
+
 /**
  * Picks the paid total out of OCR'd receipt text.
  *
@@ -22,9 +24,16 @@ object ReceiptParser {
     internal data class Row(val text: String, val kind: RowKind, val amounts: List<Long>)
 
     /** Parses plain text, one receipt row per line. */
-    fun parseText(text: String): ReceiptResult = parseRows(text.lines().filter { it.isNotBlank() }.map(::row))
+    fun parseText(text: String, today: LocalDate = LocalDate.now()): ReceiptResult = parseAll(text.lines().filter { it.isNotBlank() }, today)
 
-    fun parse(lines: List<OcrLine>): ReceiptResult = parseRows(groupRows(lines).map(::row))
+    fun parse(lines: List<OcrLine>, today: LocalDate = LocalDate.now()): ReceiptResult = parseAll(groupRows(lines), today)
+
+    /** Shop and date only matter next to an amount; without one the result stays [ReceiptResult.EMPTY]. */
+    private fun parseAll(rows: List<String>, today: LocalDate): ReceiptResult {
+        val r = parseRows(rows.map(::row))
+        if (r.totalCents == null) return r
+        return r.copy(merchant = ReceiptDetails.merchant(rows), date = ReceiptDetails.date(rows, today))
+    }
 
     /** Typical VAT rates in Europe, in cents ("22,00" in an "%Iva" column is a rate, not a price). */
     private val VAT_RATES = setOf(400L, 500L, 550L, 600L, 700L, 800L, 900L, 1000L, 1200L, 1300L, 1400L, 1500L, 1600L,
