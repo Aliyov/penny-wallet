@@ -120,7 +120,7 @@ private fun CategoryBars(slices: List<CategorySlice>, onTap: (Int) -> Unit, sele
 
 /** Category list row: icon, name, amount and a thin bar with its share, or with budget used and "left/over" when it has a budget. Tap toggles the list filter. */
 @Composable
-internal fun CategoryRow(slice: CategorySlice, active: Boolean, dimmed: Boolean, onClick: () -> Unit, modifier: Modifier = Modifier) {
+internal fun CategoryRow(slice: CategorySlice, active: Boolean, dimmed: Boolean, onClick: (() -> Unit)?, modifier: Modifier = Modifier) {
     val c = Penny.colors
     val color = Color(slice.color)
     val budget = slice.budget
@@ -135,7 +135,7 @@ internal fun CategoryRow(slice: CategorySlice, active: Boolean, dimmed: Boolean,
     Row(
         modifier.fillMaxWidth().clip(shape)
             .background(if (active) color.copy(alpha = 0.12f) else Color.Transparent)
-            .clickableNoRipple(onClick).padding(horizontal = 8.dp, vertical = 8.dp),
+            .then(if (onClick != null) Modifier.clickableNoRipple(onClick) else Modifier).padding(horizontal = 8.dp, vertical = 8.dp),
         verticalAlignment = Alignment.CenterVertically, horizontalArrangement = Arrangement.spacedBy(12.dp),
     ) {
         IconBadge(slice.icon, if (dimmed) c.textSecondary else color)

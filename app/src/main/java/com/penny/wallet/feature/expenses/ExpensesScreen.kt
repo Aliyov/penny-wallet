@@ -14,6 +14,7 @@ import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.saveable.rememberSaveable
@@ -27,9 +28,13 @@ import com.penny.wallet.core.ui.components.LocalSnack
 import com.penny.wallet.core.ui.components.SectionLabel
 import com.penny.wallet.core.ui.pennyViewModel
 import com.penny.wallet.core.ui.theme.Penny
+import java.time.YearMonth
 
 @Composable
-fun ExpensesScreen(onOpenRecurring: () -> Unit, onEditTransaction: (String) -> Unit, onAddExpense: () -> Unit, onOpenSearch: () -> Unit) {
+fun ExpensesScreen(
+    onOpenRecurring: () -> Unit, onEditTransaction: (String) -> Unit, onAddExpense: () -> Unit, onOpenSearch: () -> Unit,
+    onOpenYear: () -> Unit, monthRequest: YearMonth? = null, onMonthRequestHandled: () -> Unit = {},
+) {
     val vm = pennyViewModel { ExpensesViewModel(it) }
     val state by vm.state.collectAsStateWithLifecycle()
     val snack = LocalSnack.current
@@ -40,13 +45,16 @@ fun ExpensesScreen(onOpenRecurring: () -> Unit, onEditTransaction: (String) -> U
     var selected by rememberSaveable(state.period?.label?.toString()) { mutableStateOf<Int?>(null) }
     val selectedIdx = selected?.takeIf { it in state.slices.indices }
     val hPad = Modifier.padding(horizontal = gutter)
+    LaunchedEffect(monthRequest) {
+        monthRequest?.let { vm.openMonth(it); onMonthRequestHandled() }
+    }
 
     LazyColumn(
         Modifier.fillMaxSize().statusBarsPadding(),
         contentPadding = PaddingValues(bottom = 120.dp),
         verticalArrangement = Arrangement.spacedBy(Penny.dims.gap),
     ) {
-        item(key = "header") { ExpensesHeader(onOpenRecurring, onOpenSearch, hPad) }
+        item(key = "header") { ExpensesHeader(onOpenRecurring, onOpenSearch, onOpenYear, hPad) }
         item(key = "month") { MonthSwitcher(state, vm::prevMonth, vm::nextMonth) }
         item(key = "chart") { ChartCard(state, selectedIdx, { selected = it }, hPad.animateContentSize()) }
 

@@ -64,6 +64,9 @@ class ExpensesViewModel(private val c: AppContainer) : ViewModel() {
     fun prevMonth() = shift(-1)
     fun nextMonth() = shift(1)
     fun selectMonth(m: YearMonth) = filters.update { it.copy(month = m) }
+
+    /** From the year overview: the whole month, so the list matches the chart. */
+    fun openMonth(m: YearMonth) { filters.value = Filters(m, null, "") }
     private fun shift(by: Long) {
         val cur = state.value.period?.label ?: return
         filters.update { it.copy(month = cur.plusMonths(by)) }

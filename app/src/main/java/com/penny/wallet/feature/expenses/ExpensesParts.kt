@@ -19,6 +19,7 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.rounded.BarChart
 import androidx.compose.material.icons.rounded.Close
 import androidx.compose.material.icons.rounded.Repeat
 import androidx.compose.material.icons.rounded.Search
@@ -44,11 +45,12 @@ import java.time.LocalDate
 import java.time.YearMonth
 
 @Composable
-internal fun ExpensesHeader(onOpenRecurring: () -> Unit, onOpenSearch: () -> Unit, modifier: Modifier = Modifier) {
+internal fun ExpensesHeader(onOpenRecurring: () -> Unit, onOpenSearch: () -> Unit, onOpenYear: () -> Unit, modifier: Modifier = Modifier) {
     val c = Penny.colors
     val shape = RoundedCornerShape(50)
     Row(modifier.fillMaxWidth().padding(top = 12.dp), verticalAlignment = Alignment.CenterVertically) {
         Text(stringResource(R.string.expenses_title), style = Penny.type.amountLarge, color = c.textPrimary, modifier = Modifier.weight(1f))
+        IconButton(onClick = onOpenYear) { Icon(Icons.Rounded.BarChart, stringResource(R.string.year_title), tint = c.textPrimary) }
         IconButton(onClick = onOpenSearch) { Icon(Icons.Rounded.Search, stringResource(R.string.search_open), tint = c.textPrimary) }
         Row(
             Modifier.clip(shape).background(c.surface1).border(0.75.dp, c.hairline, shape)

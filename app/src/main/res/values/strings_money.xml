@@ -193,4 +193,18 @@
         <item quantity="one">%d result</item>
         <item quantity="other">%d results</item>
     </plurals>
+    <string name="year_title">Year overview</string>
+    <string name="year_prev">Previous year</string>
+    <string name="year_next">Next year</string>
+    <string name="year_spent">Spent</string>
+    <string name="year_income">Income</string>
+    <string name="year_saved">Saved</string>
+    <string name="year_net">Net</string>
+    <string name="year_average">Average %1$s a month</string>
+    <string name="year_most">Most in %1$s</string>
+    <string name="year_empty">Nothing recorded in %1$d</string>
+    <string name="year_by_month">Month by month</string>
+    <string name="year_top">Top categories</string>
+    <string name="year_chart">Spending per month</string>
+    <string name="year_bar">%1$s: %2$s spent</string>
 </resources>

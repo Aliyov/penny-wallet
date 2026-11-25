@@ -38,6 +38,7 @@ import com.penny.wallet.core.ui.components.PennyBottomBar
 import com.penny.wallet.core.ui.components.PennyFab
 import com.penny.wallet.core.ui.components.Snack
 import com.penny.wallet.core.ui.theme.Penny
+import java.time.YearMonth
 
 object Routes {
     const val HOME = "home"
@@ -56,6 +57,7 @@ object Routes {
     const val IMPORT = "import"
     const val DEBTS = "debts"
     const val SEARCH = "search"
+    const val YEAR = "year"
     fun account(id: String) = "account/$id"
     fun goal(id: String) = "goal/$id"
 }
@@ -83,6 +85,8 @@ class RootState {
     var quickAddOpen by mutableStateOf(false)
     var scanOnOpen by mutableStateOf(false)
     var editTxId by mutableStateOf<String?>(null)
+    /** Month the Expenses tab should show next time it is composed; it clears this once applied. */
+    var expensesMonthRequest by mutableStateOf<YearMonth?>(null)
     fun openNew() { editTxId = null; quickAddOpen = true }
     fun openEdit(id: String) { editTxId = id; quickAddOpen = true }
     fun close() { quickAddOpen = false; editTxId = null; scanOnOpen = false }

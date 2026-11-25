@@ -60,7 +60,7 @@ Step 4 plan (2026-11-25):
 P5b: all-time search with amount/date filters; year overview; calendar; FR/ES/PT/PL/TR; opt-in monthly summary on the 1st; tablet/foldable layouts (list-detail, two panes ≥600dp).
 P5b plan (user 2026-11-25: "lets finish product then i will give to testers" — P5b before the closed test):
 1. ✅ (2026-11-25) All-time search: text over note/category/account, filters for period, amount range and kind; results by day with count and sum; tap edits.
-2. Year overview: 12 months of spent/income/saved, top categories of the year, year switcher.
+2. ✅ (2026-11-25) Year overview: 12 months of spent/income/saved, top categories of the year, year switcher.
 3. Calendar: month grid with daily spending, tap a day for its entries; respects the first day of week.
 4. Monthly summary: opt-in notification on the 1st with last month's spending vs the month before and the top category.
 5. Tablet/foldable: two panes at ≥600dp (list + detail) for Home/Expenses, nav rail instead of the bottom bar.
@@ -187,6 +187,11 @@ P5b plan (user 2026-11-25: "lets finish product then i will give to testers" —
 -  Android SDK at `~/Android/Sdk` (platforms 35/36/37 installed via sdkmanager, no sudo needed), adb at `~/Android/Sdk/platform-tools/adb` (not on PATH).
 
 ## Decisions
+- **P5b step 2 year overview (2026-11-25):**
+  - `domain/YearOverview`: 12 budgeting months (labelled by the month they start in, so the month start day moves entries between months and even years), spent / income / saved (into goals minus out), top 5 categories, biggest month. The monthly average runs from the first month with entries to the current one, so a year begun in September isn't averaged over January–August (found on the phone: $282 instead of $1,036).
+  - Screen from a chart icon in the Expenses header; year arrows step through years that have data; tapping a bar or a month opens Expenses on that month. Found on the phone: switching to the Expenses tab restored its saved stack, which still held the year screen, so the tap did nothing; the year screen now goes back instead (it is only opened from Expenses) after handing over the month.
+  - Review fixes: back and month taps act only while Year is on top (a double tap popped Expenses too); the average uses the same months on both sides, so future-dated entries don't inflate it; "Month by month" is hidden when no month has spending or income; top-category rows aren't announced as buttons; opening a month from Year clears an earlier category filter or search in Expenses.
+  - UI built by the implementer agent from a written spec.
 - **P5b step 1 all-time search (2026-11-25):**
   - `domain/Search`: every typed word must appear in the note, category, account (also the target of a transfer) or goal, ignoring case and accents; filters for period, amount range (on the shown, positive amount) and kind. 20 000 entries well under 400 ms.
   - Search screen from a search icon in the Expenses header and next to the "Penny" title on Home; the month search in Expenses stays. Results by day, newest first, capped at 300 with a hint to narrow down; an empty filter shows a hint instead of every entry. "This month" uses the budgeting period, the other periods are calendar based. If the user hides the Home hero section, Search is still in Expenses.

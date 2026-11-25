@@ -199,4 +199,18 @@
         <item quantity="other">%d risultati</item>
         <item quantity="many">%d risultati</item>
     </plurals>
+    <string name="year_title">Riepilogo annuale</string>
+    <string name="year_prev">Anno precedente</string>
+    <string name="year_next">Anno successivo</string>
+    <string name="year_spent">Speso</string>
+    <string name="year_income">Entrate</string>
+    <string name="year_saved">Risparmiato</string>
+    <string name="year_net">Saldo</string>
+    <string name="year_average">In media %1$s al mese</string>
+    <string name="year_most">Il mese più caro: %1$s</string>
+    <string name="year_empty">Nessun movimento nel %1$d</string>
+    <string name="year_by_month">Mese per mese</string>
+    <string name="year_top">Categorie principali</string>
+    <string name="year_chart">Spese per mese</string>
+    <string name="year_bar">%1$s: spesi %2$s</string>
 </resources>
