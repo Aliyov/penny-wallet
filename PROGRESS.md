@@ -22,7 +22,7 @@
 - [x] P3 Features: monthly budget, "this month" insight, smarter receipt scan, category suggestions (ocr-smoke OK, budget + insight checked on phone)
 - [x] P4 Support & trust: Support Penny (Play Billing tips), encrypted backups, crash report by email (phone check pending; tips testable only from a Play test track)
 - [ ] P5 Play readiness: upload key + AAB, accessibility, store listing EN/DE/IT, privacy policy, Data safety (code + texts done 2026-11-24; waiting for Play Console setup, store graphics, key backup)
-- [ ] P5a Compete (before the closed test): test infrastructure, language row, CSV import, category budgets, bill detection, shortcuts + Quick Settings tile, "Your data stays here", split expenses, debts, budget widget
+- [x] P5a Compete (before the closed test, done 2026-11-25): test infrastructure, language row, CSV import, category budgets, bill detection, shortcuts + Quick Settings tile, "Your data stays here", split expenses, debts, budget widget
 - [ ] P5b Compete (during the closed test): all-time search, year overview, calendar, FR/ES/PT/PL/TR, monthly summary, tablet/foldable layout
 - [ ] P6 Launch: closed test (12 testers / 14 days), production release
 
