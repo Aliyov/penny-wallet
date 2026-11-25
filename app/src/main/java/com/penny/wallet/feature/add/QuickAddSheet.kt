@@ -103,7 +103,10 @@ fun QuickAddSheet(
         Column(Modifier.fillMaxWidth(), verticalArrangement = Arrangement.spacedBy(8.dp)) {
             if (!simpleEdit) ContextRow(form, data, vm, handle)
             OptionalRow(form, data, vm::edit) {
-                if (form.type == QuickType.EXPENSE && editing == null) ReceiptChip(receipt)
+                if (form.type == QuickType.EXPENSE && editing == null) {
+                    ReceiptChip(receipt)
+                    SplitChip(form.split != null, vm::toggleSplit)
+                }
             }
         }
         Spacer(Modifier.height(10.dp))
@@ -119,7 +122,11 @@ fun QuickAddSheet(
 private fun ContextRow(form: QuickForm, data: QuickData, vm: QuickAddViewModel, handle: (QuickResult) -> Unit) {
     val c = Penny.colors
     when (form.type) {
-        QuickType.EXPENSE -> CategoryChips(data.categories, form.categoryId) { id -> vm.onCategory(id, handle) }
+        QuickType.EXPENSE -> {
+            val parts = form.splitParts
+            if (parts != null) SplitEditor(parts, data.categories, vm::setPartCategory, vm::setPartAmount, vm::addPart, vm::removePart)
+            else CategoryChips(data.categories, form.categoryId) { id -> vm.onCategory(id, handle) }
+        }
         QuickType.INCOME -> Unit
         QuickType.SAVE -> {
             GoalChips(data.goals, form.goalId) { id -> vm.edit { it.copy(goalId = id) } }

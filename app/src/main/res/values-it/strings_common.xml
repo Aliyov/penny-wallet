@@ -26,6 +26,8 @@
     <string name="error_only_available">Disponibili solo %1$s</string>
     <string name="error_amount_positive">Inserisci un importo maggiore di zero</string>
     <string name="error_target_positive">Inserisci un obiettivo maggiore di zero</string>
+    <string name="error_split_too_few">Una suddivisione ha bisogno di almeno due parti.</string>
+    <string name="error_split_no_category">Scegli una categoria per ogni parte.</string>
     <string name="error_same_accounts">Scegli due conti diversi</string>
     <string name="data_note_balance_set">Saldo impostato</string>
     <string name="data_note_returned_from">Restituito da %1$s</string>

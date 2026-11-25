@@ -55,7 +55,8 @@ object TxRows {
             when (t.type) {
                 TxType.EXPENSE -> {
                     val c = t.categoryId?.let(cat::get)
-                    val sub = if (note != null && c != null) RowText.Res(R.string.ui_tx_pair, listOf(RowText.Plain(c.name), an(t.accountId))) else an(t.accountId)
+                    val base = if (note != null && c != null) RowText.Res(R.string.ui_tx_pair, listOf(RowText.Plain(c.name), an(t.accountId))) else an(t.accountId)
+                    val sub = if (t.splitId != null) RowText.Res(R.string.ui_tx_pair, listOf(base, RowText.Res(R.string.ui_tx_split))) else base
                     TxRow(t, text(note ?: c?.name, R.string.type_expense), sub, c?.icon ?: "other", c?.color, -t.amountCents, TxRow.Tone.NEGATIVE)
                 }
                 TxType.INCOME -> TxRow(t, text(note, R.string.type_income), an(t.accountId), "salary", null, t.amountCents, TxRow.Tone.POSITIVE)

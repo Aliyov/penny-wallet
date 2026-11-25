@@ -119,6 +119,7 @@
     <string name="ui_amount_negative">− Negativ</string>
     <string name="ui_amount_positive">± Positiv</string>
     <string name="ui_tx_outside">woanders</string>
+    <string name="ui_tx_split">Aufgeteilt</string>
     <string name="ui_tx_pair">%1$s · %2$s</string>
     <string name="ui_tx_route">%1$s → %2$s</string>
     <string name="ui_tx_withdrawal">Abhebung</string>

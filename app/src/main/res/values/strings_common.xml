@@ -26,6 +26,8 @@
     <string name="error_only_available">Only %1$s is available</string>
     <string name="error_amount_positive">Enter an amount above zero</string>
     <string name="error_target_positive">Enter a target above zero</string>
+    <string name="error_split_too_few">A split needs at least two parts.</string>
+    <string name="error_split_no_category">Pick a category for every part.</string>
     <string name="error_same_accounts">Pick two different accounts</string>
     <string name="data_note_balance_set">Balance set</string>
     <string name="data_note_returned_from">Returned from %1$s</string>

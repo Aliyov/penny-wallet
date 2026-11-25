@@ -43,7 +43,7 @@ Order (each step is one commit, and each must pass the full gate below before th
 3. ✅ (2026-11-25) Small items: Language row (opens the system per-app language screen on Android 13+, in-app list below), "Your data stays here" screen, app shortcuts + Quick Settings tile, budget widget.
 4. ✅ (2026-11-25) Category budgets (domain `Budget` per category, Expenses bars, edit in category sheet).
 5. ✅ (2026-11-25) Bill detection (`domain/BillDetector`: same payee/category and similar amount on a monthly rhythm, ≥3 occurrences, suggestion dismissible forever).
-6. Split expenses (one receipt → several categories sharing a `splitId`; edit/delete/undo act on the whole split; totals unchanged).
+6. ✅ (2026-11-25) Split expenses (one receipt → several categories sharing a `splitId`; edit/delete/undo act on the whole split; totals unchanged).
 7. Debts ("I owe" / "owed to me", partial repayments, optional reminder; not linked to account balances unless the user records the payment).
 8. CSV import (parser for comma/semicolon/tab, quotes, EU/US numbers, several date formats, column mapping with preview, duplicate detection, whole import undoable via `importId`; profiles for Money Manager, Monefy, Wallet and Penny's own CSV).
 Step 3 plan (2026-11-25):
@@ -180,6 +180,13 @@ P5b: all-time search with amount/date filters; year overview; calendar; FR/ES/PT
 -  Android SDK at `~/Android/Sdk` (platforms 35/36/37 installed via sdkmanager, no sudo needed), adb at `~/Android/Sdk/platform-tools/adb` (not on PATH).
 
 ## Decisions
+- **P5a step 6 split expenses (2026-11-25):**
+  - A split is N ordinary EXPENSE rows sharing `splitId`, account, date and note, so every total, budget, chart, bill detection (which skips splits) and backup works unchanged. `addSplit`/`replaceSplit` write all parts in one Room transaction.
+  - Quick add: the numpad sets the receipt total; the first part always shows the rest (`Split.balanced`), so parts can't drift from the total. Save explains the first missing thing (category, amount, parts over the total). "Make recurring" is hidden while splitting.
+  - Delete of any part deletes the whole split; the repository keeps the deleted parts for the following Undo, so the six existing delete/undo call sites stay unchanged. Editing any part opens the whole split.
+  - Review fixes: a split only applies while the type is Expense (switching to Income no longer saved split expenses); editing a split keeps part ids and creation times by position; Undo after the app was restarted brings the row back as an ordinary expense instead of an uneditable one-part split; the deleted-split cache keeps only the last four; a rest of exactly 0 gets its own message.
+  - Rows show "… · Split" so parts of one receipt are recognisable in Home, Expenses and account lists.
+  - Phone (2026-11-25): split $50 into Groceries/Eating out with real taps, edit opened both parts, delete removed both; no crash on a double tap of the amount sheet's Save (a Robolectric-only layout exception when a disposing sheet's button was clicked again).
 - **P5a step 5 bill detection (2026-11-25):**
   - `BillDetector` only looks at expenses with a note and a category (no guessing from amounts alone), grouped by normalised note + category. A bill = the newest unbroken run of ≥3 payments 25–35 days apart, amounts within 10 % of the median (at least 1.00 leeway for small bills), last payment ≤45 days ago. Payments tied to a bill, split parts, income and future dates never count.
   - One suggestion at a time on Home (newest first). "Add as bill" creates a monthly, hand-paid bill on the most common day with the latest amount and the user's default reminder; first due after today and at least 20 days after the last payment. "Not a bill" stores the key in `UserPrefs.dismissedBills` (travels in backups, never asked again). Sample data never triggers suggestions.

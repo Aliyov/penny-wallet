@@ -133,4 +133,18 @@
     <string name="home_bill_add">Als Rechnung hinzufügen</string>
     <string name="home_bill_dismiss">Keine Rechnung</string>
     <string name="home_bill_added">Zu Rechnungen hinzugefügt</string>
+    <string name="add_split">Aufteilen</string>
+    <string name="add_split_add_part">Teil hinzufügen</string>
+    <string name="add_split_part_amount">Betrag für diesen Teil</string>
+    <string name="add_split_pick_category">Kategorie wählen</string>
+    <string name="add_split_rest">Rest</string>
+    <string name="add_split_set_amount">Betrag eingeben</string>
+    <string name="add_split_remove_part">Teil entfernen</string>
+    <string name="add_error_split_over">Die Teile ergeben mehr als %1$s.</string>
+    <string name="add_error_split_no_rest">Für den ersten Teil bleibt nichts übrig. Verringere einen der anderen Teile.</string>
+    <string name="add_error_split_empty">Gib für jeden Teil einen Betrag ein.</string>
+    <plurals name="add_saved_split">
+        <item quantity="one">%1$s auf %2$d Kategorie aufgeteilt</item>
+        <item quantity="other">%1$s auf %2$d Kategorien aufgeteilt</item>
+    </plurals>
 </resources>

@@ -26,6 +26,8 @@
     <string name="error_only_available">Nur %1$s verfügbar</string>
     <string name="error_amount_positive">Gib einen Betrag über null ein</string>
     <string name="error_target_positive">Gib ein Ziel über null ein</string>
+    <string name="error_split_too_few">Eine Aufteilung braucht mindestens zwei Teile.</string>
+    <string name="error_split_no_category">Wähle für jeden Teil eine Kategorie.</string>
     <string name="error_same_accounts">Wähle zwei verschiedene Konten</string>
     <string name="data_note_balance_set">Kontostand gesetzt</string>
     <string name="data_note_returned_from">Zurück aus %1$s</string>

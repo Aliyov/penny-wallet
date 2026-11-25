@@ -135,4 +135,18 @@
     <string name="home_bill_add">Aggiungi come bolletta</string>
     <string name="home_bill_dismiss">Non è una bolletta</string>
     <string name="home_bill_added">Aggiunta alle Bollette</string>
+    <string name="add_split">Dividi</string>
+    <string name="add_split_add_part">Aggiungi parte</string>
+    <string name="add_split_part_amount">Importo di questa parte</string>
+    <string name="add_split_pick_category">Scegli categoria</string>
+    <string name="add_split_rest">Resto</string>
+    <string name="add_split_set_amount">Inserisci importo</string>
+    <string name="add_split_remove_part">Rimuovi parte</string>
+    <string name="add_error_split_over">Le parti superano %1$s.</string>
+    <string name="add_error_split_no_rest">Per la prima parte non resta nulla. Riduci una delle altre parti.</string>
+    <string name="add_error_split_empty">Inserisci un importo per ogni parte.</string>
+    <plurals name="add_saved_split">
+        <item quantity="one">%1$s diviso in %2$d categoria</item>
+        <item quantity="other">%1$s diviso in %2$d categorie</item>
+    </plurals>
 </resources>

@@ -1,5 +1,7 @@
 package com.penny.wallet.feature.add
 
+import com.penny.wallet.domain.SplitPart
+import com.penny.wallet.domain.Split
 import java.time.ZoneId
 import java.time.LocalDateTime
 import com.penny.wallet.domain.receipt.ReceiptResult
@@ -48,8 +50,12 @@ data class QuickForm(
     val recurring: Boolean = false,
     /** Non-null when editing an existing transaction. */
     val editing: Transaction? = null,
+    /** Non-null while splitting an expense; the first part's amount is always the rest of [cents]. */
+    val split: List<SplitPart>? = null,
 ) {
     val cents: Long get() = Formatters.digitsToCents(digits)
+    /** Only expenses split: switching the type away keeps the parts for coming back, but they don't apply. */
+    val splitParts: List<SplitPart>? get() = split?.takeIf { type == QuickType.EXPENSE }?.let { Split.balanced(cents, it) }
 }
 
 data class QuickData(
@@ -103,6 +109,13 @@ class QuickAddViewModel(private val c: AppContainer) : ViewModel() {
 
     fun startEdit(txId: String) = viewModelScope.launch {
         val t = c.transactions.get(txId) ?: return@launch
+        t.splitId?.let { splitId ->
+            val parts = c.transactions.splitParts(splitId)
+            if (parts.size < 2) return@let // a leftover single part edits like a normal expense
+            _form.value = QuickForm(QuickType.EXPENSE, NumpadDigits.of(parts.sumOf { it.amountCents }), t.accountId, date = t.date,
+                note = t.note.orEmpty(), editing = t, split = parts.map { SplitPart(it.categoryId, it.amountCents) })
+            return@launch
+        }
         val type = when (t.type) {
             TxType.EXPENSE -> QuickType.EXPENSE; TxType.INCOME -> QuickType.INCOME
             TxType.TRANSFER -> QuickType.TRANSFER; TxType.SAVE -> QuickType.SAVE
@@ -175,6 +188,23 @@ class QuickAddViewModel(private val c: AppContainer) : ViewModel() {
         c.receipts.discardPhoto()
     }
 
+    /** Split on: the chosen category keeps the whole amount until other parts take some. Off: back to one category. */
+    fun toggleSplit() = _form.update { f ->
+        if (f.split == null) f.copy(split = Split.start(f.cents, f.categoryId), recurring = false)
+        else f.copy(split = null, categoryId = f.split.first().categoryId ?: f.categoryId)
+    }
+
+    fun setPartCategory(index: Int, categoryId: String) = editParts { it.mapIndexed { i, p -> if (i == index) p.copy(categoryId = categoryId) else p } }
+
+    /** The first part has no own amount: it is the rest. */
+    fun setPartAmount(index: Int, cents: Long) { if (index > 0) editParts { it.mapIndexed { i, p -> if (i == index) p.copy(amountCents = cents) else p } } }
+
+    fun addPart() = editParts { it + SplitPart(null, 0) }
+
+    fun removePart(index: Int) { if (index > 0) editParts { parts -> parts.filterIndexed { i, _ -> i != index } } }
+
+    private fun editParts(f: (List<SplitPart>) -> List<SplitPart>) = _form.update { form -> form.split?.let { form.copy(split = f(it)) } ?: form }
+
     /** Category chip tap: selects it, and saves immediately when that's enabled and an amount is entered. */
     fun onCategory(id: String, done: (QuickResult) -> Unit) {
         _form.update { it.copy(categoryId = id) }
@@ -198,6 +228,13 @@ class QuickAddViewModel(private val c: AppContainer) : ViewModel() {
         val amt = f.cents
         require(amt > 0) { text(R.string.add_error_enter_amount) }
         val note = f.note.takeIf { it.isNotBlank() }
+        f.splitParts?.let { parts ->
+            requireSplitComplete(amt, parts)
+            val rows = c.transactions.addSplit(parts, acc, f.date, note)
+            c.settings.update { it.copy(lastAccountId = acc) }
+            val msg = c.context.resources.getQuantityString(R.plurals.add_saved_split, rows.size, c.moneyText(amt), rows.size)
+            return QuickResult.Saved(msg, rows.first(), false)
+        }
         val t = when (f.type) {
             QuickType.EXPENSE -> c.transactions.addExpense(amt, acc, requireNotNull(f.categoryId) { text(R.string.add_error_pick_category) }, f.date, note)
             QuickType.INCOME -> c.transactions.addIncome(amt, acc, f.date, note)
@@ -237,6 +274,13 @@ class QuickAddViewModel(private val c: AppContainer) : ViewModel() {
         val amt = f.cents
         require(amt > 0) { text(R.string.add_error_enter_amount) }
         val acc = f.accountId ?: old.accountId
+        val splitId = old.splitId
+        val parts = f.splitParts
+        if (splitId != null && parts != null) {
+            requireSplitComplete(amt, parts)
+            c.transactions.replaceSplit(splitId, parts, acc, f.date, f.note.takeIf { it.isNotBlank() })
+            return QuickResult.Saved(text(R.string.add_updated), null, false)
+        }
         val updated = when (old.type) {
             TxType.EXPENSE -> old.copy(amountCents = amt, accountId = acc, categoryId = f.categoryId ?: old.categoryId)
             TxType.TRANSFER -> {
@@ -261,6 +305,16 @@ class QuickAddViewModel(private val c: AppContainer) : ViewModel() {
     fun deleteEditing(done: (Transaction?) -> Unit) = viewModelScope.launch {
         val t = form.value.editing ?: return@launch done(null)
         c.transactions.delete(t); done(t)
+    }
+
+    /** A precise message for the first thing missing, rather than one generic "invalid". */
+    private fun requireSplitComplete(total: Long, parts: List<SplitPart>) {
+        require(parts.size >= 2) { text(R.string.error_split_too_few) }
+        require(parts.all { it.categoryId != null }) { text(R.string.error_split_no_category) }
+        require(parts.first().amountCents >= 0) { text(R.string.add_error_split_over, c.moneyText(total)) }
+        require(parts.first().amountCents > 0) { text(R.string.add_error_split_no_rest) }
+        require(parts.all { it.amountCents > 0 }) { text(R.string.add_error_split_empty) }
+        check(Split.isComplete(total, parts))
     }
 
     fun undoNew(t: Transaction) = viewModelScope.launch {

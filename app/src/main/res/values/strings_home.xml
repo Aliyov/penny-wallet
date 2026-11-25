@@ -134,4 +134,18 @@
     <string name="home_bill_add">Add as bill</string>
     <string name="home_bill_dismiss">Not a bill</string>
     <string name="home_bill_added">Added to Bills</string>
+    <string name="add_split">Split</string>
+    <string name="add_split_add_part">Add part</string>
+    <string name="add_split_part_amount">Amount for this part</string>
+    <string name="add_split_pick_category">Pick category</string>
+    <string name="add_split_rest">Rest</string>
+    <string name="add_split_set_amount">Set amount</string>
+    <string name="add_split_remove_part">Remove part</string>
+    <string name="add_error_split_over">The parts add up to more than %1$s.</string>
+    <string name="add_error_split_no_rest">Nothing is left for the first part. Lower one of the other parts.</string>
+    <string name="add_error_split_empty">Enter an amount for every part.</string>
+    <plurals name="add_saved_split">
+        <item quantity="one">Split %1$s across %2$d category</item>
+        <item quantity="other">Split %1$s across %2$d categories</item>
+    </plurals>
 </resources>

@@ -119,7 +119,7 @@ internal fun OptionalRow(form: QuickForm, data: QuickData, edit: ((QuickForm) ->
         AccountPicker(form, data.accounts) { id -> edit { f -> f.copy(accountId = id, toAccountId = if (f.toAccountId == id) null else f.toAccountId) } }
         DatePickerRow(form.date, { d -> edit { it.copy(date = d) } })
         if (data.showNote && form.type != QuickType.SAVE) NoteChip(form.note) { n -> edit { it.copy(note = n) } }
-        if (form.type == QuickType.EXPENSE && form.editing == null) {
+        if (form.type == QuickType.EXPENSE && form.editing == null && form.split == null) {
             TintChip(stringResource(R.string.add_make_recurring), form.recurring, c.accent, { edit { it.copy(recurring = !it.recurring) } }, Icons.Rounded.Repeat)
         }
     }

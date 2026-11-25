@@ -75,6 +75,8 @@ interface TransactionDao {
     @Upsert suspend fun upsertAll(t: List<Transaction>)
     @Delete suspend fun delete(t: Transaction)
     @Query("DELETE FROM transactions WHERE id IN (:ids)") suspend fun deleteIds(ids: List<String>)
+    @Query("SELECT * FROM transactions WHERE splitId = :splitId ORDER BY createdAt") suspend fun getSplit(splitId: String): List<Transaction>
+    @Query("DELETE FROM transactions WHERE splitId = :splitId") suspend fun deleteSplit(splitId: String)
     @Query("UPDATE transactions SET recurringId = :recurringId WHERE id IN (:ids) AND recurringId IS NULL")
     suspend fun linkToRecurring(ids: List<String>, recurringId: String)
     @Query("DELETE FROM transactions") suspend fun clear()
