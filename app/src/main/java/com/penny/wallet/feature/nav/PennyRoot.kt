@@ -58,6 +58,7 @@ object Routes {
     const val DEBTS = "debts"
     const val SEARCH = "search"
     const val YEAR = "year"
+    const val CALENDAR = "calendar"
     fun account(id: String) = "account/$id"
     fun goal(id: String) = "goal/$id"
 }

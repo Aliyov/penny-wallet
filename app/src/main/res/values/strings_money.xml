@@ -207,4 +207,18 @@
     <string name="year_top">Top categories</string>
     <string name="year_chart">Spending per month</string>
     <string name="year_bar">%1$s: %2$s spent</string>
+    <string name="calendar_open">Calendar</string>
+    <string name="calendar_title">Calendar</string>
+    <string name="calendar_spent">Spent %1$s</string>
+    <string name="calendar_income">Income %1$s</string>
+    <string name="calendar_month_empty">Nothing recorded this month</string>
+    <string name="calendar_no_entries">No entries</string>
+    <plurals name="calendar_day">
+        <item quantity="one">%1$s: %2$d entry</item>
+        <item quantity="other">%1$s: %2$d entries</item>
+    </plurals>
+    <plurals name="calendar_day_spent">
+        <item quantity="one">%1$s: spent %2$s, %3$d entry</item>
+        <item quantity="other">%1$s: spent %2$s, %3$d entries</item>
+    </plurals>
 </resources>

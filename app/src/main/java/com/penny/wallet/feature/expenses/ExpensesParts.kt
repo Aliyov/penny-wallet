@@ -1,5 +1,11 @@
 package com.penny.wallet.feature.expenses
 
+import androidx.compose.foundation.layout.heightIn
+import androidx.compose.ui.semantics.Role
+import androidx.compose.foundation.clickable
+import androidx.compose.ui.graphics.vector.ImageVector
+import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.horizontalScroll
 import com.penny.wallet.R
 import androidx.compose.ui.res.stringResource
 import com.penny.wallet.core.util.dateText
@@ -20,6 +26,7 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.rounded.BarChart
+import androidx.compose.material.icons.rounded.CalendarMonth
 import androidx.compose.material.icons.rounded.Close
 import androidx.compose.material.icons.rounded.Repeat
 import androidx.compose.material.icons.rounded.Search
@@ -45,21 +52,37 @@ import java.time.LocalDate
 import java.time.YearMonth
 
 @Composable
-internal fun ExpensesHeader(onOpenRecurring: () -> Unit, onOpenSearch: () -> Unit, onOpenYear: () -> Unit, modifier: Modifier = Modifier) {
+internal fun ExpensesHeader(onOpenRecurring: () -> Unit, onOpenSearch: () -> Unit, onOpenYear: () -> Unit, onOpenCalendar: () -> Unit, modifier: Modifier = Modifier) {
     val c = Penny.colors
     val shape = RoundedCornerShape(50)
-    Row(modifier.fillMaxWidth().padding(top = 12.dp), verticalAlignment = Alignment.CenterVertically) {
-        Text(stringResource(R.string.expenses_title), style = Penny.type.amountLarge, color = c.textPrimary, modifier = Modifier.weight(1f))
-        IconButton(onClick = onOpenYear) { Icon(Icons.Rounded.BarChart, stringResource(R.string.year_title), tint = c.textPrimary) }
-        IconButton(onClick = onOpenSearch) { Icon(Icons.Rounded.Search, stringResource(R.string.search_open), tint = c.textPrimary) }
-        Row(
-            Modifier.clip(shape).background(c.surface1).border(0.75.dp, c.hairline, shape)
-                .clickableNoRipple(onOpenRecurring).padding(horizontal = 14.dp, vertical = 8.dp),
-            verticalAlignment = Alignment.CenterVertically, horizontalArrangement = Arrangement.spacedBy(6.dp),
-        ) {
-            Icon(Icons.Rounded.Repeat, null, tint = c.accent, modifier = Modifier.size(16.dp))
-            Text(stringResource(R.string.expenses_recurring), style = Penny.type.label, color = c.textPrimary)
+    // Title and search on one line; the other views as labelled chips below, so the large title never has to wrap.
+    Column(modifier.fillMaxWidth().padding(top = 12.dp), verticalArrangement = Arrangement.spacedBy(8.dp)) {
+        Row(Modifier.fillMaxWidth(), verticalAlignment = Alignment.CenterVertically) {
+            Text(
+                stringResource(R.string.expenses_title), style = Penny.type.amountLarge, color = c.textPrimary,
+                maxLines = 1, overflow = TextOverflow.Ellipsis, modifier = Modifier.weight(1f),
+            )
+            IconButton(onClick = onOpenSearch) { Icon(Icons.Rounded.Search, stringResource(R.string.search_open), tint = c.textPrimary) }
         }
+        Row(Modifier.fillMaxWidth().horizontalScroll(rememberScrollState()), horizontalArrangement = Arrangement.spacedBy(8.dp)) {
+            HeaderChip(Icons.Rounded.Repeat, stringResource(R.string.expenses_recurring), onOpenRecurring)
+            HeaderChip(Icons.Rounded.CalendarMonth, stringResource(R.string.calendar_open), onOpenCalendar)
+            HeaderChip(Icons.Rounded.BarChart, stringResource(R.string.year_title), onOpenYear)
+        }
+    }
+}
+
+@Composable
+private fun HeaderChip(icon: ImageVector, label: String, onClick: () -> Unit) {
+    val c = Penny.colors
+    val shape = RoundedCornerShape(50)
+    Row(
+        Modifier.heightIn(min = 40.dp).clip(shape).background(c.surface1).border(0.75.dp, c.hairline, shape)
+            .clickable(role = Role.Button, onClick = onClick).padding(horizontal = 14.dp, vertical = 8.dp),
+        verticalAlignment = Alignment.CenterVertically, horizontalArrangement = Arrangement.spacedBy(6.dp),
+    ) {
+        Icon(icon, null, tint = c.accent, modifier = Modifier.size(16.dp))
+        Text(label, style = Penny.type.label, color = c.textPrimary, maxLines = 1)
     }
 }
 

@@ -61,7 +61,7 @@ P5b: all-time search with amount/date filters; year overview; calendar; FR/ES/PT
 P5b plan (user 2026-11-25: "lets finish product then i will give to testers" — P5b before the closed test):
 1. ✅ (2026-11-25) All-time search: text over note/category/account, filters for period, amount range and kind; results by day with count and sum; tap edits.
 2. ✅ (2026-11-25) Year overview: 12 months of spent/income/saved, top categories of the year, year switcher.
-3. Calendar: month grid with daily spending, tap a day for its entries; respects the first day of week.
+3. ✅ (2026-11-25) Calendar: month grid with daily spending, tap a day for its entries; respects the first day of week.
 4. Monthly summary: opt-in notification on the 1st with last month's spending vs the month before and the top category.
 5. Tablet/foldable: two panes at ≥600dp (list + detail) for Home/Expenses, nav rail instead of the bottom bar.
 6. FR, ES, PT, PL, TR translations last, once every string is final; translation check extended to all locales.
@@ -187,6 +187,11 @@ P5b plan (user 2026-11-25: "lets finish product then i will give to testers" —
 -  Android SDK at `~/Android/Sdk` (platforms 35/36/37 installed via sdkmanager, no sudo needed), adb at `~/Android/Sdk/platform-tools/adb` (not on PATH).
 
 ## Decisions
+- **P5b step 3 calendar (2026-11-25):**
+  - `domain/CalendarMonth`: calendar months (not budgeting periods: a calendar shows dates), whole weeks starting on the user's first day of week, per-day spent/income/count; days outside the month greyed without amounts. Screen from a calendar icon in the Expenses header: day cells shaded by spending relative to the month's busiest day, compact amount or a dot, today outlined, tap a day for its entries (edit, swipe-delete with Undo in the app scope).
+  - Found by the UI test: the day cell's `clearAndSetSemantics` dropped the click action, so TalkBack users couldn't open a day; role and click are now set inside it. Cells are ~45dp wide on a 360dp screen (seven columns) but 52dp tall.
+  - Review fixes: back from Calendar and Search only pops while that screen is on top; the Expenses header became title + search on one line and labelled chips (Bills, Calendar, Year overview) in a scrolling row below, because three icons squeezed the title into broken lines (DE at 360dp); days with only income or moves get a dot; the day text colour is the one with more contrast against the blended cell; grid with 6dp sides and 2dp gaps so cells reach 48dp on 360dp; the UI test matches the full date and asserts the note. Left: "today" doesn't refresh across midnight while the screen stays alive; a day that switched to a dot stays a dot after the cell widens.
+  - UI built by the implementer agent from a written spec. Phone (2026-11-25): November with rent day brightest, tap on the 5th listed "Weekly shop −$15.57".
 - **P5b step 2 year overview (2026-11-25):**
   - `domain/YearOverview`: 12 budgeting months (labelled by the month they start in, so the month start day moves entries between months and even years), spent / income / saved (into goals minus out), top 5 categories, biggest month. The monthly average runs from the first month with entries to the current one, so a year begun in September isn't averaged over January–August (found on the phone: $282 instead of $1,036).
   - Screen from a chart icon in the Expenses header; year arrows step through years that have data; tapping a bar or a month opens Expenses on that month. Found on the phone: switching to the Expenses tab restored its saved stack, which still held the year screen, so the tap did nothing; the year screen now goes back instead (it is only opened from Expenses) after handing over the month.

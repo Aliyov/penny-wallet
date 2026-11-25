@@ -213,4 +213,20 @@
     <string name="year_top">Categorie principali</string>
     <string name="year_chart">Spese per mese</string>
     <string name="year_bar">%1$s: spesi %2$s</string>
+    <string name="calendar_open">Calendario</string>
+    <string name="calendar_title">Calendario</string>
+    <string name="calendar_spent">Spesi %1$s</string>
+    <string name="calendar_income">Entrate %1$s</string>
+    <string name="calendar_month_empty">Niente registrato questo mese</string>
+    <string name="calendar_no_entries">Nessuna voce</string>
+    <plurals name="calendar_day">
+        <item quantity="one">%1$s: %2$d voce</item>
+        <item quantity="other">%1$s: %2$d voci</item>
+        <item quantity="many">%1$s: %2$d voci</item>
+    </plurals>
+    <plurals name="calendar_day_spent">
+        <item quantity="one">%1$s: spesi %2$s, %3$d voce</item>
+        <item quantity="other">%1$s: spesi %2$s, %3$d voci</item>
+        <item quantity="many">%1$s: spesi %2$s, %3$d voci</item>
+    </plurals>
 </resources>

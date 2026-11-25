@@ -28,6 +28,7 @@ import com.penny.wallet.feature.savings.GoalScreen
 import com.penny.wallet.feature.savings.SavingsScreen
 import com.penny.wallet.feature.settings.AccountsScreen
 import com.penny.wallet.feature.settings.BackupScreen
+import com.penny.wallet.feature.calendar.CalendarScreen
 import com.penny.wallet.feature.importcsv.ImportScreen
 import com.penny.wallet.feature.settings.CategoriesScreen
 import com.penny.wallet.feature.settings.PersonaliseScreen
@@ -55,7 +56,7 @@ fun PennyNavHost(nav: NavHostController, container: AppContainer, root: RootStat
         }
         composable(Routes.EXPENSES) { ExpensesScreen(
                 onOpenRecurring = { nav.navigate(Routes.RECURRING) }, onEditTransaction = editTx, onAddExpense = addExpense, onOpenSearch = openSearch,
-                onOpenYear = { nav.navigate(Routes.YEAR) }, monthRequest = root.expensesMonthRequest, onMonthRequestHandled = { root.expensesMonthRequest = null },
+                onOpenYear = { nav.navigate(Routes.YEAR) }, onOpenCalendar = { nav.navigate(Routes.CALENDAR) }, monthRequest = root.expensesMonthRequest, onMonthRequestHandled = { root.expensesMonthRequest = null },
             )
         }
         composable(Routes.SAVINGS) { SavingsScreen(onOpenGoal = { nav.navigate(Routes.goal(it)) }) }
@@ -80,7 +81,8 @@ fun PennyNavHost(nav: NavHostController, container: AppContainer, root: RootStat
         }
         composable(Routes.SUPPORT, enterTransition = push, popExitTransition = pop) { SupportScreen(onBack = { nav.popBackStack() }) }
         composable(Routes.PRIVACY, enterTransition = push, popExitTransition = pop) { PrivacyScreen(onBack = { nav.popBackStack() }) }
-        composable(Routes.SEARCH, enterTransition = push, popExitTransition = pop) { SearchScreen(onBack = { nav.popBackStack() }, onEditTransaction = editTx) }
+        composable(Routes.SEARCH, enterTransition = push, popExitTransition = pop) { SearchScreen(onBack = { if (nav.currentDestination?.route == Routes.SEARCH) nav.popBackStack() }, onEditTransaction = editTx) }
+        composable(Routes.CALENDAR, enterTransition = push, popExitTransition = pop) { CalendarScreen(onBack = { if (nav.currentDestination?.route == Routes.CALENDAR) nav.popBackStack() }, onEditTransaction = editTx) }
         composable(Routes.YEAR, enterTransition = push, popExitTransition = pop) {
             // Year is only opened from Expenses: going back lands there. Switching tabs would restore the saved
             // Expenses stack, which still holds this screen.

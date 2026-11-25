@@ -33,7 +33,7 @@ import java.time.YearMonth
 @Composable
 fun ExpensesScreen(
     onOpenRecurring: () -> Unit, onEditTransaction: (String) -> Unit, onAddExpense: () -> Unit, onOpenSearch: () -> Unit,
-    onOpenYear: () -> Unit, monthRequest: YearMonth? = null, onMonthRequestHandled: () -> Unit = {},
+    onOpenYear: () -> Unit, onOpenCalendar: () -> Unit, monthRequest: YearMonth? = null, onMonthRequestHandled: () -> Unit = {},
 ) {
     val vm = pennyViewModel { ExpensesViewModel(it) }
     val state by vm.state.collectAsStateWithLifecycle()
@@ -54,7 +54,7 @@ fun ExpensesScreen(
         contentPadding = PaddingValues(bottom = 120.dp),
         verticalArrangement = Arrangement.spacedBy(Penny.dims.gap),
     ) {
-        item(key = "header") { ExpensesHeader(onOpenRecurring, onOpenSearch, onOpenYear, hPad) }
+        item(key = "header") { ExpensesHeader(onOpenRecurring, onOpenSearch, onOpenYear, onOpenCalendar, hPad) }
         item(key = "month") { MonthSwitcher(state, vm::prevMonth, vm::nextMonth) }
         item(key = "chart") { ChartCard(state, selectedIdx, { selected = it }, hPad.animateContentSize()) }
 

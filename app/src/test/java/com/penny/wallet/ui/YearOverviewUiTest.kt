@@ -48,8 +48,7 @@ class YearOverviewUiTest {
         assertTrue(spent > 0)
 
         tap("Expenses")
-        compose.waitUntil(TIMEOUT) { compose.onAllNodes(hasContentDescription("Year overview") and hasClickAction()).fetchSemanticsNodes().isNotEmpty() }
-        compose.onAllNodes(hasContentDescription("Year overview") and hasClickAction()).onFirst().performSemanticsAction(SemanticsActions.OnClick)
+        tap("Year overview")
         Thread.sleep(1500) // let the push transition finish (Robolectric threw from a half-measured list otherwise)
         compose.waitForIdle()
         compose.waitUntil(TIMEOUT) { has("Top categories") }
