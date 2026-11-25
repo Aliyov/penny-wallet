@@ -4,39 +4,73 @@ import android.content.Intent
 import android.content.res.Configuration
 import android.graphics.Color
 import android.os.Bundle
+import android.provider.Settings
 import androidx.activity.SystemBarStyle
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
 import androidx.appcompat.app.AppCompatActivity
+import androidx.compose.foundation.layout.Box
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.setValue
+import androidx.compose.ui.geometry.Rect
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.core.splashscreen.SplashScreen.Companion.installSplashScreen
+import com.penny.wallet.feature.intro.SplashIntro
 import com.penny.wallet.feature.lock.LockGate
 import com.penny.wallet.feature.nav.LaunchRequest
 import com.penny.wallet.feature.nav.PennyRoot
 import com.penny.wallet.core.ui.theme.PennyTheme
 import com.penny.wallet.core.ui.theme.isDarkTheme
+import com.penny.wallet.data.prefs.AnimationLevel
+import kotlinx.coroutines.delay
 
 // AppCompatActivity (a FragmentActivity) so BiometricPrompt works.
 class MainActivity : AppCompatActivity() {
     // Set by a widget, shortcut or tile tap and cleared once PennyRoot acted on it. Held here, not in composition,
     // because the app lock removes PennyRoot while locked and would otherwise forget or replay it.
     private val pendingLaunch = mutableStateOf<LaunchRequest?>(null)
+    private var introPending by mutableStateOf(false)
+    private var introStarted by mutableStateOf(false)
+    private var introIcon by mutableStateOf<Rect?>(null)
 
     override fun onCreate(savedInstanceState: Bundle?) {
         val c = container
         // Hold the splash until settings are read so the user's accent/theme never flashes the defaults.
-        installSplashScreen().setKeepOnScreenCondition { !c.settings.isLoaded }
+        val splash = installSplashScreen()
+        splash.setKeepOnScreenCondition { !c.settings.isLoaded }
         super.onCreate(savedInstanceState)
         applySystemBars((resources.configuration.uiMode and Configuration.UI_MODE_NIGHT_MASK) == Configuration.UI_MODE_NIGHT_YES)
         if (savedInstanceState == null) handle(intent)
+        // Only a plain cold start plays the intro; widget/shortcut launches go straight to their screen.
+        introPending = savedInstanceState == null && pendingLaunch.value == null &&
+            Settings.Global.getFloat(contentResolver, Settings.Global.ANIMATOR_DURATION_SCALE, 1f) > 0f
+        if (introPending) splash.setOnExitAnimationListener { view ->
+            introIcon = runCatching {
+                val icon = view.iconView
+                val at = IntArray(2).also(icon::getLocationInWindow)
+                Rect(at[0].toFloat(), at[1].toFloat(), (at[0] + icon.width).toFloat(), (at[1] + icon.height).toFloat())
+            }.getOrNull()
+            introStarted = true
+            // Let the intro draw its first frame at the icon's exact place before the system view goes.
+            window.decorView.postOnAnimation { window.decorView.postOnAnimation { view.remove() } }
+        }
         setContent {
             val prefs by c.settings.prefs.collectAsStateWithLifecycle()
             val dark = isDarkTheme(prefs.themeMode)
             LaunchedEffect(dark) { applySystemBars(dark) }
-            PennyTheme(prefs) { LockGate { PennyRoot(c, pendingLaunch.value) { pendingLaunch.value = null } } }
+            val intro = introPending && prefs.animations == AnimationLevel.FULL
+            Box {
+                PennyTheme(prefs) {
+                    LockGate(canPrompt = !intro) { PennyRoot(c, pendingLaunch.value) { pendingLaunch.value = null } }
+                }
+                if (intro) {
+                    // Fallback for launches where the system shows no splash and never calls the exit listener.
+                    LaunchedEffect(Unit) { delay(1500); introStarted = true }
+                    SplashIntro(introIcon, introStarted) { introPending = false }
+                }
+            }
         }
     }
 

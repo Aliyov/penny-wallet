@@ -127,7 +127,7 @@ Composable  →  ViewModel  →  Repository  →  Room / DataStore / ML Kit / Bi
 - `ThemeMode = SYSTEM | LIGHT | DARK` (default SYSTEM). Dark has an optional "pure black" variant.
 - Colours exist only as tokens in `core/ui/theme` (`PennyColors`): one light and one dark palette, plus the user's accent. No hex colours in feature code.
 - Both palettes meet WCAG AA contrast for text. Every screen is previewed in light and dark.
-- Status/navigation bar icons follow the active theme. The splash screen and widgets follow the system theme.
+- Status/navigation bar icons follow the active theme. The splash screen and opening animation are always black (the logo's own background); widgets follow the system theme.
 
 ---
 

@@ -47,9 +47,12 @@ fun promptUnlock(activity: FragmentActivity, onSuccess: () -> Unit) {
     prompt.authenticate(BiometricPrompt.PromptInfo.Builder().setTitle(activity.getString(R.string.lock_prompt_title)).setAllowedAuthenticators(AUTH).build())
 }
 
-/** Covers the app while locked. If the phone has no lock method at all, it never locks the user out. */
+/**
+ * Covers the app while locked. If the phone has no lock method at all, it never locks the user out.
+ * [canPrompt] false holds the system unlock prompt back (while the opening animation plays).
+ */
 @Composable
-fun LockGate(content: @Composable () -> Unit) {
+fun LockGate(canPrompt: Boolean = true, content: @Composable () -> Unit) {
     val context = LocalContext.current
     val activity = context as FragmentActivity
     // Until settings are read, prefs are defaults (lock off): show nothing rather than leak content.
@@ -64,7 +67,7 @@ fun LockGate(content: @Composable () -> Unit) {
         content()
         return
     }
-    LaunchedEffect(Unit) { promptUnlock(activity) { AppLock.unlock() } }
+    LaunchedEffect(canPrompt) { if (canPrompt) promptUnlock(activity) { AppLock.unlock() } }
     val c = Penny.colors
     Box(Modifier.fillMaxSize().background(c.background), contentAlignment = Alignment.Center) {
         Column(horizontalAlignment = Alignment.CenterHorizontally, verticalArrangement = Arrangement.Center) {
