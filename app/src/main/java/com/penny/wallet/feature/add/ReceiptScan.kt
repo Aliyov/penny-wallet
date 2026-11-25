@@ -1,5 +1,14 @@
 package com.penny.wallet.feature.add
 
+import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.semantics.Role
+import androidx.compose.ui.draw.clip
+import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.clickable
+import androidx.compose.foundation.border
+import androidx.compose.foundation.background
 import com.penny.wallet.core.util.dateText
 import android.content.ActivityNotFoundException
 import android.net.Uri
@@ -18,7 +27,6 @@ import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.rounded.PhotoCamera
 import androidx.compose.material.icons.rounded.PhotoLibrary
-import androidx.compose.material.icons.rounded.Receipt
 import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.DropdownMenu
@@ -91,7 +99,7 @@ internal fun ReceiptChip(launchers: ReceiptLaunchers) {
     val c = Penny.colors
     var open by remember { mutableStateOf(false) }
     Box {
-        TintChip(stringResource(R.string.add_scan_receipt), false, c.accent, { open = true }, Icons.Rounded.Receipt)
+        ScanButton { open = true }
         DropdownMenu(open, { open = false }, containerColor = c.surface2) {
             DropdownMenuItem(
                 text = { Text(stringResource(R.string.add_take_photo), style = Penny.type.body, color = c.textPrimary) },
@@ -104,6 +112,21 @@ internal fun ReceiptChip(launchers: ReceiptLaunchers) {
                 onClick = { open = false; launchers.gallery() },
             )
         }
+    }
+}
+
+/** Tinted with the accent so it reads as an action, not as one more option among the neutral chips. */
+@Composable
+private fun ScanButton(onClick: () -> Unit) {
+    val c = Penny.colors
+    val shape = RoundedCornerShape(50)
+    Row(
+        Modifier.height(40.dp).clip(shape).background(c.accent.copy(alpha = 0.16f)).border(1.dp, c.accent, shape)
+            .clickable(role = Role.Button, onClick = onClick).padding(horizontal = 14.dp),
+        verticalAlignment = Alignment.CenterVertically, horizontalArrangement = Arrangement.spacedBy(6.dp),
+    ) {
+        Icon(Icons.Rounded.PhotoCamera, null, tint = c.accent, modifier = Modifier.size(18.dp))
+        Text(stringResource(R.string.add_scan_receipt), style = Penny.type.label, fontWeight = FontWeight.SemiBold, color = c.accent, maxLines = 1)
     }
 }
 
