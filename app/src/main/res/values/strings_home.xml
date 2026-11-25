@@ -125,4 +125,13 @@
     <string name="crash_send">Send report</string>
     <string name="crash_dismiss">Not now</string>
     <string name="crash_no_mail_app">No email app found</string>
+    <string name="home_bill_title">Looks like a bill</string>
+    <string name="home_bill_name">%1$s · %2$s</string>
+    <plurals name="home_bill_body">
+        <item quantity="one">Paid %1$d month in a row, around day %2$d. Add it to Bills for reminders and the monthly total.</item>
+        <item quantity="other">Paid %1$d months in a row, around day %2$d. Add it to Bills for reminders and the monthly total.</item>
+    </plurals>
+    <string name="home_bill_add">Add as bill</string>
+    <string name="home_bill_dismiss">Not a bill</string>
+    <string name="home_bill_added">Added to Bills</string>
 </resources>

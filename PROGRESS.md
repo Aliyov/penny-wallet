@@ -42,7 +42,7 @@ Order (each step is one commit, and each must pass the full gate below before th
 2. ✅ (2026-11-25) **One database change for all new data (Room v1 → v2, backup schema 2):** `Category.monthlyBudget`, `Transaction.splitId`, `Transaction.importId`, new `Debt` table. A single migration, tested from v1 with real-looking data; v1 backups restore into v2; v2 → v1 restore is refused with a clear message.
 3. ✅ (2026-11-25) Small items: Language row (opens the system per-app language screen on Android 13+, in-app list below), "Your data stays here" screen, app shortcuts + Quick Settings tile, budget widget.
 4. ✅ (2026-11-25) Category budgets (domain `Budget` per category, Expenses bars, edit in category sheet).
-5. Bill detection (`domain/BillDetector`: same payee/category and similar amount on a monthly rhythm, ≥3 occurrences, suggestion dismissible forever).
+5. ✅ (2026-11-25) Bill detection (`domain/BillDetector`: same payee/category and similar amount on a monthly rhythm, ≥3 occurrences, suggestion dismissible forever).
 6. Split expenses (one receipt → several categories sharing a `splitId`; edit/delete/undo act on the whole split; totals unchanged).
 7. Debts ("I owe" / "owed to me", partial repayments, optional reminder; not linked to account balances unless the user records the payment).
 8. CSV import (parser for comma/semicolon/tab, quotes, EU/US numbers, several date formats, column mapping with preview, duplicate detection, whole import undoable via `importId`; profiles for Money Manager, Monefy, Wallet and Penny's own CSV).
@@ -180,6 +180,10 @@ P5b: all-time search with amount/date filters; year overview; calendar; FR/ES/PT
 -  Android SDK at `~/Android/Sdk` (platforms 35/36/37 installed via sdkmanager, no sudo needed), adb at `~/Android/Sdk/platform-tools/adb` (not on PATH).
 
 ## Decisions
+- **P5a step 5 bill detection (2026-11-25):**
+  - `BillDetector` only looks at expenses with a note and a category (no guessing from amounts alone), grouped by normalised note + category. A bill = the newest unbroken run of ≥3 payments 25–35 days apart, amounts within 10 % of the median (at least 1.00 leeway for small bills), last payment ≤45 days ago. Payments tied to a bill, split parts, income and future dates never count.
+  - One suggestion at a time on Home (newest first). "Add as bill" creates a monthly, hand-paid bill on the most common day with the latest amount and the user's default reminder; first due after today and at least 20 days after the last payment. "Not a bill" stores the key in `UserPrefs.dismissedBills` (travels in backups, never asked again). Sample data never triggers suggestions.
+  - Review fixes: "Add as bill" is idempotent (double tap) and links the source payments to the new bill in one DB transaction, so renaming the bill never brings the suggestion back; the first due date is the next one after the last payment (+20 days), so a payment due today or already missed shows as due/overdue instead of being skipped; archived accounts/categories never end up in a suggestion; on a tie the newest payment's day wins; the count uses `<plurals>`; "Added to Bills" shows only after the save.
 - **P5a step 4 category budgets (2026-11-25):**
   - `Budget.forCategories` reuses `Budget.status`, so a category budget follows the same period, pace and "per day" rules as the monthly budget. Archived categories keep their budget but are only listed when they have spending in the period.
   - Found while testing huge amounts: the "spending fast" check multiplied Longs (`spent * 100`, `budget * elapsed`) and overflowed above ~9·10^16 cents, flipping on-track to fast. Now compared exactly with BigInteger.

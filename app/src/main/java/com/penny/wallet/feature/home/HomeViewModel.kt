@@ -12,6 +12,8 @@ import com.penny.wallet.data.db.entities.RecurringExpense
 import com.penny.wallet.data.prefs.UserPrefs
 import com.penny.wallet.data.db.entities.Transaction
 import com.penny.wallet.domain.AccountMoney
+import com.penny.wallet.domain.BillDetector
+import com.penny.wallet.domain.BillSuggestion
 import com.penny.wallet.domain.Budget
 import com.penny.wallet.domain.BudgetStatus
 import com.penny.wallet.domain.Insights
@@ -53,6 +55,7 @@ data class HomeState(
     val budget: BudgetStatus? = null,
     val insight: MonthInsight? = null,
     val topCategoryName: String? = null,
+    val billSuggestion: BillSuggestion? = null,
 )
 
 class HomeViewModel(private val c: AppContainer) : ViewModel() {
@@ -80,6 +83,13 @@ class HomeViewModel(private val c: AppContainer) : ViewModel() {
     fun removeSampleData() = viewModelScope.launch { c.setup.removeSampleData() }
 
     fun restore(t: Transaction) = viewModelScope.launch { c.transactions.restore(t) }
+
+    fun addBill(s: BillSuggestion, onAdded: () -> Unit) = viewModelScope.launch {
+        c.recurring.addFromSuggestion(s, c.settings.current().defaultRemindDaysBefore)
+        onAdded()
+    }
+
+    fun dismissBill(s: BillSuggestion) = viewModelScope.launch { c.settings.update { it.copy(dismissedBills = it.dismissedBills + s.key) } }
 }
 
 /** Pure so the 20 000-entry performance test can time it. */
@@ -112,5 +122,10 @@ internal fun buildHomeState(
         budget = Budget.status(prefs.monthlyBudget, spent, period, today),
         insight = insight,
         topCategoryName = insight?.topCategoryId?.let { id -> cats.firstOrNull { it.id == id }?.name },
+        billSuggestion = if (hasSample) null else BillDetector.suggestions(
+            txs, rules, prefs.dismissedBills, today,
+            activeAccounts = accounts.filterNot { it.archived }.map { it.id }.toSet(),
+            activeCategories = cats.filterNot { it.archived }.map { it.id }.toSet(),
+        ).firstOrNull(),
     )
 }

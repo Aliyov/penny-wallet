@@ -66,6 +66,7 @@ fun HomeScreen(
     val deletedText = stringResource(R.string.deleted)
     val recentLabel = stringResource(R.string.home_recent)
     val recentEmpty = stringResource(R.string.home_recent_empty)
+    val billAdded = stringResource(R.string.home_bill_added)
     val context = LocalContext.current
     var crashReport by remember { mutableStateOf(CrashReporter.pending(context)) }
     val noMailApp = stringResource(R.string.crash_no_mail_app)
@@ -103,6 +104,16 @@ fun HomeScreen(
         }
         if (state.backupWarning) {
             item(key = "backup") { BackupBanner(onOpenBackup, Modifier.padding(horizontal = gutter, vertical = 4.dp)) }
+        }
+        state.billSuggestion?.let { bill ->
+            item(key = "bill_" + bill.key) {
+                BillSuggestionCard(
+                    bill,
+                    onAdd = { vm.addBill(bill) { snack.show(billAdded) } },
+                    onDismiss = { vm.dismissBill(bill) },
+                    modifier = Modifier.padding(horizontal = gutter, vertical = 4.dp),
+                )
+            }
         }
         if (!state.firstRun) sections.forEach { section ->
             when (section) {

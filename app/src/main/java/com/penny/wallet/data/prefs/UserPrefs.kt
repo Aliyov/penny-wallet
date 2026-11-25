@@ -44,6 +44,8 @@ data class UserPrefs(
     val reminderHour: Int = 9,
     val reminderMinute: Int = 0,
     val defaultRemindDaysBefore: Int = 1,
+    /** [com.penny.wallet.domain.BillDetector.key]s the user answered "Not a bill" to. */
+    val dismissedBills: Set<String> = emptySet(),
     val overdueBadge: Boolean = true,
     val quietMode: Boolean = false,
     val notificationPermissionAsked: Boolean = false,

@@ -124,4 +124,13 @@
     <string name="crash_send">Bericht senden</string>
     <string name="crash_dismiss">Nicht jetzt</string>
     <string name="crash_no_mail_app">Keine E-Mail-App gefunden</string>
+    <string name="home_bill_title">Sieht nach einer Rechnung aus</string>
+    <string name="home_bill_name">%1$s · %2$s</string>
+    <plurals name="home_bill_body">
+        <item quantity="one">%1$d Monat in Folge bezahlt, etwa am %2$d. Füge sie zu Rechnungen hinzu, um erinnert zu werden und sie in der Monatssumme zu sehen.</item>
+        <item quantity="other">%1$d Monate in Folge bezahlt, etwa am %2$d. Füge sie zu Rechnungen hinzu, um erinnert zu werden und sie in der Monatssumme zu sehen.</item>
+    </plurals>
+    <string name="home_bill_add">Als Rechnung hinzufügen</string>
+    <string name="home_bill_dismiss">Keine Rechnung</string>
+    <string name="home_bill_added">Zu Rechnungen hinzugefügt</string>
 </resources>

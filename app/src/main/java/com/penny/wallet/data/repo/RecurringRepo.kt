@@ -1,5 +1,8 @@
 package com.penny.wallet.data.repo
 
+import com.penny.wallet.data.db.entities.Frequency
+import com.penny.wallet.domain.BillDetector
+import com.penny.wallet.domain.BillSuggestion
 import androidx.room.withTransaction
 import com.penny.wallet.data.db.PennyDatabase
 import com.penny.wallet.data.db.entities.RecurringExpense
@@ -19,6 +22,25 @@ class RecurringRepo(private val db: PennyDatabase, private val listener: ChangeL
     suspend fun save(r: RecurringExpense) { dao.upsert(r); listener.onDataChanged() }
     suspend fun delete(r: RecurringExpense) { dao.delete(r); listener.onDataChanged() }
     suspend fun restore(r: RecurringExpense) = save(r)
+
+    /**
+     * "Add as bill" on a detected bill: monthly on the same day, paid by hand. The first due date is the next one after
+     * the last payment, so a payment due today or already missed shows as due/overdue. The source payments are linked
+     * to the bill so renaming it never brings the suggestion back. Idempotent for a double tap.
+     */
+    suspend fun addFromSuggestion(s: BillSuggestion, remindDaysBefore: Int): RecurringExpense = db.withTransaction {
+        dao.getAll().firstOrNull { BillDetector.key(it.name, it.categoryId) == s.key }?.let { return@withTransaction it }
+        val draft = RecurringExpense(
+            id = newId(), name = s.name, amountCents = s.amountCents, categoryId = s.categoryId, accountId = s.accountId,
+            frequency = Frequency.MONTHLY, dayOfMonth = s.dayOfMonth, nextDueDate = s.lastDate,
+            remindDaysBefore = remindDaysBefore, autoPay = false,
+        )
+        // +20 days: not again in the month of the last payment, even when it came a few days before its usual day.
+        val rule = draft.copy(nextDueDate = Recurrence.firstOnOrAfter(draft, s.lastDate.plusDays(20)))
+        dao.upsert(rule)
+        if (s.transactionIds.isNotEmpty()) db.transactions().linkToRecurring(s.transactionIds, rule.id)
+        rule
+    }.also { listener.onDataChanged() }
 
     /**
      * Pays the occurrence due on [expectedDue] (defaults to the rule's current nextDueDate).
