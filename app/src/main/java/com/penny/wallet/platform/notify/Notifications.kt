@@ -1,5 +1,7 @@
 package com.penny.wallet.platform.notify
 
+import com.penny.wallet.data.db.entities.DebtDirection
+import com.penny.wallet.domain.DebtStatus
 import com.penny.wallet.core.util.DateText
 import android.Manifest
 import android.app.NotificationChannel
@@ -61,6 +63,18 @@ object Notifications {
         val b = base(context, p, context.getString(R.string.notif_auto_paid, r.name, amount(context, r, p)), context.getString(R.string.notif_recorded_for, DateText.of(context).day(due)))
             .addAction(0, context.getString(R.string.action_undo), receiver(context, MarkPaidReceiver.ACTION_UNDO, r.id, due, txId))
         post(context, r, b)
+    }
+
+    fun debtDue(context: Context, s: DebtStatus, p: UserPrefs) {
+        val amount = if (p.hideAmounts) Formatters.HIDDEN else Formatters.money(s.remaining, Formatters.of(p, DateText.of(context).locale))
+        val title = context.getString(
+            if (s.debt.direction == DebtDirection.I_OWE) R.string.notif_debt_due_owe else R.string.notif_debt_due_owed, s.debt.person, amount,
+        )
+        val b = base(context, p, title, context.getString(R.string.notif_debt_hint))
+        if (!canPost(context)) return
+        ensureChannel(context)
+        @Suppress("MissingPermission") // checked in canPost
+        NotificationManagerCompat.from(context).notify(idFor("debt-" + s.debt.id), b.build())
     }
 
     fun cancel(context: Context, ruleId: String) = NotificationManagerCompat.from(context).cancel(idFor(ruleId))

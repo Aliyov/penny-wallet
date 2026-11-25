@@ -34,4 +34,13 @@
     <string name="a11y_prev_month">Vorheriger Monat</string>
     <string name="a11y_next_month">Nächster Monat</string>
     <string name="a11y_colour">Farbe %1$d</string>
+    <string name="error_name_required">Gib einen Namen ein.</string>
+    <string name="error_debt_overpaid">Das ist mehr als noch offen ist.</string>
+    <string name="error_debt_has_payments">Die Richtung lässt sich nicht ändern, wenn schon Rückzahlungen eingetragen sind. Entferne sie zuerst.</string>
+    <string name="error_debt_below_paid">Der Betrag darf nicht kleiner sein als das bereits Zurückgezahlte.</string>
+    <string name="debt_tx_received">%1$s hat zurückgezahlt</string>
+    <string name="debt_tx_paid_back">An %1$s zurückgezahlt</string>
+    <string name="notif_debt_due_owe">Heute an %1$s zurückzahlen: %2$s</string>
+    <string name="notif_debt_due_owed">%1$s sollte dir heute zurückzahlen: %2$s</string>
+    <string name="notif_debt_hint">Trage die Zahlung unter Einstellungen → Schulden ein.</string>
 </resources>

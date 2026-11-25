@@ -34,4 +34,13 @@
     <string name="a11y_prev_month">Mese precedente</string>
     <string name="a11y_next_month">Mese successivo</string>
     <string name="a11y_colour">Colore %1$d</string>
+    <string name="error_name_required">Inserisci un nome.</string>
+    <string name="error_debt_overpaid">È più di quanto resta aperto.</string>
+    <string name="error_debt_has_payments">La direzione non si può cambiare se ci sono già restituzioni. Rimuovile prima.</string>
+    <string name="error_debt_below_paid">L\'importo non può essere inferiore a quanto già restituito.</string>
+    <string name="debt_tx_received">%1$s ha restituito</string>
+    <string name="debt_tx_paid_back">Restituito a %1$s</string>
+    <string name="notif_debt_due_owe">Oggi restituisci a %1$s: %2$s</string>
+    <string name="notif_debt_due_owed">Oggi %1$s dovrebbe restituirti: %2$s</string>
+    <string name="notif_debt_hint">Registra il pagamento in Impostazioni → Debiti.</string>
 </resources>

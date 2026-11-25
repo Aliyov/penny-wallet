@@ -1,6 +1,7 @@
 package com.penny.wallet.feature.nav
 
 import com.penny.wallet.feature.support.PrivacyScreen
+import com.penny.wallet.feature.debts.DebtsScreen
 import com.penny.wallet.feature.support.SupportScreen
 import kotlinx.coroutines.launch
 import androidx.compose.runtime.rememberCoroutineScope
@@ -69,6 +70,7 @@ fun PennyNavHost(nav: NavHostController, container: AppContainer, root: RootStat
         }
         composable(Routes.SUPPORT, enterTransition = push, popExitTransition = pop) { SupportScreen(onBack = { nav.popBackStack() }) }
         composable(Routes.PRIVACY, enterTransition = push, popExitTransition = pop) { PrivacyScreen(onBack = { nav.popBackStack() }) }
+        composable(Routes.DEBTS, enterTransition = push, popExitTransition = pop) { DebtsScreen(onBack = { nav.popBackStack() }) }
         composable(Routes.PERSONALISE, enterTransition = push, popExitTransition = pop) { PersonaliseScreen(onBack = { nav.popBackStack() }) }
     }
 }

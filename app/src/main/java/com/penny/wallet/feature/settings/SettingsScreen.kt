@@ -15,6 +15,7 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.rounded.AccountBalance
 import androidx.compose.material.icons.rounded.Backup
 import androidx.compose.material.icons.rounded.Category
+import androidx.compose.material.icons.rounded.Handshake
 import androidx.compose.material.icons.rounded.Repeat
 import androidx.compose.material.icons.rounded.Shield
 import androidx.compose.material.icons.rounded.Tune
@@ -59,6 +60,8 @@ fun SettingsScreen(onOpen: (String) -> Unit) {
             SettingsRow(Icons.Rounded.Category, stringResource(R.string.settings_categories), { onOpen("categories") }, stringResource(R.string.settings_categories_sub), tint = Color(ItemPalette[3]))
             RowDivider()
             SettingsRow(Icons.Rounded.Repeat, stringResource(R.string.settings_recurring), { onOpen("recurring") }, stringResource(R.string.settings_recurring_sub), tint = Color(ItemPalette[4]))
+            RowDivider()
+            SettingsRow(Icons.Rounded.Handshake, stringResource(R.string.debts_title), { onOpen("debts") }, stringResource(R.string.debts_sub), tint = Color(ItemPalette[8]))
             RowDivider()
             BudgetSetting(x)
         }

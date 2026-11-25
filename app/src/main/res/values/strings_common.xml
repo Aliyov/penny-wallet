@@ -34,4 +34,13 @@
     <string name="a11y_prev_month">Previous month</string>
     <string name="a11y_next_month">Next month</string>
     <string name="a11y_colour">Colour %1$d</string>
+    <string name="error_name_required">Enter a name.</string>
+    <string name="error_debt_overpaid">That is more than what is still open.</string>
+    <string name="error_debt_has_payments">The direction can\'t change once repayments are recorded. Remove them first.</string>
+    <string name="error_debt_below_paid">The amount can\'t be less than what was already paid back.</string>
+    <string name="debt_tx_received">%1$s paid back</string>
+    <string name="debt_tx_paid_back">Paid back %1$s</string>
+    <string name="notif_debt_due_owe">Pay back %1$s today: %2$s</string>
+    <string name="notif_debt_due_owed">%1$s should pay you back today: %2$s</string>
+    <string name="notif_debt_hint">Record the payment in Settings → Debts.</string>
 </resources>

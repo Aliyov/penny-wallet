@@ -20,6 +20,10 @@ fun AppContainer.userMessage(e: Throwable): String = when (e) {
             InvalidInputException.Reason.SAME_ACCOUNTS -> R.string.error_same_accounts
             InvalidInputException.Reason.SPLIT_TOO_FEW -> R.string.error_split_too_few
             InvalidInputException.Reason.SPLIT_NO_CATEGORY -> R.string.error_split_no_category
+            InvalidInputException.Reason.NAME_REQUIRED -> R.string.error_name_required
+            InvalidInputException.Reason.DEBT_OVERPAID -> R.string.error_debt_overpaid
+            InvalidInputException.Reason.DEBT_BELOW_PAID -> R.string.error_debt_below_paid
+            InvalidInputException.Reason.DEBT_HAS_PAYMENTS -> R.string.error_debt_has_payments
         },
     )
     // require()/error() in ViewModels and BackupManager already carry a localized message.

@@ -44,7 +44,7 @@ Order (each step is one commit, and each must pass the full gate below before th
 4. ✅ (2026-11-25) Category budgets (domain `Budget` per category, Expenses bars, edit in category sheet).
 5. ✅ (2026-11-25) Bill detection (`domain/BillDetector`: same payee/category and similar amount on a monthly rhythm, ≥3 occurrences, suggestion dismissible forever).
 6. ✅ (2026-11-25) Split expenses (one receipt → several categories sharing a `splitId`; edit/delete/undo act on the whole split; totals unchanged).
-7. Debts ("I owe" / "owed to me", partial repayments, optional reminder; not linked to account balances unless the user records the payment).
+7. ✅ (2026-11-25) Debts ("I owe" / "owed to me", partial repayments, optional reminder; not linked to account balances unless the user records the payment).
 8. CSV import (parser for comma/semicolon/tab, quotes, EU/US numbers, several date formats, column mapping with preview, duplicate detection, whole import undoable via `importId`; profiles for Money Manager, Monefy, Wallet and Penny's own CSV).
 Step 3 plan (2026-11-25):
 - Language row in Settings (Phone, English, Deutsch, Italiano; becomes chips once P5b adds more) via `AppCompatDelegate.setApplicationLocales`, which uses the system per-app language on Android 13+ and is stored by AppCompat below that.
@@ -180,6 +180,12 @@ P5b: all-time search with amount/date filters; year overview; calendar; FR/ES/PT
 -  Android SDK at `~/Android/Sdk` (platforms 35/36/37 installed via sdkmanager, no sudo needed), adb at `~/Android/Sdk/platform-tools/adb` (not on PATH).
 
 ## Decisions
+- **P5a step 7 debts (2026-11-25):**
+  - Debts are personal records (Settings → Debts), separate from balances. A repayment can optionally be recorded in an account in the same DB transaction: money received → INCOME, money paid back → WITHDRAWAL (not an expense, so it never counts as spending or against budgets). Deleting the repayment deletes that transaction too.
+  - A debt is settled when the last repayment covers it (or by hand: forgiven, paid outside the app); paying more than is open and editing the amount below what was paid are refused. Delete takes repayments and recorded transactions with it and Undo restores all of them.
+  - Reminder: optional, needs a due date, fires once on the due day from the daily worker (same channel and quiet mode as bills).
+  - Review fixes: a debt settled by hand stays settled on edits and payment removals (only a "paid in full" settle reopens); removing a repayment shows Undo and restores its account transaction; "Reopen" is hidden on fully repaid debts; Undo runs in the app scope so leaving the screen can't lose it; the direction can't flip once repayments exist; reminders are cancelled on settle/delete; the reminder text says where Debts is; DAO queries per debt instead of loading whole tables. Left for later: reminder catch-up for a missed due day, and "overdue" refreshing at midnight while the screen stays open.
+  - UI built by the implementer agent from a written spec; the date dialog was extracted into `PennyDatePickerDialog` for reuse. Phone (2026-11-25): added "Anna owes you $40", recorded a full repayment into Bank → settled, Bank +$40, Home shows "Anna paid back".
 - **P5a step 6 split expenses (2026-11-25):**
   - A split is N ordinary EXPENSE rows sharing `splitId`, account, date and note, so every total, budget, chart, bill detection (which skips splits) and backup works unchanged. `addSplit`/`replaceSplit` write all parts in one Room transaction.
   - Quick add: the numpad sets the receipt total; the first part always shows the rest (`Split.balanced`), so parts can't drift from the total. Save explains the first missing thing (category, amount, parts over the total). "Make recurring" is hidden while splitting.

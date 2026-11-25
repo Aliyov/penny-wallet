@@ -1,5 +1,6 @@
 package com.penny.wallet.platform.work
 
+import com.penny.wallet.domain.Debts
 import android.content.Context
 import androidx.work.CoroutineWorker
 import androidx.work.WorkerParameters
@@ -27,6 +28,10 @@ class DailyReminderWorker(context: Context, params: WorkerParameters) : Coroutin
                 is ReminderAction.DueToday -> if (notify && !autoPayOnly) Notifications.dueToday(applicationContext, rule, action.due, prefs)
                 is ReminderAction.Remind -> if (notify && !autoPayOnly) Notifications.remind(applicationContext, rule, action.due, today, prefs)
             }
+        }
+        if (notify && !autoPayOnly) {
+            Debts.dueToday(Debts.statuses(c.debts.all(), c.debts.payments(), today), today)
+                .forEach { Notifications.debtDue(applicationContext, it, prefs) }
         }
         return Result.success()
     }

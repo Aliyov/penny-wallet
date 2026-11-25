@@ -50,7 +50,14 @@ fun DatePickerRow(date: LocalDate, onChange: (LocalDate) -> Unit, modifier: Modi
         Icon(Icons.Rounded.CalendarMonth, null, tint = c.textSecondary, modifier = Modifier.size(20.dp))
         Text(dateText().day(date), style = Penny.type.body, color = c.textPrimary)
     }
-    if (!open) return
+    if (open) PennyDatePickerDialog(date, onDismiss = { open = false }) { onChange(it); open = false }
+}
+
+/** Themed Material date picker dialog, for callers that open it from their own row. */
+@OptIn(ExperimentalMaterial3Api::class)
+@Composable
+fun PennyDatePickerDialog(date: LocalDate, onDismiss: () -> Unit, onPick: (LocalDate) -> Unit) {
+    val c = Penny.colors
     val state = rememberDatePickerState(initialSelectedDateMillis = date.atStartOfDay(ZoneOffset.UTC).toInstant().toEpochMilli())
     val colors = DatePickerDefaults.colors(
         containerColor = c.surface2, titleContentColor = c.textSecondary, headlineContentColor = c.textPrimary,
@@ -62,14 +69,13 @@ fun DatePickerRow(date: LocalDate, onChange: (LocalDate) -> Unit, modifier: Modi
         navigationContentColor = c.textPrimary,
     )
     DatePickerDialog(
-        onDismissRequest = { open = false },
+        onDismissRequest = onDismiss,
         confirmButton = {
             TextButton(onClick = {
-                state.selectedDateMillis?.let { onChange(Instant.ofEpochMilli(it).atZone(ZoneOffset.UTC).toLocalDate()) }
-                open = false
+                state.selectedDateMillis?.let { onPick(Instant.ofEpochMilli(it).atZone(ZoneOffset.UTC).toLocalDate()) } ?: onDismiss()
             }) { Text(stringResource(R.string.action_ok), color = c.accent, style = Penny.type.bodyStrong) }
         },
-        dismissButton = { TextButton(onClick = { open = false }) { Text(stringResource(R.string.action_cancel), color = c.textSecondary) } },
+        dismissButton = { TextButton(onClick = onDismiss) { Text(stringResource(R.string.action_cancel), color = c.textSecondary) } },
         colors = colors,
     ) { DatePicker(state = state, colors = colors) }
 }
