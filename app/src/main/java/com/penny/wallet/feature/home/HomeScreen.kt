@@ -75,7 +75,10 @@ fun HomeScreen(
         contentPadding = PaddingValues(bottom = 120.dp),
         verticalArrangement = Arrangement.spacedBy(Penny.dims.gap),
     ) {
-        if (state.firstRun && !state.loading) {
+        // Items composed for the empty loading state would keep their scroll position when the banners and
+        // accounts arrive, so Home opened scrolled past the banner and to the end of the accounts row.
+        if (state.loading) return@LazyColumn
+        if (state.firstRun) {
             item(key = "welcome") {
                 WelcomeCard(
                     onAddAccount = { addAccount = true }, onTrySample = vm::addSampleData,
@@ -113,7 +116,7 @@ fun HomeScreen(
                 }
                 HomeSection.RECENT -> {
                     item(key = "recent_label") { SectionLabel(recentLabel, Modifier.padding(horizontal = gutter)) }
-                    if (state.recent.isEmpty() && !state.loading) {
+                    if (state.recent.isEmpty()) {
                         item(key = "recent_empty") {
                             EmptyState(
                                 recentEmpty, Modifier.padding(horizontal = gutter),
