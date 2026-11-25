@@ -12,6 +12,8 @@ import com.penny.wallet.data.db.entities.Transaction
 import com.penny.wallet.data.prefs.UserPrefs
 import com.penny.wallet.data.db.entities.TxType
 import com.penny.wallet.data.prefs.ChartStyle
+import com.penny.wallet.domain.Budget
+import com.penny.wallet.domain.BudgetStatus
 import com.penny.wallet.domain.MoneyCalculator
 import com.penny.wallet.domain.Period
 import com.penny.wallet.core.ui.common.TxRow
@@ -26,7 +28,10 @@ import kotlinx.coroutines.launch
 import java.time.LocalDate
 import java.time.YearMonth
 
-data class CategorySlice(val categoryId: String?, val name: String, val icon: String, val color: Long, val amount: Long, val share: Float)
+data class CategorySlice(
+    val categoryId: String?, val name: String, val icon: String, val color: Long, val amount: Long, val share: Float,
+    val budget: BudgetStatus? = null,
+)
 data class MonthBar(val label: YearMonth, val amount: Long, val selected: Boolean)
 data class DayGroup(val date: LocalDate, val total: Long, val rows: List<TxRow>)
 
@@ -35,6 +40,8 @@ data class ExpensesState(
     val isCurrent: Boolean = true,
     val total: Long = 0,
     val slices: List<CategorySlice> = emptyList(),
+    /** Budgeted categories without spending in the period: listed under the slices, not drawn in the chart. */
+    val unspentBudgets: List<CategorySlice> = emptyList(),
     val history: List<MonthBar> = emptyList(),
     val days: List<DayGroup> = emptyList(),
     val filterCategoryId: String? = null,
@@ -79,11 +86,16 @@ internal fun buildExpensesState(
     val period = f.month?.let { MoneyCalculator.period(it, startDay) } ?: current
     val total = MoneyCalculator.monthSpent(txs, period)
     val byId = cats.associateBy { it.id }
-    val slices = MoneyCalculator.spentByCategory(txs, period).map { (id, amt) ->
+    val spent = MoneyCalculator.spentByCategory(txs, period)
+    // Budgets have no history, so a past month would be judged against today's amounts: current period only.
+    val budgets = if (period.label == current.label) Budget.forCategories(cats, spent, period, today) else emptyMap()
+    val slices = spent.map { (id, amt) ->
         val cat = id?.let(byId::get)
         CategorySlice(id, cat?.name ?: uncategorised, cat?.icon ?: "other", cat?.color ?: 0xFF8E8E93, amt,
-            MoneyCalculator.categoryShare(amt, total))
+            MoneyCalculator.categoryShare(amt, total), id?.let(budgets::get))
     }.sortedByDescending { it.amount }
+    val unspentBudgets = cats.filter { !it.archived && it.id in budgets && it.id !in spent }
+        .map { CategorySlice(it.id, it.name, it.icon, it.color, 0, 0f, budgets.getValue(it.id)) }
     val history = MoneyCalculator.spentHistory(txs, period, prefs.historyMonths.coerceIn(3, 12), startDay)
         .map { (p, amt) -> MonthBar(p.label, amt, p.label == period.label) }
     val q = f.query.trim().lowercase()
@@ -94,5 +106,5 @@ internal fun buildExpensesState(
     }
     val rows = TxRows.build(expenses, accounts, cats, emptyList())
     val days = rows.groupBy { it.tx.date }.map { (d, r) -> DayGroup(d, r.sumOf { it.tx.amountCents }, r) }.sortedByDescending { it.date }
-    return ExpensesState(period, period.label == current.label, total, slices, history, days, f.category, f.query, prefs.defaultChart)
+    return ExpensesState(period, period.label == current.label, total, slices, unspentBudgets, history, days, f.category, f.query, prefs.defaultChart)
 }

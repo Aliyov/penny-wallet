@@ -11,9 +11,9 @@ class CategoryRepo(private val db: PennyDatabase, private val listener: ChangeLi
     fun observe(): Flow<List<Category>> = dao.observeAll()
     suspend fun all() = dao.getAll()
 
-    suspend fun add(name: String, icon: String, color: Long): Category {
+    suspend fun add(name: String, icon: String, color: Long, budget: Long? = null): Category {
         val order = (dao.getAll().maxOfOrNull { it.sortOrder } ?: -1) + 1
-        return Category(newId(), name.trim(), icon, color, sortOrder = order).also { dao.upsert(it); listener.onDataChanged() }
+        return Category(newId(), name.trim(), icon, color, sortOrder = order, monthlyBudgetCents = budget?.takeIf { it > 0 }).also { dao.upsert(it); listener.onDataChanged() }
     }
 
     suspend fun save(c: Category) { dao.upsert(c); listener.onDataChanged() }

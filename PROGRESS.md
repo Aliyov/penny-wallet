@@ -41,7 +41,7 @@ Order (each step is one commit, and each must pass the full gate below before th
 1. ✅ (2026-11-25) **Test infrastructure first:** Robolectric + Room testing + Compose UI tests on the JVM; a migration test from the exported v1 schema; backup fixtures (v1 JSON, encrypted v1) that must keep restoring; a 20 000-entry data generator with time limits on summary, search and Home state; CI runs them all.
 2. ✅ (2026-11-25) **One database change for all new data (Room v1 → v2, backup schema 2):** `Category.monthlyBudget`, `Transaction.splitId`, `Transaction.importId`, new `Debt` table. A single migration, tested from v1 with real-looking data; v1 backups restore into v2; v2 → v1 restore is refused with a clear message.
 3. ✅ (2026-11-25) Small items: Language row (opens the system per-app language screen on Android 13+, in-app list below), "Your data stays here" screen, app shortcuts + Quick Settings tile, budget widget.
-4. Category budgets (domain `Budget` per category, Expenses bars, edit in category sheet).
+4. ✅ (2026-11-25) Category budgets (domain `Budget` per category, Expenses bars, edit in category sheet).
 5. Bill detection (`domain/BillDetector`: same payee/category and similar amount on a monthly rhythm, ≥3 occurrences, suggestion dismissible forever).
 6. Split expenses (one receipt → several categories sharing a `splitId`; edit/delete/undo act on the whole split; totals unchanged).
 7. Debts ("I owe" / "owed to me", partial repayments, optional reminder; not linked to account balances unless the user records the payment).
@@ -52,6 +52,11 @@ Step 3 plan (2026-11-25):
 - Static app shortcuts "Add expense" and "Scan receipt" (opens Quick add and starts the camera); Quick Settings tile "Add expense". All go through one `MainActivity` intent path.
 - Budget widget (Glance): monthly budget left, spent bar, per-day amount; "Set a monthly budget" when none.
 - Tests: intent routing, widget data on budget edge cases, language list; strings EN/DE/IT.
+Step 4 plan (2026-11-25):
+- Domain `Budget.forCategories`: one `BudgetStatus` per category with a budget, from the same rule as the monthly budget and the same period (month start day).
+- Expenses: a budgeted category's row shows a bar of budget used (accent / warning when fast / danger when over) and "€X left" or "€X over" instead of its share; budgeted categories without spending yet are listed too, but stay out of the chart.
+- Category sheet: "Monthly budget" row (set via the amount sheet, remove); stored in `Category.monthlyBudgetCents`, already in DB v2 and backups.
+- Tests: domain edge cases (no budget, zero, exact, over, start day 27, past month, archived), Expenses state, sheet save/remove (UI test).
 P5b: all-time search with amount/date filters; year overview; calendar; FR/ES/PT/PL/TR; opt-in monthly summary on the 1st; tablet/foldable layouts (list-detail, two panes ≥600dp).
 
 **Test gate per step (nothing moves on with a red item):**
@@ -175,6 +180,14 @@ P5b: all-time search with amount/date filters; year overview; calendar; FR/ES/PT
 -  Android SDK at `~/Android/Sdk` (platforms 35/36/37 installed via sdkmanager, no sudo needed), adb at `~/Android/Sdk/platform-tools/adb` (not on PATH).
 
 ## Decisions
+- **P5a step 4 category budgets (2026-11-25):**
+  - `Budget.forCategories` reuses `Budget.status`, so a category budget follows the same period, pace and "per day" rules as the monthly budget. Archived categories keep their budget but are only listed when they have spending in the period.
+  - Found while testing huge amounts: the "spending fast" check multiplied Longs (`spent * 100`, `budget * elapsed`) and overflowed above ~9·10^16 cents, flipping on-track to fast. Now compared exactly with BigInteger.
+  - Budgeted categories without spending show as "€0 · €X left" rows under the chart but are not drawn in the chart, so the donut/bars keep meaning "where the money went".
+  - Budgets show only for the current period (review): amounts have no history, so a past month would be judged against today's budget, even before the category existed.
+  - In the category sheet the budget is part of the draft like name and colour and is saved with Save (the Settings monthly budget row applies at once because it has no surrounding form).
+  - Phone (2026-11-25): the budget row sat below the long icon grid and was easy to miss; it now comes right after the name. Set $300 on Groceries with real taps → Expenses shows the bar and "$121.68 left".
+  - Robolectric UI tests click through semantics actions inside bottom sheets: injected touches landed below sheets that were still animating in. Real touches are checked on the phone.
 - **P5a step 3 small items (2026-11-25):**
   - Language: an in-app row on Android 13+ only. `AppCompatDelegate.setApplicationLocales` writes the system per-app setting there, which applies to the whole process (notifications, widgets, ViewModel texts). On 8–12 AppCompat would translate only the activity and leave the rest in the phone's language, so the row is hidden there (review finding). Languages are named in their own words; a test keeps `AppLanguage.tags`, `localeFilters` and the `values-xx` folders identical; widgets refresh after a change.
   - Shortcuts are static (`res/xml/shortcuts.xml`); resource files get no `applicationId` placeholder, so the smoke build has its own copy (test: identical apart from the package). "Scan receipt" opens Quick add as an expense and starts the camera; all entry points (widget, shortcuts, tile) go through `MainActivity` actions and are ignored until the first account exists, like the widget before.

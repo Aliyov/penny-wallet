@@ -110,6 +110,9 @@
     <string name="budget_per_month">%1$s al mese</string>
     <string name="budget_not_set">Non impostato</string>
     <string name="budget_hint">Quanto vuoi spendere ogni mese. La Home mostra quanto ti resta.</string>
+    <string name="category_budget_hint">Quanto vuoi spendere in questa categoria ogni mese. In Spese vedi quanto ti resta.</string>
+    <string name="expenses_budget_left">%1$s rimasti</string>
+    <string name="expenses_budget_over">%1$s in più</string>
     <string name="budget_remove">Rimuovi budget</string>
     <string name="budget_left">Restano %1$s · circa %2$s al giorno</string>
     <string name="budget_left_fast">Restano %1$s · stai spendendo più del previsto, circa %2$s al giorno</string>

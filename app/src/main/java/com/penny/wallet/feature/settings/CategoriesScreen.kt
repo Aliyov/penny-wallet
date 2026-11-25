@@ -116,10 +116,10 @@ fun CategoriesScreen(onBack: () -> Unit) {
     }
 
     when (val s = sheet) {
-        CatSheet.New -> CategoryEditSheet(null, onDismiss = { sheet = null }, onSave = { n, i, col -> vm.addCategory(n, i, col); sheet = null })
+        CatSheet.New -> CategoryEditSheet(null, onDismiss = { sheet = null }, onSave = { n, i, col, b -> vm.addCategory(n, i, col, b); sheet = null })
         is CatSheet.Edit -> CategoryEditSheet(
             s.cat, onDismiss = { sheet = null },
-            onSave = { n, i, col -> vm.saveCategory(s.cat.copy(name = n, icon = i, color = col)); sheet = null },
+            onSave = { n, i, col, b -> vm.saveCategory(s.cat.copy(name = n, icon = i, color = col, monthlyBudgetCents = b)); sheet = null },
             onToggleArchive = {
                 vm.setCategoryArchived(s.cat.id, !s.cat.archived); sheet = null
                 snack.show(res.getString(if (s.cat.archived) R.string.manage_restored_msg else R.string.manage_archived_msg, s.cat.name))

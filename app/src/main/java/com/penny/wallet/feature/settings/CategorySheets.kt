@@ -1,5 +1,8 @@
 package com.penny.wallet.feature.settings
 
+import com.penny.wallet.core.ui.components.money
+import com.penny.wallet.core.ui.components.NavRow
+import com.penny.wallet.core.ui.components.AmountSheet
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -38,15 +41,17 @@ import com.penny.wallet.core.ui.components.PennySheet
 import com.penny.wallet.core.ui.theme.ItemPalette
 import com.penny.wallet.core.ui.theme.Penny
 
-/** Add (initial == null) or edit a category: name, icon, colour, archive, delete. */
+/** Add (initial == null) or edit a category: name, icon, colour, monthly budget, archive, delete. */
 @Composable
 internal fun CategoryEditSheet(
-    initial: Category?, onDismiss: () -> Unit, onSave: (name: String, icon: String, color: Long) -> Unit,
+    initial: Category?, onDismiss: () -> Unit, onSave: (name: String, icon: String, color: Long, budget: Long?) -> Unit,
     onToggleArchive: () -> Unit = {}, onDelete: () -> Unit = {},
 ) {
     var name by rememberSaveable { mutableStateOf(initial?.name ?: "") }
     var icon by rememberSaveable { mutableStateOf(initial?.icon ?: "other") }
     var color by rememberSaveable { mutableLongStateOf(initial?.color ?: ItemPalette.first()) }
+    var budget by rememberSaveable { mutableStateOf(initial?.monthlyBudgetCents) }
+    var editBudget by rememberSaveable { mutableStateOf(false) }
     PennySheet(onDismiss = onDismiss, title = stringResource(if (initial == null) R.string.manage_new_category else R.string.manage_edit_category)) {
         Column(Modifier.heightIn(max = 620.dp).verticalScroll(rememberScrollState())) {
             Row(verticalAlignment = Alignment.CenterVertically) {
@@ -57,11 +62,17 @@ internal fun CategoryEditSheet(
                     textStyle = Penny.type.body, shape = Penny.dims.smallShape, colors = pennyFieldColors(),
                 )
             }
+            NavRow(
+                stringResource(R.string.budget_title),
+                budget?.let { stringResource(R.string.budget_per_month, money(it, ignorePrivacy = true)) } ?: stringResource(R.string.budget_not_set),
+                { editBudget = true },
+                modifier = Modifier.padding(top = 8.dp),
+            )
             FieldLabel(stringResource(R.string.label_colour))
             ColorSwatches(color) { color = it }
             FieldLabel(stringResource(R.string.label_icon))
             IconPicker(PennyIcons.all.map { it.first }, icon, Color(color)) { icon = it }
-            PennyButton(stringResource(R.string.action_save), { onSave(name.trim(), icon, color) }, Modifier.fillMaxWidth().padding(top = 20.dp), enabled = name.isNotBlank())
+            PennyButton(stringResource(R.string.action_save), { onSave(name.trim(), icon, color, budget) }, Modifier.fillMaxWidth().padding(top = 20.dp), enabled = name.isNotBlank())
             if (initial != null) {
                 Row(Modifier.fillMaxWidth().padding(top = 8.dp), horizontalArrangement = Arrangement.spacedBy(8.dp)) {
                     PennyButton(stringResource(if (initial.archived) R.string.manage_unarchive else R.string.action_archive), onToggleArchive, Modifier.weight(1f), kind = ButtonKind.SECONDARY)
@@ -69,6 +80,20 @@ internal fun CategoryEditSheet(
                 }
             }
         }
+    }
+    if (editBudget) {
+        AmountSheet(
+            stringResource(R.string.budget_title), onDismiss = { editBudget = false }, confirmLabel = stringResource(R.string.action_save),
+            initialCents = budget ?: 0,
+            extra = {
+                Text(stringResource(R.string.category_budget_hint), style = Penny.type.caption, color = Penny.colors.textSecondary)
+                if (budget != null) {
+                    TextButton(onClick = { budget = null; editBudget = false }) {
+                        Text(stringResource(R.string.budget_remove), color = Penny.colors.danger)
+                    }
+                }
+            },
+        ) { cents -> budget = cents; editBudget = false }
     }
 }
 

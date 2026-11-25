@@ -50,9 +50,9 @@ fun ExpensesScreen(onOpenRecurring: () -> Unit, onEditTransaction: (String) -> U
         item(key = "month") { MonthSwitcher(state, vm::prevMonth, vm::nextMonth) }
         item(key = "chart") { ChartCard(state, selectedIdx, { selected = it }, hPad.animateContentSize()) }
 
-        if (state.slices.isNotEmpty()) {
+        if (state.slices.isNotEmpty() || state.unspentBudgets.isNotEmpty()) {
             item(key = "cat_label") { SectionLabel(stringResource(R.string.expenses_categories), hPad) }
-            items(state.slices, key = { "cat_" + (it.categoryId ?: "none") }) { s ->
+            items(state.slices + state.unspentBudgets, key = { "cat_" + (it.categoryId ?: "none") }) { s ->
                 val active = state.filterCategoryId != null && state.filterCategoryId == s.categoryId
                 CategoryRow(
                     s, active = active, dimmed = state.filterCategoryId != null && !active,
@@ -69,7 +69,7 @@ fun ExpensesScreen(onOpenRecurring: () -> Unit, onEditTransaction: (String) -> U
         item(key = "tx_label") { SectionLabel(stringResource(R.string.expenses_transactions), hPad) }
         item(key = "search") { SearchField(state.query, vm::search, hPad) }
         state.filterCategoryId?.let { id ->
-            val slice = state.slices.firstOrNull { it.categoryId == id }
+            val slice = (state.slices + state.unspentBudgets).firstOrNull { it.categoryId == id }
             item(key = "filter") {
                 CategoryFilterChip(slice?.name ?: stringResource(R.string.label_category), slice?.let { Color(it.color) } ?: c.accent, { vm.filterCategory(id) }, hPad)
             }

@@ -108,6 +108,9 @@
     <string name="budget_per_month">%1$s pro Monat</string>
     <string name="budget_not_set">Nicht festgelegt</string>
     <string name="budget_hint">Wie viel du pro Monat für Ausgaben einplanst. Start zeigt, wie viel noch übrig ist.</string>
+    <string name="category_budget_hint">Wie viel du in dieser Kategorie pro Monat ausgeben möchtest. Unter Ausgaben siehst du, was übrig ist.</string>
+    <string name="expenses_budget_left">%1$s übrig</string>
+    <string name="expenses_budget_over">%1$s drüber</string>
     <string name="budget_remove">Budget entfernen</string>
     <string name="budget_left">%1$s übrig · etwa %2$s pro Tag</string>
     <string name="budget_left_fast">%1$s übrig · schneller als geplant, etwa %2$s pro Tag</string>

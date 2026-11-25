@@ -109,6 +109,9 @@
     <string name="budget_per_month">%1$s a month</string>
     <string name="budget_not_set">Not set</string>
     <string name="budget_hint">How much you want to spend on expenses each month. Home shows how much is left.</string>
+    <string name="category_budget_hint">How much you want to spend in this category each month. Expenses shows what is left.</string>
+    <string name="expenses_budget_left">%1$s left</string>
+    <string name="expenses_budget_over">%1$s over</string>
     <string name="budget_remove">Remove budget</string>
     <string name="budget_left">%1$s left · about %2$s a day</string>
     <string name="budget_left_fast">%1$s left · spending faster than planned, about %2$s a day</string>

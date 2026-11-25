@@ -6,6 +6,7 @@ import androidx.compose.ui.semantics.contentDescription
 import androidx.compose.ui.semantics.semantics
 import androidx.compose.material3.minimumInteractiveComponentSize
 import com.penny.wallet.R
+import com.penny.wallet.domain.BudgetPace
 import androidx.compose.ui.res.stringResource
 import com.penny.wallet.core.util.currentLocale
 import androidx.compose.animation.AnimatedContent
@@ -117,12 +118,19 @@ private fun CategoryBars(slices: List<CategorySlice>, onTap: (Int) -> Unit, sele
     }
 }
 
-/** Category list row: icon, name, amount, %, thin progress bar. Tap toggles the list filter. */
+/** Category list row: icon, name, amount and a thin bar with its share, or with budget used and "left/over" when it has a budget. Tap toggles the list filter. */
 @Composable
 internal fun CategoryRow(slice: CategorySlice, active: Boolean, dimmed: Boolean, onClick: () -> Unit, modifier: Modifier = Modifier) {
     val c = Penny.colors
     val color = Color(slice.color)
-    val fraction by animateFloatAsState(slice.share, Penny.motion.spec(), label = "catbar")
+    val budget = slice.budget
+    val barColor = when (budget?.pace) {
+        null -> color
+        BudgetPace.OVER -> c.danger
+        BudgetPace.FAST -> c.warning
+        BudgetPace.ON_TRACK -> c.accent
+    }
+    val fraction by animateFloatAsState(budget?.fraction ?: slice.share, Penny.motion.spec(), label = "catbar")
     val shape = Penny.dims.smallShape
     Row(
         modifier.fillMaxWidth().clip(shape)
@@ -139,10 +147,18 @@ internal fun CategoryRow(slice: CategorySlice, active: Boolean, dimmed: Boolean,
             Spacer(Modifier.height(6.dp))
             Row(verticalAlignment = Alignment.CenterVertically) {
                 Box(Modifier.weight(1f).height(3.dp).clip(RoundedCornerShape(50)).background(c.hairline)) {
-                    Box(Modifier.fillMaxWidth(fraction.coerceIn(0.01f, 1f)).fillMaxHeight().background(color))
+                    Box(Modifier.fillMaxWidth(fraction.coerceIn(0.01f, 1f)).fillMaxHeight().background(barColor))
                 }
                 Spacer(Modifier.width(10.dp))
-                Text(Formatters.percent(slice.share, currentLocale()), style = Penny.type.caption, color = c.textSecondary)
+                if (budget == null) {
+                    Text(Formatters.percent(slice.share, currentLocale()), style = Penny.type.caption, color = c.textSecondary)
+                } else {
+                    Text(
+                        if (budget.left < 0) stringResource(R.string.expenses_budget_over, money(-budget.left))
+                        else stringResource(R.string.expenses_budget_left, money(budget.left)),
+                        style = Penny.type.caption, color = if (budget.left < 0) c.danger else c.textSecondary,
+                    )
+                }
             }
         }
     }

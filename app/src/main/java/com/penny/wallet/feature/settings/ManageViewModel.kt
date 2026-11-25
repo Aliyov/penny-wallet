@@ -47,7 +47,8 @@ class ManageViewModel(private val c: AppContainer) : ViewModel() {
         )
     }.flowOn(Dispatchers.Default).stateIn(viewModelScope, SharingStarted.WhileSubscribed(5_000), ManageState())
 
-    fun addCategory(name: String, icon: String, color: Long) = viewModelScope.launch { if (name.isNotBlank()) c.categories.add(name, icon, color) }
+    fun addCategory(name: String, icon: String, color: Long, budget: Long? = null) =
+        viewModelScope.launch { if (name.isNotBlank()) c.categories.add(name, icon, color, budget) }
     fun saveCategory(cat: Category) = viewModelScope.launch { if (cat.name.isNotBlank()) c.categories.save(cat.copy(name = cat.name.trim())) }
     fun reorderCategories(ids: List<String>) = viewModelScope.launch { c.categories.reorder(ids) }
     fun setCategoryArchived(id: String, archived: Boolean) = viewModelScope.launch { c.categories.setArchived(id, archived) }
