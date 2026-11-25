@@ -19,11 +19,9 @@ import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import kotlinx.coroutines.flow.map
-import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
-import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -54,6 +52,7 @@ object Routes {
     const val PERSONALISE = "personalise"
     const val BACKUP = "backup"
     const val SUPPORT = "support"
+    const val PRIVACY = "privacy"
     fun account(id: String) = "account/$id"
     fun goal(id: String) = "goal/$id"
 }
@@ -74,28 +73,33 @@ private fun rememberTabs(): List<NavItem> {
     }
 }
 
+/** Quick add opened from outside the app; [scan] starts the camera right away. Identity matters: every tap is new. */
+class LaunchRequest(val scan: Boolean)
+
 class RootState {
     var quickAddOpen by mutableStateOf(false)
+    var scanOnOpen by mutableStateOf(false)
     var editTxId by mutableStateOf<String?>(null)
     fun openNew() { editTxId = null; quickAddOpen = true }
     fun openEdit(id: String) { editTxId = id; quickAddOpen = true }
-    fun close() { quickAddOpen = false; editTxId = null }
+    fun close() { quickAddOpen = false; editTxId = null; scanOnOpen = false }
 }
 
 @Composable
-fun PennyRoot(container: AppContainer, quickAddRequest: Int = 0) {
+fun PennyRoot(container: AppContainer, request: LaunchRequest? = null, onLaunchHandled: () -> Unit = {}) {
     val nav = rememberNavController()
     val host = remember { SnackbarHostState() }
     val scope = rememberCoroutineScope()
     val undoLabel = stringResource(R.string.action_undo)
     val snack = remember(undoLabel) { Snack(host, scope, undoLabel) }
     val root = remember { RootState() }
-    var handledRequest by rememberSaveable { mutableIntStateOf(0) }
-    LaunchedEffect(quickAddRequest) {
-        if (quickAddRequest > handledRequest) {
-            handledRequest = quickAddRequest
-            if (container.accounts.all().isNotEmpty()) root.openNew()
+    LaunchedEffect(request) {
+        if (request == null) return@LaunchedEffect
+        if (container.accounts.all().isNotEmpty()) {
+            root.openNew()
+            root.scanOnOpen = request.scan
         }
+        onLaunchHandled()
     }
 
     val tabs = rememberTabs()

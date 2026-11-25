@@ -7,6 +7,15 @@
     <string name="widget_available">Available</string>
     <string name="widget_spent_month">Spent this month %1$s</string>
     <string name="widget_next">Next: %1$s · %2$s</string>
+    <string name="widget_budget_label">Penny budget</string>
+    <string name="widget_budget_desc">What\'s left of your monthly budget</string>
+    <string name="widget_budget_title">Monthly budget</string>
+    <string name="widget_budget_left">Budget left this month</string>
+    <string name="widget_budget_over">Over budget by</string>
+    <string name="widget_budget_per_day">%1$s a day</string>
+    <string name="widget_budget_of">%1$s of %2$s spent</string>
+    <string name="widget_budget_none">No monthly budget</string>
+    <string name="widget_budget_set">Set one in Settings</string>
     <string name="widget_add_expense">Add expense</string>
 
     <string name="date_today">Today</string>
@@ -73,4 +82,26 @@
     <string name="symbol_position">Currency symbol</string>
     <string name="symbol_before">Before</string>
     <string name="symbol_after">After</string>
+    <string name="language_title">Language</string>
+    <string name="language_system">Phone</string>
+    <string name="privacy_title">Your data stays here</string>
+    <string name="privacy_sub">No internet, no accounts, no tracking</string>
+    <string name="privacy_intro">Penny Wallet is built so your money stays private. This is what it does and doesn\'t do.</string>
+    <string name="privacy_offline_title">No internet access</string>
+    <string name="privacy_offline_body">The app has no internet permission, so it can\'t send your data anywhere. There are no ads, no analytics and no sign-up.</string>
+    <string name="privacy_local_title">Stored only on this phone</string>
+    <string name="privacy_local_body">Accounts, expenses and settings are kept in the app\'s private storage. Android\'s cloud backup is switched off for it.</string>
+    <string name="privacy_backup_title">Backups go where you choose</string>
+    <string name="privacy_backup_body">Backups are written only to the folder you pick, and you can protect them with a password.</string>
+    <string name="privacy_receipts_title">Receipts are read on the phone</string>
+    <string name="privacy_receipts_body">Text recognition runs on this phone. A photo taken for a scan is deleted after reading; photos from your gallery are only read, never copied.</string>
+    <string name="privacy_crash_title">Crash reports only if you send them</string>
+    <string name="privacy_crash_body">After a crash, Penny shows the report and lets you send it by email yourself. Nothing is sent on its own.</string>
+    <string name="privacy_tips_title">Tips through Google Play</string>
+    <string name="privacy_tips_body">Tips are paid through Google Play. Penny only learns that the tip went through.</string>
+    <string name="shortcut_add_short">Add expense</string>
+    <string name="shortcut_add_long">Add an expense</string>
+    <string name="shortcut_scan_short">Scan receipt</string>
+    <string name="shortcut_scan_long">Scan a receipt</string>
+    <string name="tile_add_expense">Add expense</string>
 </resources>

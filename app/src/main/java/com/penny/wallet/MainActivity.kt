@@ -10,18 +10,20 @@ import androidx.activity.enableEdgeToEdge
 import androidx.appcompat.app.AppCompatActivity
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableIntStateOf
+import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.core.splashscreen.SplashScreen.Companion.installSplashScreen
 import com.penny.wallet.feature.lock.LockGate
+import com.penny.wallet.feature.nav.LaunchRequest
 import com.penny.wallet.feature.nav.PennyRoot
 import com.penny.wallet.core.ui.theme.PennyTheme
 import com.penny.wallet.core.ui.theme.isDarkTheme
 
 // AppCompatActivity (a FragmentActivity) so BiometricPrompt works.
 class MainActivity : AppCompatActivity() {
-    // Bumped per widget "open Quick add" tap so repeated taps still reach PennyRoot.
-    private val quickAddRequests = mutableIntStateOf(0)
+    // Set by a widget, shortcut or tile tap and cleared once PennyRoot acted on it. Held here, not in composition,
+    // because the app lock removes PennyRoot while locked and would otherwise forget or replay it.
+    private val pendingLaunch = mutableStateOf<LaunchRequest?>(null)
 
     override fun onCreate(savedInstanceState: Bundle?) {
         val c = container
@@ -34,7 +36,7 @@ class MainActivity : AppCompatActivity() {
             val prefs by c.settings.prefs.collectAsStateWithLifecycle()
             val dark = isDarkTheme(prefs.themeMode)
             LaunchedEffect(dark) { applySystemBars(dark) }
-            PennyTheme(prefs) { LockGate { PennyRoot(c, quickAddRequests.intValue) } }
+            PennyTheme(prefs) { LockGate { PennyRoot(c, pendingLaunch.value) { pendingLaunch.value = null } } }
         }
     }
 
@@ -49,8 +51,16 @@ class MainActivity : AppCompatActivity() {
     }
 
     private fun handle(i: Intent?) {
-        if (i?.action == ACTION_QUICK_ADD) quickAddRequests.intValue++
+        val scan = when (i?.action) {
+            ACTION_QUICK_ADD -> false
+            ACTION_SCAN_RECEIPT -> true
+            else -> return
+        }
+        pendingLaunch.value = LaunchRequest(scan)
     }
 
-    companion object { const val ACTION_QUICK_ADD = "com.penny.wallet.QUICK_ADD" }
+    companion object {
+        const val ACTION_QUICK_ADD = "com.penny.wallet.QUICK_ADD"
+        const val ACTION_SCAN_RECEIPT = "com.penny.wallet.SCAN_RECEIPT"
+    }
 }

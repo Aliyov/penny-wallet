@@ -12,9 +12,10 @@ import com.penny.wallet.core.ui.components.LocalSnack
 import com.penny.wallet.core.ui.pennyViewModel
 import com.penny.wallet.feature.add.QuickAddSheet
 import com.penny.wallet.feature.add.QuickAddViewModel
+import com.penny.wallet.data.prefs.QuickType
 import com.penny.wallet.feature.add.rememberReceiptLaunchers
 
-/** Hosts the Quick add sheet above every screen (FAB, edit taps, widget deep link). */
+/** Hosts the Quick add sheet above every screen (FAB, edit taps, widget, shortcuts, Quick Settings tile). */
 @Composable
 fun QuickAddHost(root: RootState) {
     val vm = pennyViewModel { QuickAddViewModel(it) }
@@ -24,7 +25,15 @@ fun QuickAddHost(root: RootState) {
     val receipt = rememberReceiptLaunchers(vm)
 
     LaunchedEffect(root.quickAddOpen, root.editTxId) {
-        if (root.quickAddOpen) root.editTxId?.let { vm.startEdit(it) } ?: vm.startNew()
+        if (root.quickAddOpen) root.editTxId?.let { vm.startEdit(it) } ?: vm.startNew(if (root.scanOnOpen) QuickType.EXPENSE else null)
+    }
+    LaunchedEffect(root.quickAddOpen, root.scanOnOpen) {
+        if (root.quickAddOpen && root.scanOnOpen) {
+            root.scanOnOpen = false
+            // Quick add may already have been open on another type; a scan always starts a fresh expense.
+            vm.startNew(QuickType.EXPENSE)
+            receipt.camera()
+        }
     }
     if (!root.quickAddOpen) return
     val deletedText = stringResource(R.string.deleted)

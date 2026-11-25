@@ -16,7 +16,7 @@ class WidgetUpdater(private val context: Context, private val c: AppContainer) {
     fun start() {
         c.onDataChanged = { request() }
         c.appScope.launch {
-            c.settings.prefs.map { listOf(it.accentArgb, it.hideAmounts, it.background, it.showCents, it.numberFormat, it.symbolPosition, it.currencyCode, it.monthStartDay) }
+            c.settings.prefs.map { listOf(it.accentArgb, it.hideAmounts, it.background, it.showCents, it.numberFormat, it.symbolPosition, it.currencyCode, it.monthStartDay, it.monthlyBudget) }
                 .distinctUntilChanged().collect { request() }
         }
     }
@@ -28,6 +28,7 @@ class WidgetUpdater(private val context: Context, private val c: AppContainer) {
             delay(400)
             runCatching { BalanceWidget().updateAll(context) }
             runCatching { QuickAddWidget().updateAll(context) }
+            runCatching { BudgetWidget().updateAll(context) }
         }
     }
 }

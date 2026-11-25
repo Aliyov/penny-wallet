@@ -1,5 +1,7 @@
 package com.penny.wallet.feature.settings
 
+import com.penny.wallet.container
+import com.penny.wallet.platform.AppLanguage
 import android.text.format.DateFormat
 import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.ExperimentalMaterial3Api
@@ -48,6 +50,24 @@ internal fun ThemeSetting(x: PrefsCtx) {
             ThemeMode.DARK to stringResource(R.string.theme_dark),
         ),
         x.p.themeMode, { v -> x.set { it.copy(themeMode = v) } },
+    )
+}
+
+@Composable
+internal fun LanguageSetting() {
+    if (!AppLanguage.supported) return
+    val context = LocalContext.current
+    var tag by remember { mutableStateOf(AppLanguage.current()) }
+    val system = stringResource(R.string.language_system)
+    ChoiceRow(
+        stringResource(R.string.language_title),
+        AppLanguage.tags.map { it to if (it.isEmpty()) system else AppLanguage.nativeName(it) },
+        tag,
+        { v ->
+            tag = v
+            AppLanguage.set(v)
+            context.container.onDataChanged() // widgets re-render their texts in the new language
+        },
     )
 }
 

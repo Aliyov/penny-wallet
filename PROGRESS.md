@@ -40,12 +40,18 @@
 Order (each step is one commit, and each must pass the full gate below before the next starts):
 1. ✅ (2026-11-25) **Test infrastructure first:** Robolectric + Room testing + Compose UI tests on the JVM; a migration test from the exported v1 schema; backup fixtures (v1 JSON, encrypted v1) that must keep restoring; a 20 000-entry data generator with time limits on summary, search and Home state; CI runs them all.
 2. ✅ (2026-11-25) **One database change for all new data (Room v1 → v2, backup schema 2):** `Category.monthlyBudget`, `Transaction.splitId`, `Transaction.importId`, new `Debt` table. A single migration, tested from v1 with real-looking data; v1 backups restore into v2; v2 → v1 restore is refused with a clear message.
-3. Small items: Language row (opens the system per-app language screen on Android 13+, in-app list below), "Your data stays here" screen, app shortcuts + Quick Settings tile, budget widget.
+3. ✅ (2026-11-25) Small items: Language row (opens the system per-app language screen on Android 13+, in-app list below), "Your data stays here" screen, app shortcuts + Quick Settings tile, budget widget.
 4. Category budgets (domain `Budget` per category, Expenses bars, edit in category sheet).
 5. Bill detection (`domain/BillDetector`: same payee/category and similar amount on a monthly rhythm, ≥3 occurrences, suggestion dismissible forever).
 6. Split expenses (one receipt → several categories sharing a `splitId`; edit/delete/undo act on the whole split; totals unchanged).
 7. Debts ("I owe" / "owed to me", partial repayments, optional reminder; not linked to account balances unless the user records the payment).
 8. CSV import (parser for comma/semicolon/tab, quotes, EU/US numbers, several date formats, column mapping with preview, duplicate detection, whole import undoable via `importId`; profiles for Money Manager, Monefy, Wallet and Penny's own CSV).
+Step 3 plan (2026-11-25):
+- Language row in Settings (Phone, English, Deutsch, Italiano; becomes chips once P5b adds more) via `AppCompatDelegate.setApplicationLocales`, which uses the system per-app language on Android 13+ and is stored by AppCompat below that.
+- "Your data stays here" screen from Settings: no internet permission, data only on this phone, backups only where the user picks, crash reports only by the user's own email, tips through Google Play.
+- Static app shortcuts "Add expense" and "Scan receipt" (opens Quick add and starts the camera); Quick Settings tile "Add expense". All go through one `MainActivity` intent path.
+- Budget widget (Glance): monthly budget left, spent bar, per-day amount; "Set a monthly budget" when none.
+- Tests: intent routing, widget data on budget edge cases, language list; strings EN/DE/IT.
 P5b: all-time search with amount/date filters; year overview; calendar; FR/ES/PT/PL/TR; opt-in monthly summary on the 1st; tablet/foldable layouts (list-detail, two panes ≥600dp).
 
 **Test gate per step (nothing moves on with a red item):**
@@ -169,6 +175,14 @@ P5b: all-time search with amount/date filters; year overview; calendar; FR/ES/PT
 -  Android SDK at `~/Android/Sdk` (platforms 35/36/37 installed via sdkmanager, no sudo needed), adb at `~/Android/Sdk/platform-tools/adb` (not on PATH).
 
 ## Decisions
+- **P5a step 3 small items (2026-11-25):**
+  - Language: an in-app row on Android 13+ only. `AppCompatDelegate.setApplicationLocales` writes the system per-app setting there, which applies to the whole process (notifications, widgets, ViewModel texts). On 8–12 AppCompat would translate only the activity and leave the rest in the phone's language, so the row is hidden there (review finding). Languages are named in their own words; a test keeps `AppLanguage.tags`, `localeFilters` and the `values-xx` folders identical; widgets refresh after a change.
+  - Shortcuts are static (`res/xml/shortcuts.xml`); resource files get no `applicationId` placeholder, so the smoke build has its own copy (test: identical apart from the package). "Scan receipt" opens Quick add as an expense and starts the camera; all entry points (widget, shortcuts, tile) go through `MainActivity` actions and are ignored until the first account exists, like the widget before.
+  - Quick Settings tile uses the PendingIntent overload on Android 14+ (the Intent one throws there).
+  - Budget widget shows the overall monthly budget (left, bar, per day; overage when over) from the same `Budget.status` as Home; category budgets join in step 4. Privacy mode hides every amount.
+  - Launch requests are consumed once and held in `MainActivity` (review finding): with App lock on, a composition-scoped "handled" counter was lost while locked and replayed the scan after every unlock, and after a recreation the next tap was ignored. A scan always starts a fresh expense even if Quick add was open.
+  - Budget widget in privacy mode shows only "Monthly budget •••" (no bar, colour or overage); the small size shows just amount + bar; the no-budget text no longer promises that a tap opens Settings.
+  - "Your data stays here" lists only verifiable facts (no INTERNET permission, allowBackup=false, backups to a user-picked folder, on-device OCR with the scan photo deleted, crash reports by the user's email, tips via Play).
 - **P5a step 2 database v2 (2026-11-25):**
   - One migration v1 → v2 (`data/db/Migrations.kt`, SQL copied from the exported `2.json`): `categories.monthlyBudgetCents` (null = no budget), `transactions.splitId` + `importId` (indexed), new tables `debts` and `debt_payments`. Repayments got their own table in the same migration so partial payments never need a second schema change; a payment may point at a transaction when the user also recorded the money moving, otherwise debts never touch balances.
   - Backup schema 2 adds `debts` and `debtPayments` (default empty, so v1 files decode unchanged); `BackupMigrations.upgrade` lifts older files step by step. Released v1 apps already refuse a v2 file as "too new" with the existing message.

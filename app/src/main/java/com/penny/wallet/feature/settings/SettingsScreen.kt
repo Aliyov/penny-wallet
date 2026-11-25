@@ -16,6 +16,7 @@ import androidx.compose.material.icons.rounded.AccountBalance
 import androidx.compose.material.icons.rounded.Backup
 import androidx.compose.material.icons.rounded.Category
 import androidx.compose.material.icons.rounded.Repeat
+import androidx.compose.material.icons.rounded.Shield
 import androidx.compose.material.icons.rounded.Tune
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -65,6 +66,7 @@ fun SettingsScreen(onOpen: (String) -> Unit) {
         SectionLabel(stringResource(R.string.settings_section_app), Modifier.padding(top = 12.dp))
         PennyCard(Modifier.fillMaxWidth()) {
             ThemeSetting(x)
+            LanguageSetting()
             AccentPicker(x)
             CurrencySetting(x)
             MonthStartSetting(x)
@@ -87,6 +89,8 @@ fun SettingsScreen(onOpen: (String) -> Unit) {
 
         Spacer(Modifier.height(Penny.dims.gap))
         RowGroup {
+            SettingsRow(Icons.Rounded.Shield, stringResource(R.string.privacy_title), { onOpen("privacy") }, stringResource(R.string.privacy_sub), tint = Color(ItemPalette[10]))
+            RowDivider()
             SettingsRow(Icons.Rounded.Favorite, stringResource(R.string.support_title), { onOpen("support") }, stringResource(R.string.support_sub), tint = Color(ItemPalette[0]))
         }
 

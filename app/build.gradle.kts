@@ -64,7 +64,8 @@ android {
         unitTests {
             isIncludeAndroidResources = true
             all {
-                it.maxHeapSize = "1536m"
+                it.maxHeapSize = "1g"
+                it.maxParallelForks = 2
                 it.systemProperty("penny.writeFixtures", providers.gradleProperty("penny.writeFixtures").getOrElse("false"))
             }
         }

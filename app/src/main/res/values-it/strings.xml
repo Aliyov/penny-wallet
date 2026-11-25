@@ -6,6 +6,15 @@
     <string name="widget_available">Disponibile</string>
     <string name="widget_spent_month">Speso questo mese %1$s</string>
     <string name="widget_next">Prossima: %1$s · %2$s</string>
+    <string name="widget_budget_label">Budget Penny</string>
+    <string name="widget_budget_desc">Quanto resta del tuo budget mensile</string>
+    <string name="widget_budget_title">Budget mensile</string>
+    <string name="widget_budget_left">Budget rimasto questo mese</string>
+    <string name="widget_budget_over">Budget superato di</string>
+    <string name="widget_budget_per_day">%1$s al giorno</string>
+    <string name="widget_budget_of">%1$s spesi su %2$s</string>
+    <string name="widget_budget_none">Nessun budget mensile</string>
+    <string name="widget_budget_set">Impostalo nelle Impostazioni</string>
     <string name="widget_add_expense">Aggiungi spesa</string>
 
     <string name="date_today">Oggi</string>
@@ -73,4 +82,26 @@
     <string name="symbol_position">Simbolo della valuta</string>
     <string name="symbol_before">Prima</string>
     <string name="symbol_after">Dopo</string>
+    <string name="language_title">Lingua</string>
+    <string name="language_system">Telefono</string>
+    <string name="privacy_title">I tuoi dati restano qui</string>
+    <string name="privacy_sub">Niente internet, niente account, niente tracciamento</string>
+    <string name="privacy_intro">Penny Wallet è fatta perché i tuoi soldi restino privati. Ecco cosa fa e cosa non fa.</string>
+    <string name="privacy_offline_title">Nessun accesso a internet</string>
+    <string name="privacy_offline_body">L\'app non ha il permesso di usare internet, quindi non può inviare i tuoi dati da nessuna parte. Niente pubblicità, niente statistiche, nessuna registrazione.</string>
+    <string name="privacy_local_title">Salvati solo su questo telefono</string>
+    <string name="privacy_local_body">Conti, spese e impostazioni restano nella memoria privata dell\'app. Il backup cloud di Android è disattivato per l\'app.</string>
+    <string name="privacy_backup_title">I backup vanno dove scegli tu</string>
+    <string name="privacy_backup_body">I backup vengono salvati solo nella cartella che scegli e puoi proteggerli con una password.</string>
+    <string name="privacy_receipts_title">Gli scontrini si leggono sul telefono</string>
+    <string name="privacy_receipts_body">Il riconoscimento del testo avviene su questo telefono. La foto scattata per la scansione viene eliminata dopo la lettura; le foto della galleria vengono solo lette, mai copiate.</string>
+    <string name="privacy_crash_title">Segnalazioni di errore solo se le invii tu</string>
+    <string name="privacy_crash_body">Dopo un arresto anomalo, Penny mostra la segnalazione e puoi inviarla tu via email. Niente viene inviato da solo.</string>
+    <string name="privacy_tips_title">Mance tramite Google Play</string>
+    <string name="privacy_tips_body">Le mance si pagano tramite Google Play. Penny sa solo che la mancia è arrivata.</string>
+    <string name="shortcut_add_short">Nuova spesa</string>
+    <string name="shortcut_add_long">Aggiungi una spesa</string>
+    <string name="shortcut_scan_short">Scontrino</string>
+    <string name="shortcut_scan_long">Scansiona uno scontrino</string>
+    <string name="tile_add_expense">Aggiungi spesa</string>
 </resources>
