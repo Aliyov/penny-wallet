@@ -6,6 +6,13 @@ plugins {
     alias(libs.plugins.room)
 }
 
+val robolectricJars: Configuration by configurations.creating
+val robolectricDir = layout.buildDirectory.dir("robolectric-jars")
+val prepareRobolectric = tasks.register<Sync>("prepareRobolectric") {
+    from(robolectricJars)
+    into(robolectricDir)
+}
+
 android {
     namespace = "com.penny.wallet"
     compileSdk {
@@ -67,6 +74,10 @@ android {
                 it.maxHeapSize = "1g"
                 it.maxParallelForks = 2
                 it.systemProperty("penny.writeFixtures", providers.gradleProperty("penny.writeFixtures").getOrElse("false"))
+                // Robolectric would download its Android jar during the test run (flaky on CI); Gradle fetches and caches it instead.
+                it.dependsOn(prepareRobolectric)
+                it.systemProperty("robolectric.offline", "true")
+                it.systemProperty("robolectric.dependency.dir", robolectricDir.get().asFile.absolutePath)
             }
         }
     }
@@ -130,6 +141,7 @@ dependencies {
 
     testImplementation(libs.junit)
     testImplementation(libs.robolectric)
+    robolectricJars(libs.robolectric.android.all)
     testImplementation(libs.androidx.test.core)
     testImplementation(platform(libs.compose.bom))
     testImplementation(libs.compose.ui.test.junit4)

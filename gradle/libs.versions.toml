@@ -22,6 +22,8 @@ profileinstaller = "1.4.1"
 mlkitText = "16.0.1"
 billing = "8.0.0"
 robolectric = "4.14.1"
+# Android 15 (sdk=35 in robolectric.properties); must match the Robolectric version above.
+robolectricAndroidAll = "15-robolectric-12650502-i7"
 androidxTestCore = "1.6.1"
 
 [libraries]
@@ -56,6 +58,7 @@ junit = { module = "junit:junit", version.ref = "junit" }
 androidx-profileinstaller = { module = "androidx.profileinstaller:profileinstaller", version.ref = "profileinstaller" }
 mlkit-text-recognition = { module = "com.google.mlkit:text-recognition", version.ref = "mlkitText" }
 robolectric = { module = "org.robolectric:robolectric", version.ref = "robolectric" }
+robolectric-android-all = { module = "org.robolectric:android-all-instrumented", version.ref = "robolectricAndroidAll" }
 androidx-test-core = { module = "androidx.test:core-ktx", version.ref = "androidxTestCore" }
 compose-ui-test-junit4 = { module = "androidx.compose.ui:ui-test-junit4" }
 compose-ui-test-manifest = { module = "androidx.compose.ui:ui-test-manifest" }
