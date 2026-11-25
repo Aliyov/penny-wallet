@@ -20,7 +20,7 @@ import org.robolectric.Shadows.shadowOf
 import org.robolectric.android.controller.ActivityController
 import org.robolectric.annotation.Config
 
-private const val TIMEOUT = 30_000L
+private const val TIMEOUT = 60_000L // CI runners are much slower than a laptop
 
 /** App shortcuts, the Quick Settings tile and the widget all reach Quick add through MainActivity's intent actions. */
 @RunWith(RobolectricTestRunner::class)

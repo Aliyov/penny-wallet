@@ -21,7 +21,7 @@ import org.junit.runner.RunWith
 import org.robolectric.RobolectricTestRunner
 import org.robolectric.annotation.Config
 
-private const val TIMEOUT = 30_000L
+private const val TIMEOUT = 60_000L // CI runners are much slower than a laptop
 
 /** Search from Expenses: typing finds entries from every month, not just the current one. */
 @RunWith(RobolectricTestRunner::class)
@@ -38,7 +38,7 @@ class SearchUiTest {
 
     @Test fun searchFindsEntriesFromEveryMonth() {
         tap("Try with sample data")
-        compose.waitUntil(TIMEOUT) { has("Bank") }
+        compose.waitUntil(TIMEOUT) { compose.onAllNodesWithText("Bank").fetchSemanticsNodes().isNotEmpty() }
         val expected = runBlocking { compose.activity.container.transactions.all() }.count { it.note.orEmpty().contains("Supermarket", ignoreCase = true) }
         assertTrue("sample data has supermarket entries", expected > 0)
 

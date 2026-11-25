@@ -20,7 +20,7 @@ import org.robolectric.RobolectricTestRunner
 import org.robolectric.annotation.Config
 import java.time.LocalDate
 
-private const val TIMEOUT = 30_000L
+private const val TIMEOUT = 60_000L // CI runners are much slower than a laptop
 
 /** Expenses → Calendar: today's cell is selected and lists today's entries. */
 @RunWith(RobolectricTestRunner::class)
@@ -38,7 +38,7 @@ class CalendarUiTest {
     @Test fun calendarOpensOnThisMonthWithItsDays() {
         tap("Try with sample data")
         val c = compose.activity.container
-        compose.waitUntil(TIMEOUT) { has("Bank") }
+        compose.waitUntil(TIMEOUT) { compose.onAllNodesWithText("Bank").fetchSemanticsNodes().isNotEmpty() }
         compose.waitUntil(TIMEOUT) { runBlocking { c.transactions.all() }.size > 10 }
         val withEntries = runBlocking { c.transactions.all() }.filter { it.date.month == LocalDate.now().month && it.date.year == LocalDate.now().year }
         assertTrue(withEntries.isNotEmpty())

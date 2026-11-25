@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
-<!-- Built from App_Icon.png: wallet artwork on its navy gradient (foreground is full-bleed and opaque),
-     plus a vector silhouette for Android 13+ themed icons. -->
+<!-- Built from app_icon.png: the artwork alone on a transparent foreground (inside the 66dp safe zone) over a
+     full-bleed background of the same near-black, so the launcher's own shape is the icon's edge. -->
 <adaptive-icon xmlns:android="http://schemas.android.com/apk/res/android">
     <background android:drawable="@color/ic_launcher_background" />
     <foreground android:drawable="@mipmap/ic_launcher_foreground" />
-    <monochrome android:drawable="@drawable/ic_launcher_monochrome" />
+    <monochrome android:drawable="@mipmap/ic_launcher_monochrome" />
 </adaptive-icon>

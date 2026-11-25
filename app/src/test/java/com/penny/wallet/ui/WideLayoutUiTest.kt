@@ -18,7 +18,7 @@ import org.junit.runner.RunWith
 import org.robolectric.RobolectricTestRunner
 import org.robolectric.annotation.Config
 
-private const val TIMEOUT = 30_000L
+private const val TIMEOUT = 60_000L // CI runners are much slower than a laptop
 
 /** Tablet in landscape: navigation rail instead of the bottom bar, and two panes on Home and Expenses. */
 @RunWith(RobolectricTestRunner::class)

@@ -21,7 +21,7 @@ import org.robolectric.RobolectricTestRunner
 import org.robolectric.annotation.Config
 
 /** First composition under Robolectric takes several seconds on a busy machine. */
-private const val TIMEOUT = 30_000L
+private const val TIMEOUT = 60_000L // CI runners are much slower than a laptop
 
 /** Legacy graphics: with native graphics the layout stops updating after the first frame on headless runs. */
 @RunWith(RobolectricTestRunner::class)

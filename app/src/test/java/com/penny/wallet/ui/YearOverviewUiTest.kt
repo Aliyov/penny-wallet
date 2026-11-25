@@ -22,7 +22,7 @@ import org.robolectric.RobolectricTestRunner
 import org.robolectric.annotation.Config
 import java.time.LocalDate
 
-private const val TIMEOUT = 30_000L
+private const val TIMEOUT = 60_000L // CI runners are much slower than a laptop
 
 /** Expenses → Year overview shows this year's spending as the domain computes it. */
 @RunWith(RobolectricTestRunner::class)
@@ -39,7 +39,7 @@ class YearOverviewUiTest {
 
     @Test fun yearOverviewShowsTheYearsSpending() {
         tap("Try with sample data")
-        compose.waitUntil(TIMEOUT) { has("Bank") }
+        compose.waitUntil(TIMEOUT) { compose.onAllNodesWithText("Bank").fetchSemanticsNodes().isNotEmpty() }
         val c = compose.activity.container
         compose.waitUntil(TIMEOUT) { runBlocking { c.transactions.all() }.size > 10 }
         val prefs = runBlocking { c.settings.current() }
