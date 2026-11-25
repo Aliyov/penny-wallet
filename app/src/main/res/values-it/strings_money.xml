@@ -142,8 +142,8 @@
     <string name="debts_add">Aggiungi debito</string>
     <string name="debts_empty">Tieni traccia dei soldi che hai chiesto o prestato ad amici e familiari. I debiti restano separati dai tuoi conti, a meno che tu non registri lì un pagamento.</string>
     <string name="debts_left_of">Mancano %1$s su %2$s</string>
-    <string name="debts_overdue_since">Scaduto dal %1$s</string>
-    <string name="debts_due">Scadenza %1$s</string>
+    <string name="debts_overdue_since">Scaduto da: %1$s</string>
+    <string name="debts_due">Scadenza: %1$s</string>
     <string name="debts_settled">Saldato</string>
     <string name="debts_new">Nuovo debito</string>
     <string name="debts_edit">Modifica debito</string>

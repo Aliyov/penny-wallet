@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="action_save">Zapisz</string>
+    <string name="action_cancel">Anuluj</string>
+    <string name="action_delete">Usuń</string>
+    <string name="action_undo">Cofnij</string>
+    <string name="action_edit">Edytuj</string>
+    <string name="action_close">Zamknij</string>
+    <string name="action_add">Dodaj</string>
+    <string name="action_reset">Resetuj</string>
+    <string name="action_archive">Archiwizuj</string>
+    <string name="action_back">Wstecz</string>
+    <string name="action_ok">OK</string>
+    <string name="deleted">Usunięto</string>
+    <string name="label_amount">Kwota</string>
+    <string name="label_name">Nazwa</string>
+    <string name="label_note">Notatka</string>
+    <string name="label_account">Konto</string>
+    <string name="label_category">Kategoria</string>
+    <string name="label_icon">Ikona</string>
+    <string name="label_colour">Kolor</string>
+    <string name="type_expense">Wydatek</string>
+    <string name="type_income">Przychód</string>
+    <string name="type_save">Oszczędzaj</string>
+    <string name="type_transfer">Przelew</string>
+    <string name="error_generic">Coś poszło nie tak. Spróbuj ponownie.</string>
+    <string name="error_only_available">Dostępne tylko %1$s</string>
+    <string name="error_amount_positive">Wpisz kwotę większą od zera</string>
+    <string name="error_target_positive">Wpisz cel większy od zera</string>
+    <string name="error_split_too_few">Podział wymaga co najmniej dwóch części.</string>
+    <string name="error_split_no_category">Wybierz kategorię dla każdej części.</string>
+    <string name="error_same_accounts">Wybierz dwa różne konta</string>
+    <string name="data_note_balance_set">Ustawiono saldo</string>
+    <string name="data_note_returned_from">Zwrot z: %1$s</string>
+    <string name="a11y_prev_month">Poprzedni miesiąc</string>
+    <string name="a11y_next_month">Następny miesiąc</string>
+    <string name="a11y_colour">Kolor %1$d</string>
+    <string name="error_name_required">Wpisz nazwę.</string>
+    <string name="error_debt_overpaid">To więcej, niż pozostało do spłaty.</string>
+    <string name="error_debt_has_payments">Nie można zmienić kierunku, gdy są już zapisane spłaty. Najpierw je usuń.</string>
+    <string name="error_debt_below_paid">Kwota nie może być mniejsza niż to, co już zostało spłacone.</string>
+    <string name="debt_tx_received">Spłata od: %1$s</string>
+    <string name="debt_tx_paid_back">Spłata dla: %1$s</string>
+    <string name="notif_debt_due_owe">Dziś termin oddania (%1$s): %2$s</string>
+    <string name="notif_debt_due_owed">Dziś termin zwrotu dla ciebie (%1$s): %2$s</string>
+    <string name="notif_debt_hint">Zapisz płatność w Ustawienia → Długi.</string>
+</resources>

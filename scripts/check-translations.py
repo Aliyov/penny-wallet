@@ -6,7 +6,7 @@ import xml.etree.ElementTree as ET
 from pathlib import Path
 
 RES = Path(__file__).resolve().parent.parent / "app/src/main/res"
-LOCALES = ["de", "it"]
+LOCALES = sys.argv[1:] or ["de", "it", "fr", "es", "pt", "pl", "tr"]
 # CLDR plural categories Android asks for (lint MissingQuantity); "many" in it/fr/es/pt is for round millions.
 PLURALS = {"de": {"one", "other"}, "it": {"one", "many", "other"}, "fr": {"one", "many", "other"},
            "es": {"one", "many", "other"}, "pt": {"one", "many", "other"}, "pl": {"one", "few", "many", "other"},
@@ -14,10 +14,33 @@ PLURALS = {"de": {"one", "other"}, "it": {"one", "many", "other"}, "fr": {"one",
 PLACEHOLDER = re.compile(r"%(\d+\$)?[sdf]")
 
 
-def load(folder: Path, quantities: dict | None = None) -> dict:
+def bare_apostrophe(text: str) -> bool:
+    """aapt rejects an apostrophe that is neither backslash-escaped (odd number of backslashes) nor inside "quotes"."""
+    quoted = False
+    backslashes = 0
+    for ch in text:
+        if ch == "\\":
+            backslashes += 1
+            continue
+        escaped = backslashes % 2 == 1
+        backslashes = 0
+        if ch == '"' and not escaped:
+            quoted = not quoted
+        elif ch == "'" and not escaped and not quoted:
+            return True
+    return False
+
+
+def load(folder: Path, quantities: dict | None = None, problems: list | None = None) -> dict:
     out = {}
     for f in sorted(folder.glob("strings*.xml")):
         for el in ET.parse(f).getroot():
+            texts = [el] if el.tag == "string" else list(el)
+            for t in texts:
+                # aapt rejects an unescaped apostrophe unless the whole text is quoted
+                raw = "".join(t.itertext())
+                if problems is not None and bare_apostrophe(raw):
+                    problems.append(f"{folder.name}/{f.name}: unescaped apostrophe in '{el.get('name')}'")
             if el.get("translatable") == "false":
                 continue
             if el.tag == "string":
@@ -30,11 +53,11 @@ def load(folder: Path, quantities: dict | None = None) -> dict:
     return out
 
 
-base = load(RES / "values")
 errors = []
+base = load(RES / "values", problems=errors)
 for loc in LOCALES:
     qty: dict = {}
-    tr = load(RES / f"values-{loc}", qty)
+    tr = load(RES / f"values-{loc}", qty, errors)
     for name, have in qty.items():
         missing = PLURALS.get(loc, {"other"}) - have
         if missing:

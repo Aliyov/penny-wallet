@@ -1,0 +1,225 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="settings_title">Ayarlar</string>
+    <string name="settings_section_money">Paran</string>
+    <string name="settings_section_app">Uygulama</string>
+    <string name="settings_categories">Harcama kategorileri</string>
+    <string name="settings_categories_sub">Ekle, düzenle, sırala</string>
+    <string name="settings_accounts">Hesaplar</string>
+    <string name="settings_accounts_sub">Ekle, yeniden adlandır, sırala</string>
+    <string name="settings_recurring">Faturalar ve abonelikler</string>
+    <string name="settings_recurring_sub">Kira, abonelikler, hatırlatmalar</string>
+    <string name="settings_backup">Yedek</string>
+    <string name="settings_backup_not_set_up">Ayarlanmadı</string>
+    <string name="settings_backup_never">Hiç yedeklenmedi</string>
+    <string name="settings_reset">Tüm verileri sil</string>
+    <string name="settings_reset_sub">Bu telefondaki her şeyi siler</string>
+    <string name="settings_footer">Penny Wallet %1$s · tüm veriler bu telefonda kalır</string>
+    <string name="settings_reset_title">Tüm veriler silinsin mi?</string>
+    <string name="settings_reset_body">Hesaplar, kategoriler, hedefler, kayıtlar ve faturalar silinecek. Geri isteyebileceksen önce bir yedek al.</string>
+    <string name="settings_reset_continue">Devam et</string>
+    <string name="settings_reset_done">Tüm veriler silindi</string>
+    <string name="settings_reset_word">SIFIRLA</string>
+    <string name="settings_reset_sure_title">Kesinlikle emin misin?</string>
+    <string name="settings_reset_sure_body">Bu işlem geri alınamaz. Onaylamak için %1$s yaz.</string>
+    <string name="settings_reset_confirm">Her şeyi sil</string>
+
+    <string name="manage_drag_handle">Sıralamak için sürükle</string>
+    <string name="manage_unarchive">Geri yükle</string>
+    <string name="manage_archived">Arşivlenenler</string>
+    <string name="manage_more">Diğer seçenekler</string>
+    <string name="manage_archived_msg">%1$s arşivlendi</string>
+    <string name="manage_restored_msg">%1$s geri yüklendi</string>
+    <string name="manage_deleted_msg">%1$s silindi</string>
+    <string name="manage_moved_deleted_msg">Taşındı: %1$s, %2$s silindi</string>
+    <string name="manage_accounts_empty">Henüz hesap yok. Paranın olduğu yeri ekle, örneğin bir banka hesabı ya da nakit.</string>
+    <string name="manage_account_cant_delete_title">%1$s silinemiyor</string>
+    <string name="manage_account_cant_delete_body">Yalnızca geçmişi olmayan boş hesaplar silinebilir. Bunun yerine arşivlensin mi?</string>
+    <string name="manage_account_has_goal_money">Önce bu hesabın parasını hedeflerinden geri al</string>
+    <string name="manage_new_account">Yeni hesap</string>
+    <string name="manage_add_account">Hesap ekle</string>
+    <plurals name="manage_transactions">
+        <item quantity="one">%d işlem</item>
+        <item quantity="other">%d işlem</item>
+    </plurals>
+    <string name="manage_categories_hint">Sıralamak için tutamacı sürükle. Kategori sırası Elle olarak ayarlıysa hızlı ekleme bu sırayı kullanır.</string>
+    <string name="manage_categories_empty">Henüz kategori yok. Harcamalarını düzenlemek için bir tane ekle.</string>
+    <plurals name="manage_expenses">
+        <item quantity="one">%d harcama</item>
+        <item quantity="other">%d harcama</item>
+    </plurals>
+    <string name="manage_new_category">Yeni kategori</string>
+    <string name="manage_edit_category">Kategoriyi düzenle</string>
+    <string name="manage_category_delete_title">%1$s silinsin mi?</string>
+    <plurals name="manage_category_in_use_body">
+        <item quantity="one">%d harcama bu kategoriyi kullanıyor. Önce onu başka bir kategoriye taşı ya da bu kategoriyi arşivle (eklerken gizlenir, geçmişte kalır).</item>
+        <item quantity="other">%d harcama bu kategoriyi kullanıyor. Önce onları başka bir kategoriye taşı ya da bu kategoriyi arşivle (eklerken gizlenir, geçmişte kalır).</item>
+    </plurals>
+    <string name="manage_move_expenses">Harcamaları taşı…</string>
+    <string name="manage_archive_instead">Bunun yerine arşivle</string>
+    <string name="manage_move_title">%1$s harcamalarını taşı…</string>
+    <string name="manage_move_none">Başka kategori yok. Önce bir tane oluştur ya da bunu arşivle.</string>
+
+    <string name="backup_last">Son yedek: %1$s</string>
+    <string name="backup_never">Hiç</string>
+    <string name="backup_tip">İpucu: telefonunun dışında da bir kopya istiyorsan Google Drive\'ın veya Dosyalar uygulamanın eşitlediği bir klasör seç.</string>
+    <string name="backup_pick_folder">Klasör seç</string>
+    <string name="backup_change_folder">Klasörü değiştir</string>
+    <string name="backup_automatic">Otomatik yedekleme</string>
+    <string name="backup_daily">Günlük</string>
+    <string name="backup_weekly">Haftalık</string>
+    <string name="backup_monthly">Aylık</string>
+    <string name="backup_restore_export">Geri yükle ve dışa aktar</string>
+    <string name="backup_restore_file">Dosyadan geri yükle</string>
+    <string name="backup_export_csv">İşlemleri CSV olarak dışa aktar</string>
+    <string name="backup_export_failed">Dışa aktarma başarısız: %1$s</string>
+    <string name="backup_export_done">CSV dışa aktarıldı ✓</string>
+    <string name="backup_replace_title">Tüm veriler değiştirilsin mi?</string>
+    <string name="backup_replace_body">Bu, telefondaki her şeyin yerine geçer. Devam edilsin mi?</string>
+    <string name="backup_replace">Değiştir</string>
+    <string name="backup_restore_failed">Geri yükleme başarısız: %1$s</string>
+    <string name="backup_restore_done">Geri yüklendi ✓</string>
+    <string name="backup_no_folder">Klasör yok</string>
+    <string name="backup_access_ok">Klasör erişimi tamam</string>
+    <string name="backup_access_lost">Klasör erişimi kayboldu</string>
+    <string name="backup_access_lost_body">Klasör erişimi kayboldu. Klasörü yeniden seç.</string>
+    <string name="backup_working">Çalışıyor…</string>
+    <string name="backup_now">Şimdi yedekle</string>
+    <string name="backup_saved">Kaydedildi: %1$s</string>
+    <string name="backup_keep_last">Saklanacak yedek sayısı</string>
+    <string name="backup_fewer">Daha az</string>
+    <string name="backup_more">Daha fazla</string>
+    <plurals name="backup_keep_files">
+        <item quantity="one">%d dosya</item>
+        <item quantity="other">%d dosya</item>
+    </plurals>
+    <string name="backup_restore_title">Yedeği geri yükle</string>
+    <string name="backup_sum_exported">Dışa aktarıldı</string>
+    <string name="backup_sum_categories">Kategoriler</string>
+    <string name="backup_sum_goals">Hedefler</string>
+    <string name="backup_sum_transactions">İşlemler</string>
+    <string name="backup_sum_debts">Borçlar</string>
+    <string name="backup_sum_recurring">Faturalar</string>
+    <string name="backup_sum_date_range">Tarih aralığı</string>
+    <string name="backup_date_range_value">%1$s – %2$s</string>
+    <plurals name="backup_dangling">
+        <item quantity="one">%d kayıt eksik bir hesaba, kategoriye veya hedefe bağlı. Yine de geri yüklenecek.</item>
+        <item quantity="other">%d kayıt eksik hesaplara, kategorilere veya hedeflere bağlı. Yine de geri yüklenecekler.</item>
+    </plurals>
+    <string name="backup_restore_note">Geri yükleme, şu an bu telefonda olan tüm verilerin yerine geçer.</string>
+    <string name="backup_replace_all">Tüm verileri değiştir</string>
+    <string name="settings_more">Diğer seçenekler</string>
+    <string name="settings_more_sub">Görünüm, Ana sayfa, hızlı ekle, grafikler</string>
+    <string name="manage_add_category">Kategori ekle</string>
+
+    <string name="backup_password">Şifre koruması</string>
+    <string name="backup_password_on">Yeni yedekler şifrenle şifrelenir</string>
+    <string name="backup_password_off">Dosyaya sahip olan herkes okuyabilir</string>
+    <string name="backup_password_set_title">Yedekleri şifreyle koru</string>
+    <string name="backup_password_warning">Bu şifreyi unutursan korumalı yedekler açılamaz. Penny onu kurtaramaz. Eski yedekler olduğu gibi kalır.</string>
+    <string name="backup_password_new">Şifre</string>
+    <string name="backup_password_repeat">Şifreyi tekrarla</string>
+    <string name="backup_password_too_short">En az %1$d karakter kullan</string>
+    <string name="backup_password_mismatch">Şifreler eşleşmiyor</string>
+    <string name="backup_password_turn_on">Aç</string>
+    <string name="backup_password_remove_title">Şifre koruması kapatılsın mı?</string>
+    <string name="backup_password_remove_body">Yeni yedekler şifresiz kaydedilecek. Korumalı yedekleri açmak için yine şifreleri gerekir.</string>
+    <string name="backup_password_remove">Kapat</string>
+    <string name="backup_password_enter_title">Şifre gerekli</string>
+    <string name="backup_password_enter_body">Bu yedek korumalı. Kaydedilirken kullanılan şifreyi gir.</string>
+    <string name="backup_password_open">Aç</string>
+    <string name="backup_err_wrong_password">Yanlış şifre</string>
+    <string name="backup_err_password_lost">Yedek şifresi bu telefonda artık okunamıyor. Şifre korumasını kapatıp yeniden aç.</string>
+
+    <string name="support_title">Penny\'yi destekle</string>
+    <string name="support_sub">İstersen bahşiş bırak</string>
+    <string name="support_body">Penny Wallet ücretsizdir, reklam içermez ve verilerini asla toplamaz. İşine yarıyorsa küçük bir bahşiş bırakabilirsin. Hiçbir şeyin kilidini açmaz; her şey ücretsiz kalır.</string>
+    <string name="support_tip_tea">Bana bir çay ısmarla</string>
+    <string name="support_tip_cappuccino">Kapuçino</string>
+    <string name="support_thanks">Teşekkürler! Bu gerçekten çok anlamlı.</string>
+    <string name="support_unavailable">Bahşiş için Penny Wallet\'ın Google Play sürümü gerekir. Diğer her şey aynı şekilde çalışır.</string>
+    <string name="support_pending">Teşekkürler! Bahşişin ödeme tamamlanınca gerçekleşir.</string>
+    <string name="support_failed">Bahşiş gerçekleşmedi. Lütfen daha sonra tekrar dene.</string>
+    <string name="import_title">CSV\'den içe aktar</string>
+    <string name="import_section">İçe aktar</string>
+    <string name="import_open">CSV\'den içe aktar</string>
+    <string name="import_open_body">Banka dökümleri ve diğer para uygulamaları</string>
+    <string name="import_intro">Bankandan veya başka bir para uygulamasından bir CSV dosyası seç. Bir önizleme görürsün ve herhangi bir şey kaydedilmeden önce her sütunu kontrol edebilirsin.</string>
+    <string name="import_choose">CSV dosyası seç</string>
+    <string name="import_choose_other">Başka dosya seç</string>
+    <string name="import_loading">Dosya okunuyor…</string>
+    <string name="import_error_too_big">Bu dosya 5 MB\'tan büyük. Lütfen daha kısa bir dönemi dışa aktar.</string>
+    <string name="import_error_read">Dosya okunamadı.</string>
+    <string name="import_error_empty">Dosya boş.</string>
+    <string name="import_missing_date">Tarih sütunu bulunamadı. Tarihi içeren sütunu seç.</string>
+    <string name="import_bad_date">Bu sütundaki tarihler tanınmadı. Tarih için başka bir sütun seç.</string>
+    <string name="import_missing_amount">Tutar sütunu bulunamadı. Tutarın olduğu sütunu ya da Giden ve Gelen sütunlarını seç.</string>
+    <string name="import_no_account">Önce bir hesap ekle.</string>
+    <string name="import_no_category">Önce bir kategori ekle.</string>
+    <string name="import_section_columns">Sütunlar</string>
+    <string name="import_column_n">Sütun %1$d</string>
+    <string name="import_role_date">Tarih</string>
+    <string name="import_role_amount">Tutar</string>
+    <string name="import_role_debit">Giden</string>
+    <string name="import_role_credit">Gelen</string>
+    <string name="import_role_type">Tür</string>
+    <string name="import_role_category">Kategori</string>
+    <string name="import_role_note">Not</string>
+    <string name="import_role_ignore">Yok say</string>
+    <string name="import_section_account">Hedef hesap</string>
+    <string name="import_fallback_title">Uyan yoksa kategori</string>
+    <string name="import_fallback_body">Bilinen bir kategorisi olmayan harcamalar için</string>
+    <string name="import_create_missing">Eksik kategorileri oluştur</string>
+    <string name="import_create_missing_body">Dosyadaki, Penny\'de henüz olmayan kategoriler</string>
+    <string name="import_skip_duplicates">Kopyaları atla</string>
+    <string name="import_skip_duplicates_body">Aynı tarih, tutar ve not bu hesapta zaten var</string>
+    <string name="import_section_preview">Önizleme</string>
+    <string name="import_duplicate_caption">Kopya · %1$s</string>
+    <string name="import_error_line">Satır %1$d: %2$s</string>
+    <string name="import_reason_date">tarih tanınmadı</string>
+    <string name="import_reason_amount">tutar tanınmadı</string>
+    <string name="import_reason_zero">tutar sıfır</string>
+    <string name="import_reason_type">ne harcama ne gelir</string>
+    <string name="import_undo_last">Son içe aktarmayı geri al</string>
+    <string name="import_undo_confirm_title">Son içe aktarma geri alınsın mı?</string>
+    <string name="import_undo_confirm">Kaldır</string>
+    <plurals name="import_count_import">
+        <item quantity="one">%d içe aktarılacak</item>
+        <item quantity="other">%d içe aktarılacak</item>
+    </plurals>
+    <plurals name="import_count_duplicates">
+        <item quantity="one">%d kopya atlandı</item>
+        <item quantity="other">%d kopya atlandı</item>
+    </plurals>
+    <plurals name="import_count_errors">
+        <item quantity="one">%d satır okunamıyor</item>
+        <item quantity="other">%d satır okunamıyor</item>
+    </plurals>
+    <plurals name="import_more_errors">
+        <item quantity="one">ve %d tane daha</item>
+        <item quantity="other">ve %d tane daha</item>
+    </plurals>
+    <plurals name="import_button">
+        <item quantity="one">%d kaydı içe aktar</item>
+        <item quantity="other">%d kaydı içe aktar</item>
+    </plurals>
+    <plurals name="import_done">
+        <item quantity="one">%d kayıt içe aktarıldı</item>
+        <item quantity="other">%d kayıt içe aktarıldı</item>
+    </plurals>
+    <plurals name="import_undo_last_body">
+        <item quantity="one">%1$d kayıt · %2$s</item>
+        <item quantity="other">%1$d kayıt · %2$s</item>
+    </plurals>
+    <plurals name="import_undo_confirm_body">
+        <item quantity="one">Bu işlem içe aktarılan %d kaydı kaldırır.</item>
+        <item quantity="other">Bu işlem içe aktarılan %d kaydı kaldırır.</item>
+    </plurals>
+    <plurals name="import_undone">
+        <item quantity="one">%d kayıt kaldırıldı</item>
+        <item quantity="other">%d kayıt kaldırıldı</item>
+    </plurals>
+    <string name="summary_setting">Aylık özet</string>
+    <string name="summary_permission_denied">Penny için bildirimler kapalı, bu yüzden özet gösterilemiyor.</string>
+    <string name="summary_setting_sub">Yeni ay başladığında bir bildirim: ne kadar harcadın ve nereye</string>
+</resources>

@@ -31,6 +31,9 @@ class AppEntryPointsTest {
     }
 
     @Test fun languagesAreNamedInTheirOwnWords() {
-        assertEquals(listOf("English", "Deutsch", "Italiano"), listOf("en", "de", "it").map(AppLanguage::nativeName))
+        assertEquals(
+            listOf("English", "Deutsch", "Italiano", "Français", "Español", "Português", "Polski", "Türkçe"),
+            listOf("en", "de", "it", "fr", "es", "pt", "pl", "tr").map(AppLanguage::nativeName),
+        )
     }
 }

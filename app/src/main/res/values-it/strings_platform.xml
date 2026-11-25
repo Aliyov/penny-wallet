@@ -12,7 +12,7 @@
     <string name="notif_due_today_hint">Tocca \"Segna come pagato\" quando hai fatto</string>
     <string name="notif_action_mark_paid">Segna come pagato</string>
     <string name="notif_auto_paid">Pagato in automatico: %1$s %2$s</string>
-    <string name="notif_recorded_for">Registrato per %1$s</string>
+    <string name="notif_recorded_for">Registrato: %1$s</string>
 
     <string name="backup_err_no_folder">Scegli prima una cartella per i backup</string>
     <string name="backup_err_lost_access">Accesso alla cartella dei backup perso. Sceglila di nuovo.</string>

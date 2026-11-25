@@ -1,0 +1,120 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="pers_title">Więcej opcji</string>
+    <string name="pers_reset_all">Resetuj wszystko</string>
+    <string name="pers_reset_all_title">Zresetować wszystkie opcje?</string>
+    <string name="pers_reset_all_body">Każda opcja wróci do ustawień domyślnych, łącznie z motywem i kolorem. Twoje dane, waluta, kopia zapasowa i blokada aplikacji pozostaną bez zmian.</string>
+    <string name="pers_off">Wył.</string>
+    <string name="pers_manual">Ręcznie</string>
+
+    <string name="pers_section_appearance">Wygląd</string>
+    <string name="pers_preview">Podgląd</string>
+    <string name="pers_preview_available">Do wydania</string>
+    <string name="pers_accent">Kolor akcentu</string>
+    <string name="pers_accent_neon_green">Neonowa zieleń</string>
+    <string name="pers_accent_cyan">Cyjan</string>
+    <string name="pers_accent_violet">Fiolet</string>
+    <string name="pers_accent_magenta">Magenta</string>
+    <string name="pers_accent_orange">Pomarańcz</string>
+    <string name="pers_accent_white">Biel</string>
+    <string name="pers_accent_custom">Własny</string>
+    <string name="pers_custom_accent">Własny akcent</string>
+    <string name="pers_hex_label">#RRGGBB lub rgb(r, g, b)</string>
+    <string name="pers_hex_error">Użyj 6 cyfr szesnastkowych, np. #39FF88</string>
+    <string name="pers_use_colour">Użyj koloru</string>
+    <string name="pers_glow">Poświata</string>
+    <string name="pers_glow_subtle">Subtelna</string>
+    <string name="pers_glow_strong">Mocna</string>
+    <string name="pers_hud_grid">Siatka za dużą liczbą</string>
+    <string name="pers_hud_grid_hint">Delikatne linie na ekranie startowym</string>
+    <string name="pers_corners">Narożniki</string>
+    <string name="pers_corners_round">Okrągłe</string>
+    <string name="pers_corners_softer">Łagodne</string>
+    <string name="pers_corners_sharp">Ostre</string>
+    <string name="pers_text_size">Rozmiar tekstu</string>
+    <string name="pers_density">Odstępy</string>
+    <string name="pers_density_comfortable">Przestronne</string>
+    <string name="pers_density_compact">Kompaktowe</string>
+    <string name="pers_animations">Animacje</string>
+    <string name="pers_anim_full">Pełne</string>
+    <string name="pers_anim_reduced">Ograniczone</string>
+    <string name="pers_haptics">Wibracja przy dotknięciu</string>
+    <string name="pers_show_cents">Pokazuj grosze</string>
+    <string name="pers_number_format">Format liczb</string>
+    <string name="pers_hide_amounts">Ukryj kwoty</string>
+    <string name="pers_hide_amounts_hint">Pokazuje •••• do czasu dotknięcia kwoty</string>
+
+    <string name="pers_section_home">Ekran startowy</string>
+    <string name="pers_reset_layout">Resetuj układ</string>
+    <string name="pers_home_hint">Przeciągnij, aby zmienić kolejność; przełącznikiem pokażesz lub ukryjesz.</string>
+    <string name="pers_drag_section">Przenieś: %1$s</string>
+    <string name="pers_home_hero">Duża liczba</string>
+    <string name="pers_home_month">Miesiąc</string>
+    <string name="pers_home_accounts">Konta</string>
+    <string name="pers_home_upcoming">Nadchodzące</string>
+    <string name="pers_home_recent">Ostatnie</string>
+    <string name="pers_hero_shows">Duża liczba pokazuje</string>
+    <string name="pers_hero_available">Dostępne</string>
+    <string name="pers_hero_total">Łącznie</string>
+    <string name="pers_hero_spent_month">Wydano w tym miesiącu</string>
+    <string name="pers_recent_count">Ostatnie transakcje</string>
+
+    <string name="pers_section_quick_add">Szybkie dodawanie</string>
+    <string name="pers_default_type">Domyślny typ</string>
+    <string name="pers_default_account">Domyślne konto</string>
+    <string name="pers_last_used">Ostatnio używane</string>
+    <string name="pers_chip_order">Kolejność kategorii</string>
+    <string name="pers_chip_most_used">Najczęstsze</string>
+    <string name="pers_chip_az">A–Z</string>
+    <string name="pers_save_on_tap">Zapisz po dotknięciu kategorii</string>
+    <string name="pers_save_on_tap_hint">Bez dodatkowego przycisku Zapisz</string>
+    <string name="pers_show_note">Pokaż pole notatki</string>
+
+    <string name="pers_section_charts">Wydatki i wykresy</string>
+    <string name="pers_default_chart">Domyślny wykres</string>
+    <string name="pers_chart_donut">Pierścień</string>
+    <string name="pers_chart_bars">Słupki</string>
+    <string name="pers_history_months">Miesiące w historii</string>
+    <string name="pers_first_day_week">Pierwszy dzień tygodnia</string>
+    <string name="pers_month_start">Miesiąc zaczyna się dnia</string>
+    <string name="pers_month_start_hint">Na przykład wybierz 27, jeśli dostajesz wypłatę 27. dnia miesiąca</string>
+    <string name="pers_month_runs">Miesiąc trwa od %1$d. do %2$d. dnia</string>
+
+    <string name="pers_section_savings">Oszczędności</string>
+    <string name="pers_goal_layout">Układ celów</string>
+    <string name="pers_layout_grid">Siatka</string>
+    <string name="pers_layout_list">Lista</string>
+    <string name="pers_goal_sort">Sortuj cele według</string>
+    <string name="pers_sort_progress">Postęp</string>
+    <string name="pers_sort_deadline">Termin</string>
+
+    <string name="pers_section_reminders">Przypomnienia</string>
+    <string name="pers_reminder_time">Godzina przypomnień</string>
+    <string name="pers_set">Ustaw</string>
+    <string name="pers_days_before">Przypominaj przed rachunkiem</string>
+    <string name="pers_days_before_hint">Dotyczy nowych rachunków</string>
+    <string name="pers_same_day">Tego samego dnia</string>
+    <plurals name="pers_days_count">
+        <item quantity="one">%d dzień</item>
+        <item quantity="few">%d dni</item>
+        <item quantity="many">%d dni</item>
+        <item quantity="other">%d dnia</item>
+    </plurals>
+    <string name="pers_overdue_badge">Pokazuj zaległe rachunki na ekranie startowym</string>
+    <string name="pers_quiet_mode">Tryb cichy</string>
+    <string name="pers_quiet_mode_hint">Żadnych powiadomień</string>
+
+
+    <string name="pers_biometric">Blokada aplikacji</string>
+    <string name="pers_biometric_hint">Odcisk palca, twarz lub PIN urządzenia</string>
+    <string name="pers_lock_after">Zablokuj po</string>
+    <string name="pers_lock_immediately">Natychmiast</string>
+    <plurals name="pers_minutes">
+        <item quantity="one">%d min</item>
+        <item quantity="few">%d min</item>
+        <item quantity="many">%d min</item>
+        <item quantity="other">%d min</item>
+    </plurals>
+    <string name="pers_reminder_time_hint">Kiedy przychodzą przypomnienia o rachunkach</string>
+    <string name="pers_biometric_unavailable">Najpierw ustaw blokadę ekranu w telefonie</string>
+</resources>

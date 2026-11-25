@@ -1,0 +1,115 @@
+<resources>
+    <string name="pers_title">Diğer seçenekler</string>
+    <string name="pers_reset_all">Tümünü sıfırla</string>
+    <string name="pers_reset_all_title">Tüm seçenekler sıfırlansın mı?</string>
+    <string name="pers_reset_all_body">Tema ve renk dahil her seçenek varsayılana döner. Verilerin, para birimin, yedeğin ve uygulama kilidin olduğu gibi kalır.</string>
+    <string name="pers_off">Kapalı</string>
+    <string name="pers_manual">Elle</string>
+
+    <string name="pers_section_appearance">Görünüm</string>
+    <string name="pers_preview">Önizleme</string>
+    <string name="pers_preview_available">Harcanabilir</string>
+    <string name="pers_accent">Vurgu rengi</string>
+    <string name="pers_accent_neon_green">Neon yeşil</string>
+    <string name="pers_accent_cyan">Camgöbeği</string>
+    <string name="pers_accent_violet">Mor</string>
+    <string name="pers_accent_magenta">Eflatun</string>
+    <string name="pers_accent_orange">Turuncu</string>
+    <string name="pers_accent_white">Beyaz</string>
+    <string name="pers_accent_custom">Özel</string>
+    <string name="pers_custom_accent">Özel vurgu</string>
+    <string name="pers_hex_label">#RRGGBB veya rgb(r, g, b)</string>
+    <string name="pers_hex_error">6 onaltılık basamak kullan, ör. #39FF88</string>
+    <string name="pers_use_colour">Rengi kullan</string>
+    <string name="pers_glow">Parlama</string>
+    <string name="pers_glow_subtle">Hafif</string>
+    <string name="pers_glow_strong">Güçlü</string>
+    <string name="pers_hud_grid">Büyük sayının arkasında ızgara</string>
+    <string name="pers_hud_grid_hint">Ana sayfada soluk çizgiler</string>
+    <string name="pers_corners">Köşeler</string>
+    <string name="pers_corners_round">Yuvarlak</string>
+    <string name="pers_corners_softer">Yumuşak</string>
+    <string name="pers_corners_sharp">Keskin</string>
+    <string name="pers_text_size">Yazı boyutu</string>
+    <string name="pers_density">Boşluk</string>
+    <string name="pers_density_comfortable">Geniş</string>
+    <string name="pers_density_compact">Sıkı</string>
+    <string name="pers_animations">Animasyonlar</string>
+    <string name="pers_anim_full">Tam</string>
+    <string name="pers_anim_reduced">Azaltılmış</string>
+    <string name="pers_haptics">Dokununca titret</string>
+    <string name="pers_show_cents">Kuruşları göster</string>
+    <string name="pers_number_format">Sayı biçimi</string>
+    <string name="pers_hide_amounts">Tutarları gizle</string>
+    <string name="pers_hide_amounts_hint">Bir tutara dokunana kadar •••• gösterir</string>
+
+    <string name="pers_section_home">Ana sayfa</string>
+    <string name="pers_reset_layout">Düzeni sıfırla</string>
+    <string name="pers_home_hint">Sıralamak için sürükle, göstermek veya gizlemek için anahtarı kullan.</string>
+    <string name="pers_drag_section">Taşı: %1$s</string>
+    <string name="pers_home_hero">Büyük sayı</string>
+    <string name="pers_home_month">Ay</string>
+    <string name="pers_home_accounts">Hesaplar</string>
+    <string name="pers_home_upcoming">Yaklaşanlar</string>
+    <string name="pers_home_recent">Son işlemler</string>
+    <string name="pers_hero_shows">Büyük sayıda gösterilen</string>
+    <string name="pers_hero_available">Kullanılabilir</string>
+    <string name="pers_hero_total">Toplam</string>
+    <string name="pers_hero_spent_month">Bu ay harcanan</string>
+    <string name="pers_recent_count">Son işlemler</string>
+
+    <string name="pers_section_quick_add">Hızlı ekle</string>
+    <string name="pers_default_type">Varsayılan tür</string>
+    <string name="pers_default_account">Varsayılan hesap</string>
+    <string name="pers_last_used">Son kullanılan</string>
+    <string name="pers_chip_order">Kategori sırası</string>
+    <string name="pers_chip_most_used">En çok kullanılan</string>
+    <string name="pers_chip_az">A–Z</string>
+    <string name="pers_save_on_tap">Kategoriye dokununca kaydet</string>
+    <string name="pers_save_on_tap_hint">Ayrıca Kaydet düğmesine gerek yok</string>
+    <string name="pers_show_note">Not alanını göster</string>
+
+    <string name="pers_section_charts">Harcamalar ve grafikler</string>
+    <string name="pers_default_chart">Varsayılan grafik</string>
+    <string name="pers_chart_donut">Halka</string>
+    <string name="pers_chart_bars">Çubuk</string>
+    <string name="pers_history_months">Geçmişteki ay sayısı</string>
+    <string name="pers_first_day_week">Haftanın ilk günü</string>
+    <string name="pers_month_start">Ayın başladığı gün</string>
+    <string name="pers_month_start_hint">Örneğin maaşını ayın 27\'sinde alıyorsan 27\'yi seç</string>
+    <string name="pers_month_runs">Ay, %1$d. günden %2$d. güne kadar sürer</string>
+
+    <string name="pers_section_savings">Birikim</string>
+    <string name="pers_goal_layout">Hedef düzeni</string>
+    <string name="pers_layout_grid">Izgara</string>
+    <string name="pers_layout_list">Liste</string>
+    <string name="pers_goal_sort">Hedefleri sırala</string>
+    <string name="pers_sort_progress">İlerleme</string>
+    <string name="pers_sort_deadline">Son tarih</string>
+
+    <string name="pers_section_reminders">Hatırlatmalar</string>
+    <string name="pers_reminder_time">Hatırlatma saati</string>
+    <string name="pers_set">Ayarla</string>
+    <string name="pers_days_before">Faturadan önce hatırlat</string>
+    <string name="pers_days_before_hint">Yeni faturalar için kullanılır</string>
+    <string name="pers_same_day">Aynı gün</string>
+    <plurals name="pers_days_count">
+        <item quantity="one">%d gün</item>
+        <item quantity="other">%d gün</item>
+    </plurals>
+    <string name="pers_overdue_badge">Geciken faturaları ana sayfada göster</string>
+    <string name="pers_quiet_mode">Sessiz mod</string>
+    <string name="pers_quiet_mode_hint">Hiç bildirim yok</string>
+
+
+    <string name="pers_biometric">Uygulama kilidi</string>
+    <string name="pers_biometric_hint">Parmak izi, yüz veya cihaz PIN\'i</string>
+    <string name="pers_lock_after">Kilitleme süresi</string>
+    <string name="pers_lock_immediately">Hemen</string>
+    <plurals name="pers_minutes">
+        <item quantity="one">%d dk</item>
+        <item quantity="other">%d dk</item>
+    </plurals>
+    <string name="pers_reminder_time_hint">Fatura hatırlatmalarının geleceği saat</string>
+    <string name="pers_biometric_unavailable">Önce telefonunda bir ekran kilidi ayarla</string>
+</resources>

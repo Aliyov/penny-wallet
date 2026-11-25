@@ -26,5 +26,5 @@ fun AnimatedAmount(cents: Long, style: TextStyle, color: Color, modifier: Modifi
     }
     // Float precision is fine for display of the in-between frames; the final frame shows the exact Long.
     val shown = if (anim.isRunning) anim.value.roundToLong() else cents
-    MoneyText(shown, style, color, modifier)
+    MoneyText(shown, style, color, modifier, fitCents = cents)
 }

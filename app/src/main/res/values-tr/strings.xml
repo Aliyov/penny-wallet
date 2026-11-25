@@ -1,0 +1,106 @@
+<resources>
+    <string name="widget_balance_desc">Harcanabilir tutar ve bu ayki harcamalar</string>
+    <string name="widget_quick_desc">Tek dokunuşla harcama ekle</string>
+    <string name="widget_balance_label">Penny bakiye</string>
+    <string name="widget_quick_label">Penny hızlı ekle</string>
+    <string name="widget_available">Kullanılabilir</string>
+    <string name="widget_spent_month">Bu ay harcanan: %1$s</string>
+    <string name="widget_next">Sıradaki: %1$s · %2$s</string>
+    <string name="widget_budget_label">Penny bütçe</string>
+    <string name="widget_budget_desc">Aylık bütçenden kalan</string>
+    <string name="widget_budget_title">Aylık bütçe</string>
+    <string name="widget_budget_left">Bu ay kalan bütçe</string>
+    <string name="widget_budget_over">Bütçe aşımı</string>
+    <string name="widget_budget_per_day">Günde %1$s</string>
+    <string name="widget_budget_of">%1$s / %2$s harcandı</string>
+    <string name="widget_budget_none">Aylık bütçe yok</string>
+    <string name="widget_budget_set">Ayarlar\'dan belirle</string>
+    <string name="widget_add_expense">Harcama ekle</string>
+
+    <string name="date_today">Bugün</string>
+    <string name="date_yesterday">Dün</string>
+    <string name="date_tomorrow">Yarın</string>
+    <string name="date_today_lower">bugün</string>
+    <string name="date_yesterday_lower">dün</string>
+    <plurals name="date_days_ago">
+        <item quantity="one">%d gün önce</item>
+        <item quantity="other">%d gün önce</item>
+    </plurals>
+
+    <string name="category_groceries">Market</string>
+    <string name="category_rent">Kira</string>
+    <string name="category_eating_out">Dışarıda yemek</string>
+    <string name="category_transport">Ulaşım</string>
+    <string name="category_subscriptions">Abonelikler</string>
+    <string name="category_shopping">Alışveriş</string>
+    <string name="category_health">Sağlık</string>
+    <string name="category_fun">Eğlence</string>
+
+    <string name="sample_bank">Banka</string>
+    <string name="sample_cash">Nakit</string>
+    <string name="sample_goal_phone">Yeni telefon</string>
+    <string name="sample_goal_vacation">Tatil</string>
+    <string name="sample_phone_credit">Telefon tarifesi</string>
+    <string name="sample_streaming">Dizi/film platformu</string>
+    <string name="sample_note_supermarket">Süpermarket</string>
+    <string name="sample_note_weekly_shop">Haftalık alışveriş</string>
+    <string name="sample_note_bakery">Fırın</string>
+    <string name="sample_note_market">Pazar</string>
+    <string name="sample_note_lunch">Öğle yemeği</string>
+    <string name="sample_note_coffee">Kahve ve pasta</string>
+    <string name="sample_note_dinner">Akşam yemeği</string>
+    <string name="sample_note_fuel">Yakıt</string>
+    <string name="sample_note_train">Tren bileti</string>
+    <string name="sample_note_cinema">Sinema</string>
+    <string name="sample_note_concert">Konser</string>
+    <string name="sample_note_starting_cash">Başlangıç nakdi</string>
+    <string name="sample_note_salary">Maaş</string>
+    <string name="sample_note_atm">ATM</string>
+
+    <string name="currency_title">Para birimi</string>
+    <string name="currency_search">Para birimi ara</string>
+    <string name="currency_change_note">Para birimini değiştirmek yalnızca tutarların gösterimini değiştirir. Girdiğin tutarlar dönüştürülmez.</string>
+    <string name="a11y_selected">Seçili</string>
+
+    <string name="welcome_title">İlk hesabını ekle</string>
+    <string name="welcome_body">Paranın nerede olduğuyla başla, örneğin banka hesabın ya da nakit, ve şu an içinde ne kadar olduğuyla.</string>
+    <string name="welcome_add_account">Hesap ekle</string>
+    <string name="welcome_try_sample">Örnek verilerle dene</string>
+    <string name="sample_banner">Şu an örnek verilere bakıyorsun</string>
+    <string name="sample_remove">Kaldır</string>
+    <string name="sample_remove_title">Örnek veriler kaldırılsın mı?</string>
+    <string name="sample_remove_body">Örnek hesaplar, hedefler ve kayıtlar kaldırılır. Örnek bir hesaba ya da hedefe eklediğin her şey de onlarla birlikte gider.</string>
+
+    <string name="theme_title">Tema</string>
+    <string name="theme_system">Sistem</string>
+    <string name="theme_light">Açık</string>
+    <string name="theme_dark">Koyu</string>
+    <string name="theme_pure_black">Tam siyah</string>
+    <string name="theme_pure_black_hint">Siyah arka planlı koyu tema, OLED ekranlarda pil tasarrufu sağlar</string>
+    <string name="format_auto">Otomatik</string>
+    <string name="symbol_position">Para birimi simgesi</string>
+    <string name="symbol_before">Önce</string>
+    <string name="symbol_after">Sonra</string>
+    <string name="language_title">Dil</string>
+    <string name="language_system">Telefon</string>
+    <string name="privacy_title">Verilerin burada kalır</string>
+    <string name="privacy_sub">İnternet yok, hesap yok, takip yok</string>
+    <string name="privacy_intro">Penny Wallet, paran gizli kalsın diye tasarlandı. İşte ne yapıyor ve ne yapmıyor.</string>
+    <string name="privacy_offline_title">İnternet erişimi yok</string>
+    <string name="privacy_offline_body">Uygulamanın internet izni yok, bu yüzden verilerini hiçbir yere gönderemez. Reklam, analiz ya da kayıt yok.</string>
+    <string name="privacy_local_title">Yalnızca bu telefonda saklanır</string>
+    <string name="privacy_local_body">Hesaplar, harcamalar ve ayarlar uygulamanın özel depolama alanında tutulur. Android bulut yedeklemesi bu uygulama için kapalıdır.</string>
+    <string name="privacy_backup_title">Yedekler seçtiğin yere gider</string>
+    <string name="privacy_backup_body">Yedekler yalnızca seçtiğin klasöre yazılır ve onları bir şifreyle koruyabilirsin.</string>
+    <string name="privacy_receipts_title">Fişler telefonda okunur</string>
+    <string name="privacy_receipts_body">Metin tanıma bu telefonda çalışır. Tarama için çekilen fotoğraf okunduktan sonra silinir; galerinden seçilen fotoğraflar yalnızca okunur, asla kopyalanmaz.</string>
+    <string name="privacy_crash_title">Çökme raporları yalnızca sen gönderirsen</string>
+    <string name="privacy_crash_body">Bir çökmeden sonra Penny raporu gösterir ve onu e-postayla kendin göndermeni sağlar. Kendiliğinden hiçbir şey gönderilmez.</string>
+    <string name="privacy_tips_title">Bahşişler Google Play üzerinden</string>
+    <string name="privacy_tips_body">Bahşişler Google Play üzerinden ödenir. Penny yalnızca bahşişin gerçekleştiğini öğrenir.</string>
+    <string name="shortcut_add_short">Harcama ekle</string>
+    <string name="shortcut_add_long">Harcama ekle</string>
+    <string name="shortcut_scan_short">Fiş tara</string>
+    <string name="shortcut_scan_long">Bir fiş tara</string>
+    <string name="tile_add_expense">Harcama ekle</string>
+</resources>

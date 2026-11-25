@@ -138,8 +138,8 @@
     <string name="debts_add">Schuld hinzufügen</string>
     <string name="debts_empty">Behalte im Blick, was du dir bei Freunden und Familie geliehen oder ihnen geliehen hast. Schulden bleiben getrennt von deinen Konten, außer du erfasst eine Zahlung dort.</string>
     <string name="debts_left_of">Noch %1$s von %2$s offen</string>
-    <string name="debts_overdue_since">Überfällig seit %1$s</string>
-    <string name="debts_due">Fällig %1$s</string>
+    <string name="debts_overdue_since">Überfällig seit: %1$s</string>
+    <string name="debts_due">Fällig: %1$s</string>
     <string name="debts_settled">Beglichen</string>
     <string name="debts_new">Neue Schuld</string>
     <string name="debts_edit">Schuld bearbeiten</string>

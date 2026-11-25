@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="notif_channel_name">Recordatorios</string>
+    <string name="notif_channel_desc">Facturas próximas y vencidas</string>
+    <plurals name="notif_due_in_days">
+        <item quantity="one">Mañana: %2$s %3$s</item>
+        <item quantity="other">En %1$d días: %2$s %3$s</item>
+        <item quantity="many">En %1$d días: %2$s %3$s</item>
+    </plurals>
+    <string name="notif_due_on">Vence: %1$s</string>
+    <string name="notif_due_today">Vence hoy: %1$s %2$s</string>
+    <string name="notif_due_today_hint">Toca Marcar como pagada cuando esté hecho</string>
+    <string name="notif_action_mark_paid">Marcar como pagada</string>
+    <string name="notif_auto_paid">Pagada automáticamente: %1$s %2$s</string>
+    <string name="notif_recorded_for">Registrado: %1$s</string>
+
+    <string name="backup_err_no_folder">Elige primero una carpeta para las copias</string>
+    <string name="backup_err_lost_access">Se perdió el acceso a la carpeta de copias. Vuelve a elegirla.</string>
+    <string name="backup_err_folder_not_found">Carpeta no encontrada</string>
+    <string name="backup_err_create_file">No se pudo crear el archivo</string>
+    <string name="backup_err_write_file">No se pudo escribir el archivo</string>
+    <string name="backup_err_open_file">No se pudo abrir el archivo</string>
+    <string name="backup_err_failed">Error en la copia de seguridad</string>
+    <string name="backup_err_not_backup">No es una copia de seguridad de Penny Wallet</string>
+    <string name="backup_err_too_new">La versión %1$d de la copia es más reciente de lo que entiende esta app (%2$d)</string>
+
+    <string name="data_csv_outside">Externo</string>
+    <string name="notif_summary_top">Más gasto en %1$s (%2$s)</string>
+    <string name="notif_summary_income">Ingresos %1$s</string>
+    <string name="notif_summary_saved">Ahorrado %1$s</string>
+    <string name="notif_summary_title">%1$s: gastaste %2$s</string>
+    <string name="notif_summary_more">%1$d%% más que el mes anterior</string>
+    <string name="notif_summary_less">%1$d%% menos que el mes anterior</string>
+    <string name="notif_summary_public">Resumen mensual listo</string>
+</resources>

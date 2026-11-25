@@ -11,7 +11,7 @@
     <string name="notif_due_today_hint">Tippe auf „Als bezahlt markieren“, sobald es erledigt ist</string>
     <string name="notif_action_mark_paid">Als bezahlt markieren</string>
     <string name="notif_auto_paid">Automatisch bezahlt: %1$s %2$s</string>
-    <string name="notif_recorded_for">Eingetragen für %1$s</string>
+    <string name="notif_recorded_for">Eingetragen: %1$s</string>
 
     <string name="backup_err_no_folder">Wähle zuerst einen Backup-Ordner</string>
     <string name="backup_err_lost_access">Kein Zugriff mehr auf den Backup-Ordner. Wähle ihn erneut.</string>

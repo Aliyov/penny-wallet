@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="notif_channel_name">Lembretes</string>
+    <string name="notif_channel_desc">Contas fixas próximas e vencidas</string>
+    <plurals name="notif_due_in_days">
+        <item quantity="one">Amanhã: %2$s %3$s</item>
+        <item quantity="many">Em %1$d dias: %2$s %3$s</item>
+        <item quantity="other">Em %1$d dias: %2$s %3$s</item>
+    </plurals>
+    <string name="notif_due_on">Vence: %1$s</string>
+    <string name="notif_due_today">Vence hoje: %1$s %2$s</string>
+    <string name="notif_due_today_hint">Toque em Marcar como paga quando pagar</string>
+    <string name="notif_action_mark_paid">Marcar como paga</string>
+    <string name="notif_auto_paid">Paga automaticamente: %1$s %2$s</string>
+    <string name="notif_recorded_for">Registrada: %1$s</string>
+
+    <string name="backup_err_no_folder">Escolha uma pasta de backup primeiro</string>
+    <string name="backup_err_lost_access">O acesso à pasta de backup foi perdido. Escolha-a de novo.</string>
+    <string name="backup_err_folder_not_found">Pasta não encontrada</string>
+    <string name="backup_err_create_file">Não foi possível criar o arquivo</string>
+    <string name="backup_err_write_file">Não foi possível gravar o arquivo</string>
+    <string name="backup_err_open_file">Não foi possível abrir o arquivo</string>
+    <string name="backup_err_failed">Falha no backup</string>
+    <string name="backup_err_not_backup">Isto não é um backup do Penny Wallet</string>
+    <string name="backup_err_too_new">A versão %1$d do backup é mais nova do que este app entende (%2$d)</string>
+
+    <string name="data_csv_outside">Fora</string>
+    <string name="notif_summary_top">Mais em %1$s (%2$s)</string>
+    <string name="notif_summary_income">Receitas %1$s</string>
+    <string name="notif_summary_saved">Guardado %1$s</string>
+    <string name="notif_summary_title">%1$s: você gastou %2$s</string>
+    <string name="notif_summary_more">%1$d%% a mais que no mês anterior</string>
+    <string name="notif_summary_less">%1$d%% a menos que no mês anterior</string>
+    <string name="notif_summary_public">Resumo mensal pronto</string>
+</resources>

@@ -14,7 +14,7 @@ object AppLanguage {
     val supported: Boolean get() = Build.VERSION.SDK_INT >= 33
 
     /** "" = follow the phone. Must match `localeFilters` in app/build.gradle.kts (checked by a test). */
-    val tags = listOf("", "en", "de", "it")
+    val tags = listOf("", "en", "de", "it", "fr", "es", "pt", "pl", "tr")
 
     fun current(): String {
         val tag = AppCompatDelegate.getApplicationLocales()[0]?.language.orEmpty()

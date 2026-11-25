@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="notif_channel_name">Rappels</string>
+    <string name="notif_channel_desc">Factures à venir et à payer</string>
+    <plurals name="notif_due_in_days">
+        <item quantity="one">Dans %1$d jour : %2$s %3$s</item>
+        <item quantity="many">Dans %1$d jours : %2$s %3$s</item>
+        <item quantity="other">Dans %1$d jours : %2$s %3$s</item>
+    </plurals>
+    <string name="notif_due_on">À payer : %1$s</string>
+    <string name="notif_due_today">À payer aujourd\'hui : %1$s %2$s</string>
+    <string name="notif_due_today_hint">Appuie sur Marquer payé une fois réglé</string>
+    <string name="notif_action_mark_paid">Marquer payé</string>
+    <string name="notif_auto_paid">Payé automatiquement : %1$s %2$s</string>
+    <string name="notif_recorded_for">Enregistré : %1$s</string>
+
+    <string name="backup_err_no_folder">Choisis d\'abord un dossier de sauvegarde</string>
+    <string name="backup_err_lost_access">Accès au dossier de sauvegarde perdu. Choisis-le à nouveau.</string>
+    <string name="backup_err_folder_not_found">Dossier introuvable</string>
+    <string name="backup_err_create_file">Impossible de créer le fichier</string>
+    <string name="backup_err_write_file">Impossible d\'écrire le fichier</string>
+    <string name="backup_err_open_file">Impossible d\'ouvrir le fichier</string>
+    <string name="backup_err_failed">Échec de la sauvegarde</string>
+    <string name="backup_err_not_backup">Ce n\'est pas une sauvegarde Penny Wallet</string>
+    <string name="backup_err_too_new">La version de sauvegarde %1$d est plus récente que ce que cette app comprend (%2$d)</string>
+
+    <string name="data_csv_outside">Extérieur</string>
+    <string name="notif_summary_top">Le plus pour %1$s (%2$s)</string>
+    <string name="notif_summary_income">Revenus %1$s</string>
+    <string name="notif_summary_saved">Épargné %1$s</string>
+    <string name="notif_summary_title">%1$s : tu as dépensé %2$s</string>
+    <string name="notif_summary_more">%1$d %% de plus que le mois précédent</string>
+    <string name="notif_summary_less">%1$d %% de moins que le mois précédent</string>
+    <string name="notif_summary_public">Résumé mensuel prêt</string>
+</resources>

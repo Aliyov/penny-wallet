@@ -1,5 +1,9 @@
 package com.penny.wallet.core.ui.components
 
+import androidx.compose.ui.unit.sp
+import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.foundation.text.TextAutoSize
+import androidx.compose.foundation.text.BasicText
 import android.os.Build
 import androidx.compose.animation.animateColorAsState
 import androidx.compose.animation.core.animateFloatAsState
@@ -46,19 +50,24 @@ fun PennyBottomBar(items: List<NavItem>, current: String?, onSelect: (String) ->
     Row(
         modifier.navigationBarsPadding().padding(horizontal = 20.dp, vertical = 10.dp).fillMaxWidth()
             .clip(shape).background(bg).border(0.75.dp, c.hairline, shape).height(64.dp),
-        horizontalArrangement = Arrangement.SpaceEvenly, verticalAlignment = Alignment.CenterVertically,
+        verticalAlignment = Alignment.CenterVertically,
     ) {
         items.forEachIndexed { i, item ->
             if (i == items.size / 2) Spacer(Modifier.width(64.dp))
             val selected = current == item.route
             val tint by animateColorAsState(if (selected) c.textPrimary else c.textSecondary, label = "tint")
             val dot by animateFloatAsState(if (selected) 1f else 0f, Penny.motion.spec(), label = "dot")
+            // Equal slots and one-line labels: long words ("Einstellungen", "Impostazioni") must not push the icons out of line.
             Column(
-                Modifier.padding(horizontal = 6.dp).clickableNoRipple { haptic(HapticFeedbackType.TextHandleMove); onSelect(item.route) },
+                Modifier.weight(1f).clickableNoRipple { haptic(HapticFeedbackType.TextHandleMove); onSelect(item.route) },
                 horizontalAlignment = Alignment.CenterHorizontally,
             ) {
                 Icon(item.icon, item.label, tint = tint, modifier = Modifier.size(24.dp))
-                Text(item.label, style = Penny.type.caption, color = tint)
+                BasicText(
+                    item.label, style = Penny.type.caption.copy(color = tint, textAlign = TextAlign.Center), maxLines = 1, softWrap = false,
+                    autoSize = TextAutoSize.StepBased(minFontSize = Penny.type.caption.fontSize * 0.75f, maxFontSize = Penny.type.caption.fontSize, stepSize = 0.5.sp),
+                    modifier = Modifier.fillMaxWidth().padding(horizontal = 2.dp),
+                )
                 Box(Modifier.padding(top = 3.dp).size(4.dp).alpha(dot).clip(CircleShape).background(c.accent))
             }
         }

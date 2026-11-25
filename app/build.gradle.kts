@@ -83,7 +83,7 @@ android {
     }
     androidResources {
         generateLocaleConfig = true
-        localeFilters += listOf("en", "de", "it")
+        localeFilters += listOf("en", "de", "it", "fr", "es", "pt", "pl", "tr")
     }
 }
 

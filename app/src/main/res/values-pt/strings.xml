@@ -1,0 +1,107 @@
+<resources>
+    <string name="widget_balance_desc">Disponível para gastar e gastos deste mês</string>
+    <string name="widget_quick_desc">Adicione uma despesa com um toque</string>
+    <string name="widget_balance_label">Saldo Penny</string>
+    <string name="widget_quick_label">Penny lançamento rápido</string>
+    <string name="widget_available">Disponível</string>
+    <string name="widget_spent_month">Gasto este mês %1$s</string>
+    <string name="widget_next">Próxima: %1$s · %2$s</string>
+    <string name="widget_budget_label">Orçamento Penny</string>
+    <string name="widget_budget_desc">O que sobra do seu orçamento mensal</string>
+    <string name="widget_budget_title">Orçamento mensal</string>
+    <string name="widget_budget_left">Restante do orçamento este mês</string>
+    <string name="widget_budget_over">Acima do orçamento em</string>
+    <string name="widget_budget_per_day">%1$s por dia</string>
+    <string name="widget_budget_of">%1$s de %2$s gastos</string>
+    <string name="widget_budget_none">Sem orçamento mensal</string>
+    <string name="widget_budget_set">Defina um em Ajustes</string>
+    <string name="widget_add_expense">Adicionar despesa</string>
+
+    <string name="date_today">Hoje</string>
+    <string name="date_yesterday">Ontem</string>
+    <string name="date_tomorrow">Amanhã</string>
+    <string name="date_today_lower">hoje</string>
+    <string name="date_yesterday_lower">ontem</string>
+    <plurals name="date_days_ago">
+        <item quantity="one">há %d dia</item>
+        <item quantity="many">há %d dias</item>
+        <item quantity="other">há %d dias</item>
+    </plurals>
+
+    <string name="category_groceries">Mercado</string>
+    <string name="category_rent">Aluguel</string>
+    <string name="category_eating_out">Comer fora</string>
+    <string name="category_transport">Transporte</string>
+    <string name="category_subscriptions">Assinaturas</string>
+    <string name="category_shopping">Compras</string>
+    <string name="category_health">Saúde</string>
+    <string name="category_fun">Lazer</string>
+
+    <string name="sample_bank">Banco</string>
+    <string name="sample_cash">Dinheiro</string>
+    <string name="sample_goal_phone">Celular novo</string>
+    <string name="sample_goal_vacation">Férias</string>
+    <string name="sample_phone_credit">Plano de celular</string>
+    <string name="sample_streaming">Streaming</string>
+    <string name="sample_note_supermarket">Supermercado</string>
+    <string name="sample_note_weekly_shop">Compras da semana</string>
+    <string name="sample_note_bakery">Padaria</string>
+    <string name="sample_note_market">Feira</string>
+    <string name="sample_note_lunch">Almoço</string>
+    <string name="sample_note_coffee">Café e bolo</string>
+    <string name="sample_note_dinner">Jantar fora</string>
+    <string name="sample_note_fuel">Combustível</string>
+    <string name="sample_note_train">Passagem de trem</string>
+    <string name="sample_note_cinema">Cinema</string>
+    <string name="sample_note_concert">Show</string>
+    <string name="sample_note_starting_cash">Dinheiro inicial</string>
+    <string name="sample_note_salary">Salário</string>
+    <string name="sample_note_atm">Caixa eletrônico</string>
+
+    <string name="currency_title">Moeda</string>
+    <string name="currency_search">Buscar moeda</string>
+    <string name="currency_change_note">Mudar a moeda só muda como os valores são exibidos. Os valores que você já inseriu não são convertidos.</string>
+    <string name="a11y_selected">Selecionado</string>
+
+    <string name="welcome_title">Adicione sua primeira conta</string>
+    <string name="welcome_body">Comece por onde está o seu dinheiro, por exemplo sua conta bancária ou dinheiro em espécie, e quanto há nela agora.</string>
+    <string name="welcome_add_account">Adicionar conta</string>
+    <string name="welcome_try_sample">Testar com dados de exemplo</string>
+    <string name="sample_banner">Você está vendo dados de exemplo</string>
+    <string name="sample_remove">Remover</string>
+    <string name="sample_remove_title">Remover dados de exemplo?</string>
+    <string name="sample_remove_body">Contas, metas e lançamentos de exemplo são removidos. Tudo o que você adicionou a uma conta ou meta de exemplo vai junto.</string>
+
+    <string name="theme_title">Tema</string>
+    <string name="theme_system">Sistema</string>
+    <string name="theme_light">Claro</string>
+    <string name="theme_dark">Escuro</string>
+    <string name="theme_pure_black">Preto puro</string>
+    <string name="theme_pure_black_hint">Tema escuro com fundo preto, economiza bateria em telas OLED</string>
+    <string name="format_auto">Automático</string>
+    <string name="symbol_position">Símbolo da moeda</string>
+    <string name="symbol_before">Antes</string>
+    <string name="symbol_after">Depois</string>
+    <string name="language_title">Idioma</string>
+    <string name="language_system">Celular</string>
+    <string name="privacy_title">Seus dados ficam aqui</string>
+    <string name="privacy_sub">Sem internet, sem contas, sem rastreamento</string>
+    <string name="privacy_intro">O Penny Wallet foi feito para manter seu dinheiro privado. Veja o que ele faz e o que não faz.</string>
+    <string name="privacy_offline_title">Sem acesso à internet</string>
+    <string name="privacy_offline_body">O app não tem permissão de internet, então não pode enviar seus dados para lugar nenhum. Não há anúncios, nem análises, nem cadastro.</string>
+    <string name="privacy_local_title">Salvo só neste celular</string>
+    <string name="privacy_local_body">Contas, despesas e configurações ficam no armazenamento privado do app. O backup na nuvem do Android fica desativado para ele.</string>
+    <string name="privacy_backup_title">Backups vão para onde você escolher</string>
+    <string name="privacy_backup_body">Os backups são gravados só na pasta que você escolher, e você pode protegê-los com uma senha.</string>
+    <string name="privacy_receipts_title">Recibos são lidos no celular</string>
+    <string name="privacy_receipts_body">O reconhecimento de texto roda neste celular. Uma foto tirada para escanear é apagada depois da leitura; fotos da galeria são apenas lidas, nunca copiadas.</string>
+    <string name="privacy_crash_title">Relatórios de erro só se você enviar</string>
+    <string name="privacy_crash_body">Depois de um travamento, o Penny mostra o relatório e deixa você mesmo enviá-lo por e-mail. Nada é enviado sozinho.</string>
+    <string name="privacy_tips_title">Gorjetas pelo Google Play</string>
+    <string name="privacy_tips_body">As gorjetas são pagas pelo Google Play. O Penny só fica sabendo que a gorjeta foi concluída.</string>
+    <string name="shortcut_add_short">Nova despesa</string>
+    <string name="shortcut_add_long">Adicionar uma despesa</string>
+    <string name="shortcut_scan_short">Escanear recibo</string>
+    <string name="shortcut_scan_long">Escanear um recibo</string>
+    <string name="tile_add_expense">Nova despesa</string>
+</resources>

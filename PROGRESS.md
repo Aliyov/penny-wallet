@@ -23,7 +23,7 @@
 - [x] P4 Support & trust: Support Penny (Play Billing tips), encrypted backups, crash report by email (phone check pending; tips testable only from a Play test track)
 - [ ] P5 Play readiness: upload key + AAB, accessibility, store listing EN/DE/IT, privacy policy, Data safety (code + texts done 2026-11-24; waiting for Play Console setup, store graphics, key backup)
 - [x] P5a Compete (before the closed test, done 2026-11-25): test infrastructure, language row, CSV import, category budgets, bill detection, shortcuts + Quick Settings tile, "Your data stays here", split expenses, debts, budget widget
-- [ ] P5b Compete (during the closed test): all-time search, year overview, calendar, FR/ES/PT/PL/TR, monthly summary, tablet/foldable layout
+- [x] P5b Compete (done before the closed test, 2026-11-25): all-time search, year overview, calendar, FR/ES/PT/PL/TR, monthly summary, tablet/foldable layout
 - [ ] P6 Launch: closed test (12 testers / 14 days), production release
 
 ## Phase plans
@@ -64,7 +64,7 @@ P5b plan (user 2026-11-25: "lets finish product then i will give to testers" —
 3. ✅ (2026-11-25) Calendar: month grid with daily spending, tap a day for its entries; respects the first day of week.
 4. ✅ (2026-11-25) Monthly summary: opt-in notification on the 1st with last month's spending vs the month before and the top category.
 5. ✅ (2026-11-25) Tablet/foldable: two panes at ≥600dp (list + detail) for Home/Expenses, nav rail instead of the bottom bar.
-6. FR, ES, PT, PL, TR translations last, once every string is final; translation check extended to all locales.
+6. ✅ (2026-11-25) FR, ES, PT, PL, TR translations last, once every string is final; translation check extended to all locales.
 
 **Test gate per step (nothing moves on with a red item):**
 - Domain: JUnit for every rule incl. edge cases (month ends, leap years, start day 27, zero/three-decimal currencies, negative and huge amounts, empty data).
@@ -187,6 +187,13 @@ P5b plan (user 2026-11-25: "lets finish product then i will give to testers" —
 -  Android SDK at `~/Android/Sdk` (platforms 35/36/37 installed via sdkmanager, no sudo needed), adb at `~/Android/Sdk/platform-tools/adb` (not on PATH).
 
 ## Decisions
+- **P5b step 6 languages FR, ES, PT, PL, TR (2026-11-25):**
+  - Translated by five parallel translator agents from the EN source with DE/IT as reference and a shared glossary; informal address everywhere (tu/tú/você/ty/sen) like DE "du". Portuguese is Brazilian wording in the generic `values-pt`; Spanish is neutral (e.g. "Mostrar decimales"); Polish has real one/few/many/other forms and gender-neutral debt labels; Turkish avoids suffixes on placeholders.
+  - `check-translations.py` now covers all seven languages, takes a locale argument, checks each language's CLDR plural forms (Polish few/many, "many" for it/fr/es/pt) and flags unescaped apostrophes. Italian gained missing "many" forms.
+  - Strings that receive a relative day ("Today", "Yesterday") use the "Label: %1$s" form in every language, so nothing reads "due on Today" / "dal Ieri" (fixed in DE/IT too). French/Portuguese "one" covers 0: plurals that receive the number show it; "days left" (number drawn separately, never 0) is marked `tools:ignore="ImpliedQuantity"`.
+  - User report (2026-11-25): in DE/IT/ES/PT/PL/TR the bottom bar icons were misaligned — tabs sized to their label and long ones ("Einstellungen", "Impostazioni") pushed neighbours and could wrap. Now equal-width slots, one-line labels that shrink slightly (to 75 %) instead of wrapping; checked on the phone in all eight languages.
+  - Review fixes: `debts_due` in DE also uses "Fällig: %1$s"; amounts size once for the final value (`fitCents`), so the count-up animation no longer jumps in size, and keep their full line height when shrunk; non-sp font sizes and unspecified colours fall back safely; French uses a narrow no-break space before : ; ? ! so punctuation never wraps alone; the apostrophe check counts backslashes, understands quoted parts and also checks EN. Left: paired amounts (e.g. "You owe" / "Owed to you") shrink independently.
+  - Phone (2026-11-25): Home and Expenses in all five languages fit; Portuguese "US$3.082,88" was clipped in the hero, so `MoneyText` now auto-shrinks (TextAutoSize, down to half size) instead of clipping — no change where amounts already fit.
 - **P5b step 5 tablet / foldable (2026-11-25):**
   - Width classes from `screenWidthDp` (updates on rotation, unfolding, multi-window): <600 compact (unchanged phone UI), 600–839 medium, ≥840 expanded. Medium/expanded: a navigation rail with the + action replaces the bottom bar on the four tab screens; every destination is centred at a readable width (680dp, two panes 1200dp) from the nav host, so screen files stay untouched; sheets max 640dp wide.
   - Expanded: two panes for Home (banners/hero/month/accounts | upcoming/recent, keeping the user's section order) and Expenses (chart/categories/history | search + day list); item builders are shared with the single-column path, so phones build the same list as before.
