@@ -24,4 +24,11 @@
     <string name="backup_err_too_new">Backup version %1$d is newer than this app understands (%2$d)</string>
 
     <string name="data_csv_outside">Outside</string>
+    <string name="notif_summary_top">Most on %1$s (%2$s)</string>
+    <string name="notif_summary_income">Income %1$s</string>
+    <string name="notif_summary_saved">Saved %1$s</string>
+    <string name="notif_summary_title">%1$s: you spent %2$s</string>
+    <string name="notif_summary_more">%1$d%% more than the month before</string>
+    <string name="notif_summary_less">%1$d%% less than the month before</string>
+    <string name="notif_summary_public">Monthly summary ready</string>
 </resources>

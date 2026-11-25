@@ -25,4 +25,11 @@
     <string name="backup_err_too_new">La versione del backup (%1$d) è più recente di quella supportata dall\'app (%2$d)</string>
 
     <string name="data_csv_outside">Esterno</string>
+    <string name="notif_summary_top">Di più per %1$s (%2$s)</string>
+    <string name="notif_summary_income">Entrate %1$s</string>
+    <string name="notif_summary_saved">Risparmiato %1$s</string>
+    <string name="notif_summary_title">%1$s: hai speso %2$s</string>
+    <string name="notif_summary_more">Il %1$d%% in più del mese prima</string>
+    <string name="notif_summary_less">Il %1$d%% in meno del mese prima</string>
+    <string name="notif_summary_public">Riepilogo mensile pronto</string>
 </resources>

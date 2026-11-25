@@ -224,4 +224,7 @@
         <item quantity="one">%d voce rimossa</item>
         <item quantity="other">%d voci rimosse</item>
     </plurals>
+    <string name="summary_setting">Riepilogo mensile</string>
+    <string name="summary_permission_denied">Le notifiche di Penny sono disattivate, quindi il riepilogo non può comparire.</string>
+    <string name="summary_setting_sub">Una notifica a inizio mese: quanto hai speso e per cosa</string>
 </resources>

@@ -50,6 +50,9 @@ data class UserPrefs(
     val lastImport: LastImport? = null,
     val overdueBadge: Boolean = true,
     val quietMode: Boolean = false,
+    val monthlySummary: Boolean = false,
+    /** The last budgeting month a summary was sent for ("2026-10"), so it goes out once. */
+    val lastSummaryMonth: String? = null,
     val notificationPermissionAsked: Boolean = false,
     val backupFrequency: BackupFrequency = BackupFrequency.WEEKLY,
     val backupFolderUri: String? = null,

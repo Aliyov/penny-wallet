@@ -24,4 +24,11 @@
     <string name="backup_err_too_new">Backup-Version %1$d ist neuer als diese App versteht (%2$d)</string>
 
     <string name="data_csv_outside">Extern</string>
+    <string name="notif_summary_top">Am meisten für %1$s (%2$s)</string>
+    <string name="notif_summary_income">Einnahmen %1$s</string>
+    <string name="notif_summary_saved">Gespart %1$s</string>
+    <string name="notif_summary_title">%1$s: %2$s ausgegeben</string>
+    <string name="notif_summary_more">%1$d%% mehr als im Vormonat</string>
+    <string name="notif_summary_less">%1$d%% weniger als im Vormonat</string>
+    <string name="notif_summary_public">Monatsübersicht ist da</string>
 </resources>

@@ -74,6 +74,7 @@ fun SettingsScreen(onOpen: (String) -> Unit) {
             CurrencySetting(x)
             MonthStartSetting(x)
             ReminderTimeSetting(x)
+            MonthlySummarySetting(x)
             AppLockSetting(x)
         }
 

@@ -219,4 +219,7 @@
         <item quantity="one">%d entry removed</item>
         <item quantity="other">%d entries removed</item>
     </plurals>
+    <string name="summary_setting">Monthly summary</string>
+    <string name="summary_permission_denied">Notifications are off for Penny, so the summary can\'t be shown.</string>
+    <string name="summary_setting_sub">A notification when a new month starts: what you spent and where</string>
 </resources>

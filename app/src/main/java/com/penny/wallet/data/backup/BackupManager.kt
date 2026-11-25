@@ -165,7 +165,7 @@ class BackupManager(
             settings.update { cur ->
                 restored.copy(
                     currencyCode = restored.currencyCode.ifEmpty { Formatters.DEFAULT_CURRENCY },
-                    backupFolderUri = cur.backupFolderUri, lastBackupAt = cur.lastBackupAt,
+                    backupFolderUri = cur.backupFolderUri, lastBackupAt = cur.lastBackupAt, lastSummaryMonth = cur.lastSummaryMonth,
                     notificationPermissionAsked = cur.notificationPermissionAsked, seeded = true,
                 )
             }

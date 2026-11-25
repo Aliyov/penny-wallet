@@ -105,4 +105,13 @@ class BackupRoundTripTest {
         val b2 = BackupCodec.decode(javaClass.getResource("/backups/v2-sample.json")!!.readText(), null)
         assertEquals(2, manager.summarize(b2).debts)
     }
+
+    @Test fun restoreKeepsThisPhonesLastSummaryMonth() = runBlocking {
+        settings.update { it.copy(lastSummaryMonth = "2026-10") }
+        val old = Backup(Backup.CURRENT_SCHEMA, "2026-10-20T00:00:00Z", accounts = emptyList(), categories = emptyList(), goals = emptyList(),
+            transactions = emptyList(), recurring = emptyList(), settings = UserPrefs(monthlySummary = true, lastSummaryMonth = "2026-09"))
+        manager.restore(old)
+        assertEquals("2026-10", settings.current().lastSummaryMonth)
+        assertEquals(true, settings.current().monthlySummary)
+    }
 }

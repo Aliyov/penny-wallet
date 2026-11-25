@@ -1,5 +1,12 @@
 package com.penny.wallet.feature.settings
 
+import com.penny.wallet.core.ui.components.LocalSnack
+import java.time.LocalDate
+import com.penny.wallet.domain.MoneyCalculator
+import androidx.activity.result.contract.ActivityResultContracts
+import androidx.activity.compose.rememberLauncherForActivityResult
+import android.os.Build
+import android.Manifest
 import com.penny.wallet.container
 import com.penny.wallet.platform.AppLanguage
 import android.text.format.DateFormat
@@ -107,6 +114,27 @@ internal fun BudgetSetting(x: PrefsCtx) {
             },
         ) { cents -> x.set { it.copy(monthlyBudget = cents) }; open = false }
     }
+}
+
+@Composable
+internal fun MonthlySummarySetting(x: PrefsCtx) {
+    val snack = LocalSnack.current
+    val deniedText = stringResource(R.string.summary_permission_denied)
+    // Without the permission it would silently never arrive: switch it back off and say why.
+    val permission = rememberLauncherForActivityResult(ActivityResultContracts.RequestPermission()) { granted ->
+        x.set { it.copy(notificationPermissionAsked = true, monthlySummary = it.monthlySummary && granted) }
+        if (!granted) snack.show(deniedText)
+    }
+    SwitchRow(
+        stringResource(R.string.summary_setting), x.p.monthlySummary,
+        { on ->
+            // From now on: never a summary for a month that ended before it was switched on.
+            val ended = MoneyCalculator.periodOf(LocalDate.now(), x.p.monthStartDay).label.minusMonths(1).toString()
+            x.set { it.copy(monthlySummary = on, lastSummaryMonth = if (on) ended else it.lastSummaryMonth) }
+            if (on && Build.VERSION.SDK_INT >= 33) permission.launch(Manifest.permission.POST_NOTIFICATIONS)
+        },
+        subtitle = stringResource(R.string.summary_setting_sub),
+    )
 }
 
 @Composable

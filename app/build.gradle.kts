@@ -141,6 +141,7 @@ dependencies {
 
     testImplementation(libs.junit)
     testImplementation(libs.robolectric)
+    testImplementation(libs.work.testing)
     robolectricJars(libs.robolectric.android.all)
     testImplementation(libs.androidx.test.core)
     testImplementation(platform(libs.compose.bom))

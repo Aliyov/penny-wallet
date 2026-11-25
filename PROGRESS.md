@@ -62,7 +62,7 @@ P5b plan (user 2026-11-25: "lets finish product then i will give to testers" —
 1. ✅ (2026-11-25) All-time search: text over note/category/account, filters for period, amount range and kind; results by day with count and sum; tap edits.
 2. ✅ (2026-11-25) Year overview: 12 months of spent/income/saved, top categories of the year, year switcher.
 3. ✅ (2026-11-25) Calendar: month grid with daily spending, tap a day for its entries; respects the first day of week.
-4. Monthly summary: opt-in notification on the 1st with last month's spending vs the month before and the top category.
+4. ✅ (2026-11-25) Monthly summary: opt-in notification on the 1st with last month's spending vs the month before and the top category.
 5. Tablet/foldable: two panes at ≥600dp (list + detail) for Home/Expenses, nav rail instead of the bottom bar.
 6. FR, ES, PT, PL, TR translations last, once every string is final; translation check extended to all locales.
 
@@ -187,6 +187,11 @@ P5b plan (user 2026-11-25: "lets finish product then i will give to testers" —
 -  Android SDK at `~/Android/Sdk` (platforms 35/36/37 installed via sdkmanager, no sudo needed), adb at `~/Android/Sdk/platform-tools/adb` (not on PATH).
 
 ## Decisions
+- **P5b step 4 monthly summary (2026-11-25):**
+  - Opt-in switch in Settings ("Monthly summary"), off by default; switching it on asks for the notification permission on Android 13+ and marks the month that already ended as done, so the first summary comes at the next month start.
+  - `domain/MonthlySummaries`: for the budgeting month that ended — spent, change against the month before in whole percent (none without a previous month), top category, income, saved; nothing for a month without entries. Due from the first day of a budgeting month for 7 days (also from the catch-up run at app start), so a phone that was off on day one still gets it; recorded in `UserPrefs.lastSummaryMonth` and sent once. Quiet mode records it without notifying; privacy mode hides the amounts and the percentage.
+  - Review fixes: the month is claimed atomically inside one settings write before posting (daily and catch-up runs can overlap); a restore keeps this phone's `lastSummaryMonth` (like the backup folder); a month with only transfers sends nothing; uncategorised spending is never the named top category; the change moved from the title into a BigTextStyle body so it isn't cut off; lock screen shows only "Monthly summary ready"; a denied permission switches it back off with a message; worker tests use Assume on the 29th–31st; notification strings live with the other notification strings.
+  - Tested with a Robolectric worker test (androidx.work testing) that checks the posted notification, once-only, quiet mode and the switch.
 - **P5b step 3 calendar (2026-11-25):**
   - `domain/CalendarMonth`: calendar months (not budgeting periods: a calendar shows dates), whole weeks starting on the user's first day of week, per-day spent/income/count; days outside the month greyed without amounts. Screen from a calendar icon in the Expenses header: day cells shaded by spending relative to the month's busiest day, compact amount or a dot, today outlined, tap a day for its entries (edit, swipe-delete with Undo in the app scope).
   - Found by the UI test: the day cell's `clearAndSetSemantics` dropped the click action, so TalkBack users couldn't open a day; role and click are now set inside it. Cells are ~45dp wide on a 360dp screen (seven columns) but 52dp tall.

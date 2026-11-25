@@ -1,5 +1,6 @@
 package com.penny.wallet.platform.notify
 
+import com.penny.wallet.domain.MonthlySummary
 import com.penny.wallet.data.db.entities.DebtDirection
 import com.penny.wallet.domain.DebtStatus
 import com.penny.wallet.core.util.DateText
@@ -63,6 +64,37 @@ object Notifications {
         val b = base(context, p, context.getString(R.string.notif_auto_paid, r.name, amount(context, r, p)), context.getString(R.string.notif_recorded_for, DateText.of(context).day(due)))
             .addAction(0, context.getString(R.string.action_undo), receiver(context, MarkPaidReceiver.ACTION_UNDO, r.id, due, txId))
         post(context, r, b)
+    }
+
+    fun monthlySummary(context: Context, s: MonthlySummary, topCategory: String?, p: UserPrefs) {
+        val locale = DateText.of(context).locale
+        val f = Formatters.of(p, locale)
+        fun m(v: Long) = if (p.hideAmounts) Formatters.HIDDEN else Formatters.money(v, f)
+        val month = s.month.month.getDisplayName(java.time.format.TextStyle.FULL_STANDALONE, locale).replaceFirstChar { it.titlecase(locale) }
+        val change = s.changePercent
+        // Short title so it fits one line; the comparison leads the expandable body.
+        val title = context.getString(R.string.notif_summary_title, month, m(s.spent))
+        val parts = listOfNotNull(
+            when {
+                change == null || change == 0 || p.hideAmounts -> null
+                change > 0 -> context.getString(R.string.notif_summary_more, change)
+                else -> context.getString(R.string.notif_summary_less, -change)
+            },
+            topCategory?.let { context.getString(R.string.notif_summary_top, it, m(s.topCategorySpent)) },
+            context.getString(R.string.notif_summary_income, m(s.income)).takeIf { s.income > 0 },
+            context.getString(R.string.notif_summary_saved, m(s.saved)).takeIf { s.saved > 0 },
+        )
+        val body = parts.joinToString(" · ")
+        // The lock screen only says a summary is ready; amounts need the phone unlocked.
+        val public = base(context, p, context.getString(R.string.notif_summary_public), "").build()
+        val b = base(context, p, title, body)
+            .setStyle(NotificationCompat.BigTextStyle().bigText(body))
+            .setVisibility(NotificationCompat.VISIBILITY_PRIVATE)
+            .setPublicVersion(public)
+        if (!canPost(context)) return
+        ensureChannel(context)
+        @Suppress("MissingPermission") // checked in canPost
+        NotificationManagerCompat.from(context).notify(idFor("monthly-summary"), b.build())
     }
 
     fun debtDue(context: Context, s: DebtStatus, p: UserPrefs) {
