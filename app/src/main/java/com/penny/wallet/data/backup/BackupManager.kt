@@ -179,7 +179,7 @@ class BackupManager(
             db.debts().clearPayments(); db.debts().clear()
             db.transactions().clear(); db.recurring().clear(); db.goals().clear(); db.categories().clear(); db.accounts().clear()
         }
-        settings.update { it.copy(lastAccountId = null, lastCategoryId = null, fixedAccountId = null) }
+        settings.update { it.copy(lastAccountId = null, lastCategoryId = null, fixedAccountId = null, lastImport = null) }
         listener.onDataChanged()
     }
 

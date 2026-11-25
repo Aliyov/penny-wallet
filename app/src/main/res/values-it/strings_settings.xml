@@ -145,4 +145,83 @@
     <string name="support_unavailable">Le mance richiedono la versione di Penny Wallet da Google Play. Tutto il resto funziona allo stesso modo.</string>
     <string name="support_pending">Grazie! La mancia arriverà quando il pagamento sarà completato.</string>
     <string name="support_failed">La mancia non è andata a buon fine. Riprova più tardi.</string>
+    <string name="import_title">Importa da CSV</string>
+    <string name="import_section">Importa</string>
+    <string name="import_open">Importa da CSV</string>
+    <string name="import_open_body">Esportazioni della banca e altre app per le spese</string>
+    <string name="import_intro">Scegli un file CSV della tua banca o di un\'altra app per le spese. Vedrai un\'anteprima e potrai controllare ogni colonna prima di salvare.</string>
+    <string name="import_choose">Scegli file CSV</string>
+    <string name="import_choose_other">Scegli un altro file</string>
+    <string name="import_loading">Lettura del file…</string>
+    <string name="import_error_too_big">Il file supera i 5 MB. Esporta un periodo più breve.</string>
+    <string name="import_error_read">Impossibile leggere il file.</string>
+    <string name="import_error_empty">Il file è vuoto.</string>
+    <string name="import_missing_date">Nessuna colonna con la data. Scegli la colonna che contiene la data.</string>
+    <string name="import_bad_date">Le date di questa colonna non sono state riconosciute. Scegli un\'altra colonna per la data.</string>
+    <string name="import_missing_amount">Nessuna colonna con l\'importo. Scegli la colonna dell\'importo, oppure le colonne Uscite ed Entrate.</string>
+    <string name="import_no_account">Aggiungi prima un conto.</string>
+    <string name="import_no_category">Aggiungi prima una categoria.</string>
+    <string name="import_section_columns">Colonne</string>
+    <string name="import_column_n">Colonna %1$d</string>
+    <string name="import_role_date">Data</string>
+    <string name="import_role_amount">Importo</string>
+    <string name="import_role_debit">Uscite</string>
+    <string name="import_role_credit">Entrate</string>
+    <string name="import_role_type">Tipo</string>
+    <string name="import_role_category">Categoria</string>
+    <string name="import_role_note">Nota</string>
+    <string name="import_role_ignore">Ignora</string>
+    <string name="import_section_account">Nel conto</string>
+    <string name="import_fallback_title">Categoria se nessuna corrisponde</string>
+    <string name="import_fallback_body">Per le spese senza una categoria nota</string>
+    <string name="import_create_missing">Crea le categorie mancanti</string>
+    <string name="import_create_missing_body">Categorie del file che Penny non ha ancora</string>
+    <string name="import_skip_duplicates">Salta i duplicati</string>
+    <string name="import_skip_duplicates_body">Stessa data, importo e nota già presenti in questo conto</string>
+    <string name="import_section_preview">Anteprima</string>
+    <string name="import_duplicate_caption">Duplicato · %1$s</string>
+    <string name="import_error_line">Riga %1$d: %2$s</string>
+    <string name="import_reason_date">data non riconosciuta</string>
+    <string name="import_reason_amount">importo non riconosciuto</string>
+    <string name="import_reason_zero">l\'importo è zero</string>
+    <string name="import_reason_type">né spesa né entrata</string>
+    <string name="import_undo_last">Annulla l\'ultima importazione</string>
+    <string name="import_undo_confirm_title">Annullare l\'ultima importazione?</string>
+    <string name="import_undo_confirm">Rimuovi</string>
+    <plurals name="import_count_import">
+        <item quantity="one">%d da importare</item>
+        <item quantity="other">%d da importare</item>
+    </plurals>
+    <plurals name="import_count_duplicates">
+        <item quantity="one">%d duplicato saltato</item>
+        <item quantity="other">%d duplicati saltati</item>
+    </plurals>
+    <plurals name="import_count_errors">
+        <item quantity="one">%d riga non leggibile</item>
+        <item quantity="other">%d righe non leggibili</item>
+    </plurals>
+    <plurals name="import_more_errors">
+        <item quantity="one">e %d altra</item>
+        <item quantity="other">e altre %d</item>
+    </plurals>
+    <plurals name="import_button">
+        <item quantity="one">Importa %d voce</item>
+        <item quantity="other">Importa %d voci</item>
+    </plurals>
+    <plurals name="import_done">
+        <item quantity="one">%d voce importata</item>
+        <item quantity="other">%d voci importate</item>
+    </plurals>
+    <plurals name="import_undo_last_body">
+        <item quantity="one">%1$d voce del %2$s</item>
+        <item quantity="other">%1$d voci del %2$s</item>
+    </plurals>
+    <plurals name="import_undo_confirm_body">
+        <item quantity="one">La voce importata verrà rimossa.</item>
+        <item quantity="other">Le %d voci importate verranno rimosse.</item>
+    </plurals>
+    <plurals name="import_undone">
+        <item quantity="one">%d voce rimossa</item>
+        <item quantity="other">%d voci rimosse</item>
+    </plurals>
 </resources>

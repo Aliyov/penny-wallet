@@ -26,6 +26,7 @@ import com.penny.wallet.feature.savings.GoalScreen
 import com.penny.wallet.feature.savings.SavingsScreen
 import com.penny.wallet.feature.settings.AccountsScreen
 import com.penny.wallet.feature.settings.BackupScreen
+import com.penny.wallet.feature.importcsv.ImportScreen
 import com.penny.wallet.feature.settings.CategoriesScreen
 import com.penny.wallet.feature.settings.PersonaliseScreen
 import com.penny.wallet.feature.settings.SettingsScreen
@@ -63,7 +64,8 @@ fun PennyNavHost(nav: NavHostController, container: AppContainer, root: RootStat
         composable(Routes.GOAL, enterTransition = push, popExitTransition = pop) { e ->
             GoalScreen(e.arguments?.getString("id").orEmpty(), onBack = { nav.popBackStack() })
         }
-        composable(Routes.BACKUP, enterTransition = push, popExitTransition = pop) { BackupScreen(onBack = { nav.popBackStack() }) }
+        composable(Routes.BACKUP, enterTransition = push, popExitTransition = pop) { BackupScreen(onBack = { nav.popBackStack() }, onOpenImport = { nav.navigate(Routes.IMPORT) }) }
+        composable(Routes.IMPORT, enterTransition = push, popExitTransition = pop) { ImportScreen(onBack = { nav.popBackStack() }) }
         composable(Routes.CATEGORIES, enterTransition = push, popExitTransition = pop) { CategoriesScreen(onBack = { nav.popBackStack() }) }
         composable(Routes.ACCOUNTS, enterTransition = push, popExitTransition = pop) {
             AccountsScreen(onBack = { nav.popBackStack() }, onOpenAccount = { nav.navigate(Routes.account(it)) })

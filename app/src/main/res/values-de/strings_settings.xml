@@ -140,4 +140,83 @@
     <string name="support_unavailable">Trinkgeld geht nur mit der Google-Play-Version von Penny Wallet. Alles andere funktioniert genauso.</string>
     <string name="support_pending">Danke! Dein Trinkgeld kommt an, sobald die Zahlung abgeschlossen ist.</string>
     <string name="support_failed">Das Trinkgeld hat nicht geklappt. Bitte versuch es später noch einmal.</string>
+    <string name="import_title">Aus CSV importieren</string>
+    <string name="import_section">Import</string>
+    <string name="import_open">Aus CSV importieren</string>
+    <string name="import_open_body">Bankexporte und andere Finanz-Apps</string>
+    <string name="import_intro">Wähle eine CSV-Datei deiner Bank oder einer anderen Finanz-App. Du siehst eine Vorschau und kannst jede Spalte prüfen, bevor etwas gespeichert wird.</string>
+    <string name="import_choose">CSV-Datei wählen</string>
+    <string name="import_choose_other">Andere Datei wählen</string>
+    <string name="import_loading">Datei wird gelesen…</string>
+    <string name="import_error_too_big">Diese Datei ist größer als 5 MB. Exportiere bitte einen kürzeren Zeitraum.</string>
+    <string name="import_error_read">Die Datei konnte nicht gelesen werden.</string>
+    <string name="import_error_empty">Die Datei ist leer.</string>
+    <string name="import_missing_date">Keine Datumsspalte gefunden. Wähle die Spalte mit dem Datum.</string>
+    <string name="import_bad_date">Die Daten in dieser Spalte wurden nicht erkannt. Wähle eine andere Spalte für das Datum.</string>
+    <string name="import_missing_amount">Keine Betragsspalte gefunden. Wähle die Spalte mit dem Betrag oder die Spalten für Ausgang und Eingang.</string>
+    <string name="import_no_account">Lege zuerst ein Konto an.</string>
+    <string name="import_no_category">Lege zuerst eine Kategorie an.</string>
+    <string name="import_section_columns">Spalten</string>
+    <string name="import_column_n">Spalte %1$d</string>
+    <string name="import_role_date">Datum</string>
+    <string name="import_role_amount">Betrag</string>
+    <string name="import_role_debit">Ausgang</string>
+    <string name="import_role_credit">Eingang</string>
+    <string name="import_role_type">Art</string>
+    <string name="import_role_category">Kategorie</string>
+    <string name="import_role_note">Notiz</string>
+    <string name="import_role_ignore">Ignorieren</string>
+    <string name="import_section_account">In Konto</string>
+    <string name="import_fallback_title">Kategorie, wenn keine passt</string>
+    <string name="import_fallback_body">Für Ausgaben ohne bekannte Kategorie</string>
+    <string name="import_create_missing">Fehlende Kategorien anlegen</string>
+    <string name="import_create_missing_body">Kategorien aus der Datei, die Penny noch nicht hat</string>
+    <string name="import_skip_duplicates">Duplikate überspringen</string>
+    <string name="import_skip_duplicates_body">Gleiches Datum, gleicher Betrag und gleiche Notiz schon in diesem Konto</string>
+    <string name="import_section_preview">Vorschau</string>
+    <string name="import_duplicate_caption">Duplikat · %1$s</string>
+    <string name="import_error_line">Zeile %1$d: %2$s</string>
+    <string name="import_reason_date">Datum nicht erkannt</string>
+    <string name="import_reason_amount">Betrag nicht erkannt</string>
+    <string name="import_reason_zero">Betrag ist null</string>
+    <string name="import_reason_type">weder Ausgabe noch Einnahme</string>
+    <string name="import_undo_last">Letzten Import rückgängig machen</string>
+    <string name="import_undo_confirm_title">Letzten Import rückgängig machen?</string>
+    <string name="import_undo_confirm">Entfernen</string>
+    <plurals name="import_count_import">
+        <item quantity="one">%d zum Importieren</item>
+        <item quantity="other">%d zum Importieren</item>
+    </plurals>
+    <plurals name="import_count_duplicates">
+        <item quantity="one">%d Duplikat übersprungen</item>
+        <item quantity="other">%d Duplikate übersprungen</item>
+    </plurals>
+    <plurals name="import_count_errors">
+        <item quantity="one">%d Zeile nicht lesbar</item>
+        <item quantity="other">%d Zeilen nicht lesbar</item>
+    </plurals>
+    <plurals name="import_more_errors">
+        <item quantity="one">und %d weitere</item>
+        <item quantity="other">und %d weitere</item>
+    </plurals>
+    <plurals name="import_button">
+        <item quantity="one">%d Eintrag importieren</item>
+        <item quantity="other">%d Einträge importieren</item>
+    </plurals>
+    <plurals name="import_done">
+        <item quantity="one">%d Eintrag importiert</item>
+        <item quantity="other">%d Einträge importiert</item>
+    </plurals>
+    <plurals name="import_undo_last_body">
+        <item quantity="one">%1$d Eintrag vom %2$s</item>
+        <item quantity="other">%1$d Einträge vom %2$s</item>
+    </plurals>
+    <plurals name="import_undo_confirm_body">
+        <item quantity="one">Der %d importierte Eintrag wird entfernt.</item>
+        <item quantity="other">Die %d importierten Einträge werden entfernt.</item>
+    </plurals>
+    <plurals name="import_undone">
+        <item quantity="one">%d Eintrag entfernt</item>
+        <item quantity="other">%d Einträge entfernt</item>
+    </plurals>
 </resources>

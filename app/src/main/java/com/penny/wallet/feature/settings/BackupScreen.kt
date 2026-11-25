@@ -44,6 +44,10 @@ import com.penny.wallet.R
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.penny.wallet.data.prefs.BackupFrequency
+import com.penny.wallet.data.prefs.LastImport
+import com.penny.wallet.core.ui.components.NavRow
+import java.time.Instant
+import java.time.ZoneId
 import com.penny.wallet.core.money.Formatters
 import com.penny.wallet.feature.home.ConfirmDialog
 import com.penny.wallet.core.ui.components.ButtonKind
@@ -56,13 +60,14 @@ import com.penny.wallet.core.ui.pennyViewModel
 import com.penny.wallet.core.ui.theme.Penny
 
 @Composable
-fun BackupScreen(onBack: () -> Unit) {
+fun BackupScreen(onBack: () -> Unit, onOpenImport: () -> Unit) {
     val vm = pennyViewModel { BackupViewModel(it) }
     val s by vm.state.collectAsStateWithLifecycle()
     val snack = LocalSnack.current
     val c = Penny.colors
     val res = LocalResources.current
     var secondConfirm by remember { mutableStateOf(false) }
+    var confirmUndoImport by remember { mutableStateOf(false) }
 
     val pickFolder = rememberLauncherForActivityResult(ActivityResultContracts.OpenDocumentTree()) { vm.onFolderPicked(it) }
     val pickRestore = rememberLauncherForActivityResult(ActivityResultContracts.OpenDocument()) { vm.onRestoreFilePicked(it) }
@@ -96,7 +101,23 @@ fun BackupScreen(onBack: () -> Unit) {
             SectionLabel(stringResource(R.string.backup_restore_export), Modifier.padding(top = 8.dp))
             PennyButton(stringResource(R.string.backup_restore_file), { pickRestore.launch(BackupViewModel.MIME_TYPES) }, Modifier.fillMaxWidth(), kind = ButtonKind.SECONDARY, enabled = !s.busy)
             PennyButton(stringResource(R.string.backup_export_csv), { createCsv.launch(vm.csvFileName) }, Modifier.fillMaxWidth(), kind = ButtonKind.SECONDARY)
+
+            SectionLabel(stringResource(R.string.import_section), Modifier.padding(top = 8.dp))
+            ImportCard(s.lastImport, onOpenImport) { confirmUndoImport = true }
             Spacer(Modifier.height(32.dp))
+        }
+    }
+
+    val last = s.lastImport
+    if (confirmUndoImport && last != null) {
+        ConfirmDialog(
+            title = stringResource(R.string.import_undo_confirm_title),
+            text = pluralStringResource(R.plurals.import_undo_confirm_body, last.count, last.count),
+            confirm = stringResource(R.string.import_undo_confirm), danger = true,
+            onDismiss = { confirmUndoImport = false },
+        ) {
+            confirmUndoImport = false
+            vm.undoLastImport { n -> snack.show(res.getQuantityString(R.plurals.import_undone, n, n)) }
         }
     }
 
@@ -116,6 +137,20 @@ fun BackupScreen(onBack: () -> Unit) {
         ) {
             secondConfirm = false
             vm.confirmRestore { err -> snack.show(err?.let { res.getString(R.string.backup_restore_failed, it) } ?: res.getString(R.string.backup_restore_done)) }
+        }
+    }
+}
+
+@Composable
+private fun ImportCard(last: LastImport?, onOpenImport: () -> Unit, onUndo: () -> Unit) {
+    PennyCard(Modifier.fillMaxWidth(), padding = 12.dp) {
+        NavRow(stringResource(R.string.import_open), null, onOpenImport, subtitle = stringResource(R.string.import_open_body))
+        if (last != null) {
+            val day = Instant.ofEpochMilli(last.at).atZone(ZoneId.systemDefault()).toLocalDate()
+            NavRow(
+                stringResource(R.string.import_undo_last), null, onUndo,
+                subtitle = pluralStringResource(R.plurals.import_undo_last_body, last.count, last.count, dateText().shortDate(day)),
+            )
         }
     }
 }

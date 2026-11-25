@@ -13,6 +13,7 @@ import com.penny.wallet.data.backup.Backup
 import com.penny.wallet.data.backup.BackupResult
 import com.penny.wallet.data.backup.BackupSummary
 import com.penny.wallet.data.prefs.BackupFrequency
+import com.penny.wallet.data.prefs.LastImport
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
@@ -35,6 +36,7 @@ data class BackupUi(
     val passwordOn: Boolean = false,
     /** A password-protected file waiting for its password. */
     val restoreNeedsPassword: Uri? = null,
+    val lastImport: LastImport? = null,
 )
 
 class BackupViewModel(private val c: AppContainer) : ViewModel() {
@@ -44,7 +46,7 @@ class BackupViewModel(private val c: AppContainer) : ViewModel() {
 
     val state: StateFlow<BackupUi> = combine(c.settings.prefs, transient) { p, t ->
         t.copy(folderUri = p.backupFolderUri, folderOk = c.backup.hasFolderAccess(p), lastBackupAt = p.lastBackupAt,
-            frequency = p.backupFrequency, keep = p.backupKeep)
+            frequency = p.backupFrequency, keep = p.backupKeep, lastImport = p.lastImport)
     }.flowOn(Dispatchers.Default).stateIn(viewModelScope, SharingStarted.WhileSubscribed(5_000), BackupUi())
 
     val csvFileName: String get() = "penny-wallet-transactions-${LocalDate.now()}.csv"
@@ -63,6 +65,15 @@ class BackupViewModel(private val c: AppContainer) : ViewModel() {
                 is BackupResult.Ok -> it.copy(busy = false, justBackedUp = r.fileName)
                 is BackupResult.Failed -> it.copy(busy = false, error = r.reason)
             }
+        }
+    }
+
+    fun undoLastImport(onDone: (Int) -> Unit) {
+        val last = state.value.lastImport ?: return
+        c.appScope.launch {
+            runCatching { c.imports.undo(last) }
+                .onSuccess(onDone)
+                .onFailure { e -> transient.update { it.copy(error = c.userMessage(e)) } }
         }
     }
 

@@ -8,6 +8,7 @@ import com.penny.wallet.data.prefs.SettingsStore
 import com.penny.wallet.data.repo.AccountRepo
 import com.penny.wallet.data.repo.CategoryRepo
 import com.penny.wallet.data.repo.DebtRepo
+import com.penny.wallet.data.repo.ImportRepo
 import com.penny.wallet.data.repo.ChangeListener
 import com.penny.wallet.data.repo.GoalRepo
 import com.penny.wallet.data.repo.RecurringRepo
@@ -34,4 +35,5 @@ class AppContainer(val context: Context) {
     val backup = BackupManager(context, db, settings, listener)
     val receipts = ReceiptReader(context)
     val setup = SetupRepo(context, db, settings, listener)
+    val imports = ImportRepo(db, settings, listener)
 }

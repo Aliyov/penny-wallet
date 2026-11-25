@@ -140,4 +140,83 @@
     <string name="support_unavailable">Tips need the Google Play version of Penny Wallet. Everything else works the same.</string>
     <string name="support_pending">Thanks! Your tip goes through once the payment is complete.</string>
     <string name="support_failed">The tip didn\'t go through. Please try again later.</string>
+    <string name="import_title">Import from CSV</string>
+    <string name="import_section">Import</string>
+    <string name="import_open">Import from CSV</string>
+    <string name="import_open_body">Bank exports and other money apps</string>
+    <string name="import_intro">Pick a CSV file from your bank or another money app. You see a preview and can check every column before anything is saved.</string>
+    <string name="import_choose">Choose CSV file</string>
+    <string name="import_choose_other">Choose another file</string>
+    <string name="import_loading">Reading the file…</string>
+    <string name="import_error_too_big">This file is larger than 5 MB. Please export a shorter period.</string>
+    <string name="import_error_read">The file couldn\'t be read.</string>
+    <string name="import_error_empty">The file is empty.</string>
+    <string name="import_missing_date">No date column found. Pick the column that holds the date.</string>
+    <string name="import_bad_date">The dates in this column weren\'t recognised. Pick another column for the date.</string>
+    <string name="import_missing_amount">No amount column found. Pick the column with the amount, or the Money out and Money in columns.</string>
+    <string name="import_no_account">Add an account first.</string>
+    <string name="import_no_category">Add a category first.</string>
+    <string name="import_section_columns">Columns</string>
+    <string name="import_column_n">Column %1$d</string>
+    <string name="import_role_date">Date</string>
+    <string name="import_role_amount">Amount</string>
+    <string name="import_role_debit">Money out</string>
+    <string name="import_role_credit">Money in</string>
+    <string name="import_role_type">Type</string>
+    <string name="import_role_category">Category</string>
+    <string name="import_role_note">Note</string>
+    <string name="import_role_ignore">Ignore</string>
+    <string name="import_section_account">Into account</string>
+    <string name="import_fallback_title">Category if none fits</string>
+    <string name="import_fallback_body">For expenses without a known category</string>
+    <string name="import_create_missing">Create missing categories</string>
+    <string name="import_create_missing_body">Categories from the file that Penny doesn\'t have yet</string>
+    <string name="import_skip_duplicates">Skip duplicates</string>
+    <string name="import_skip_duplicates_body">Same date, amount and note already in this account</string>
+    <string name="import_section_preview">Preview</string>
+    <string name="import_duplicate_caption">Duplicate · %1$s</string>
+    <string name="import_error_line">Line %1$d: %2$s</string>
+    <string name="import_reason_date">date not recognised</string>
+    <string name="import_reason_amount">amount not recognised</string>
+    <string name="import_reason_zero">amount is zero</string>
+    <string name="import_reason_type">neither expense nor income</string>
+    <string name="import_undo_last">Undo last import</string>
+    <string name="import_undo_confirm_title">Undo last import?</string>
+    <string name="import_undo_confirm">Remove</string>
+    <plurals name="import_count_import">
+        <item quantity="one">%d to import</item>
+        <item quantity="other">%d to import</item>
+    </plurals>
+    <plurals name="import_count_duplicates">
+        <item quantity="one">%d duplicate skipped</item>
+        <item quantity="other">%d duplicates skipped</item>
+    </plurals>
+    <plurals name="import_count_errors">
+        <item quantity="one">%d line can\'t be read</item>
+        <item quantity="other">%d lines can\'t be read</item>
+    </plurals>
+    <plurals name="import_more_errors">
+        <item quantity="one">and %d more</item>
+        <item quantity="other">and %d more</item>
+    </plurals>
+    <plurals name="import_button">
+        <item quantity="one">Import %d entry</item>
+        <item quantity="other">Import %d entries</item>
+    </plurals>
+    <plurals name="import_done">
+        <item quantity="one">Imported %d entry</item>
+        <item quantity="other">Imported %d entries</item>
+    </plurals>
+    <plurals name="import_undo_last_body">
+        <item quantity="one">%1$d entry from %2$s</item>
+        <item quantity="other">%1$d entries from %2$s</item>
+    </plurals>
+    <plurals name="import_undo_confirm_body">
+        <item quantity="one">This removes the %d imported entry.</item>
+        <item quantity="other">This removes the %d imported entries.</item>
+    </plurals>
+    <plurals name="import_undone">
+        <item quantity="one">%d entry removed</item>
+        <item quantity="other">%d entries removed</item>
+    </plurals>
 </resources>

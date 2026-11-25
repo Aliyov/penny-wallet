@@ -76,6 +76,7 @@ interface TransactionDao {
     @Delete suspend fun delete(t: Transaction)
     @Query("DELETE FROM transactions WHERE id IN (:ids)") suspend fun deleteIds(ids: List<String>)
     @Query("SELECT * FROM transactions WHERE id IN (:ids)") suspend fun getIds(ids: List<String>): List<Transaction>
+    @Query("DELETE FROM transactions WHERE importId = :importId") suspend fun deleteImport(importId: String): Int
     @Query("SELECT * FROM transactions WHERE splitId = :splitId ORDER BY createdAt") suspend fun getSplit(splitId: String): List<Transaction>
     @Query("DELETE FROM transactions WHERE splitId = :splitId") suspend fun deleteSplit(splitId: String)
     @Query("UPDATE transactions SET recurringId = :recurringId WHERE id IN (:ids) AND recurringId IS NULL")

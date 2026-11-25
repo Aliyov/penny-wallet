@@ -46,6 +46,8 @@ data class UserPrefs(
     val defaultRemindDaysBefore: Int = 1,
     /** [com.penny.wallet.domain.BillDetector.key]s the user answered "Not a bill" to. */
     val dismissedBills: Set<String> = emptySet(),
+    /** The most recent CSV import, so it can still be undone after the snackbar is gone. */
+    val lastImport: LastImport? = null,
     val overdueBadge: Boolean = true,
     val quietMode: Boolean = false,
     val notificationPermissionAsked: Boolean = false,
@@ -91,3 +93,6 @@ enum class GoalLayout { GRID, LIST }
 enum class GoalSort { PROGRESS, DEADLINE, MANUAL }
 enum class BackupFrequency(val days: Long) { DAILY(1), WEEKLY(7), MONTHLY(30) }
 enum class LockAfter(val millis: Long) { IMMEDIATELY(0), ONE_MIN(60_000), FIVE_MIN(300_000) }
+
+@Serializable
+data class LastImport(val id: String, val count: Int, val createdCategoryIds: List<String> = emptyList(), val at: Long = 0)
