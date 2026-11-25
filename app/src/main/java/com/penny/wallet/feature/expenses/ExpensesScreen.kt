@@ -1,5 +1,7 @@
 package com.penny.wallet.feature.expenses
 
+import androidx.compose.foundation.lazy.rememberLazyListState
+import androidx.compose.foundation.lazy.LazyListState
 import com.penny.wallet.core.ui.components.EmptyState
 import com.penny.wallet.R
 import androidx.compose.ui.res.pluralStringResource
@@ -10,7 +12,9 @@ import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.statusBarsPadding
+import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.LazyListScope
 import androidx.compose.foundation.lazy.items
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -21,7 +25,11 @@ import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
+import com.penny.wallet.core.ui.LocalBottomBarPadding
+import com.penny.wallet.core.ui.LocalWidthClass
+import com.penny.wallet.core.ui.WidthClass
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.penny.wallet.core.ui.common.TxRowItem
 import com.penny.wallet.core.ui.components.LocalSnack
@@ -49,11 +57,7 @@ fun ExpensesScreen(
         monthRequest?.let { vm.openMonth(it); onMonthRequestHandled() }
     }
 
-    LazyColumn(
-        Modifier.fillMaxSize().statusBarsPadding(),
-        contentPadding = PaddingValues(bottom = 120.dp),
-        verticalArrangement = Arrangement.spacedBy(Penny.dims.gap),
-    ) {
+    val overview: LazyListScope.() -> Unit = {
         item(key = "header") { ExpensesHeader(onOpenRecurring, onOpenSearch, onOpenYear, onOpenCalendar, hPad) }
         item(key = "month") { MonthSwitcher(state, vm::prevMonth, vm::nextMonth) }
         item(key = "chart") { ChartCard(state, selectedIdx, { selected = it }, hPad.animateContentSize()) }
@@ -73,7 +77,8 @@ fun ExpensesScreen(
             item(key = "hist_label") { SectionLabel(pluralStringResource(R.plurals.expenses_last_months, state.history.size, state.history.size), hPad) }
             item(key = "hist") { HistoryChart(state.history, vm::selectMonth, hPad) }
         }
-
+    }
+    val transactions: LazyListScope.() -> Unit = {
         item(key = "tx_label") { SectionLabel(stringResource(R.string.expenses_transactions), hPad) }
         item(key = "search") { SearchField(state.query, vm::search, hPad) }
         state.filterCategoryId?.let { id ->
@@ -102,4 +107,25 @@ fun ExpensesScreen(
             }
         }
     }
+    val bottom = LocalBottomBarPadding.current
+    // One saved position shared by both layouts, so rotating between them keeps the scroll.
+    val mainList = rememberLazyListState()
+    val sideList = rememberLazyListState()
+
+    if (LocalWidthClass.current == WidthClass.EXPANDED) {
+        Row(Modifier.fillMaxSize().statusBarsPadding(), horizontalArrangement = Arrangement.spacedBy(Penny.dims.gap)) {
+            ExpensesColumn(bottom, Modifier.weight(1f), mainList, overview)
+            ExpensesColumn(bottom, Modifier.weight(1f), sideList, transactions)
+        }
+    } else {
+        ExpensesColumn(bottom, Modifier.statusBarsPadding(), mainList) { overview(); transactions() }
+    }
 }
+
+@Composable
+private fun ExpensesColumn(bottom: Dp, modifier: Modifier, state: LazyListState, content: LazyListScope.() -> Unit) = LazyColumn(
+    modifier.fillMaxSize(), state,
+    contentPadding = PaddingValues(bottom = bottom),
+    verticalArrangement = Arrangement.spacedBy(Penny.dims.gap),
+    content = content,
+)

@@ -63,7 +63,7 @@ P5b plan (user 2026-11-25: "lets finish product then i will give to testers" —
 2. ✅ (2026-11-25) Year overview: 12 months of spent/income/saved, top categories of the year, year switcher.
 3. ✅ (2026-11-25) Calendar: month grid with daily spending, tap a day for its entries; respects the first day of week.
 4. ✅ (2026-11-25) Monthly summary: opt-in notification on the 1st with last month's spending vs the month before and the top category.
-5. Tablet/foldable: two panes at ≥600dp (list + detail) for Home/Expenses, nav rail instead of the bottom bar.
+5. ✅ (2026-11-25) Tablet/foldable: two panes at ≥600dp (list + detail) for Home/Expenses, nav rail instead of the bottom bar.
 6. FR, ES, PT, PL, TR translations last, once every string is final; translation check extended to all locales.
 
 **Test gate per step (nothing moves on with a red item):**
@@ -187,6 +187,11 @@ P5b plan (user 2026-11-25: "lets finish product then i will give to testers" —
 -  Android SDK at `~/Android/Sdk` (platforms 35/36/37 installed via sdkmanager, no sudo needed), adb at `~/Android/Sdk/platform-tools/adb` (not on PATH).
 
 ## Decisions
+- **P5b step 5 tablet / foldable (2026-11-25):**
+  - Width classes from `screenWidthDp` (updates on rotation, unfolding, multi-window): <600 compact (unchanged phone UI), 600–839 medium, ≥840 expanded. Medium/expanded: a navigation rail with the + action replaces the bottom bar on the four tab screens; every destination is centred at a readable width (680dp, two panes 1200dp) from the nav host, so screen files stay untouched; sheets max 640dp wide.
+  - Expanded: two panes for Home (banners/hero/month/accounts | upcoming/recent, keeping the user's section order) and Expenses (chart/categories/history | search + day list); item builders are shared with the single-column path, so phones build the same list as before.
+  - Review fixes: the rail needs ≥480dp height (a phone on its side is wide but short; the rail clipped Settings), so landscape phones keep the bottom bar (`LandscapePhoneUiTest`); the rail stays on pushed screens so content doesn't jump 80dp; one saved list state per screen shared by both layouts keeps the scroll across rotation; Home falls back to one column when the right side would be empty or during first run; no FAB glow in the 80dp rail; end-side navigation bar and cutout insets on the content; removed a sheet width equal to M3's default; plural check requires "many" for it/fr/es/pt (Android MissingQuantity) and the Italian files got it.
+  - UI built by the implementer agent from a written spec; `WideLayoutUiTest` at 900×700dp. Phone (2026-11-25): simulated 900dp with `wm density 128` (reset afterwards): rail and both two-pane screens correct; normal density unchanged.
 - **P5b step 4 monthly summary (2026-11-25):**
   - Opt-in switch in Settings ("Monthly summary"), off by default; switching it on asks for the notification permission on Android 13+ and marks the month that already ended as done, so the first summary comes at the next month start.
   - `domain/MonthlySummaries`: for the budgeting month that ended — spent, change against the month before in whole percent (none without a previous month), top category, income, saved; nothing for a month without entries. Due from the first day of a budgeting month for 7 days (also from the catch-up run at app start), so a phone that was off on day one still gets it; recorded in `UserPrefs.lastSummaryMonth` and sent once. Quiet mode records it without notifying; privacy mode hides the amounts and the percentage.

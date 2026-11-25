@@ -1,7 +1,18 @@
 package com.penny.wallet.feature.nav
 
+import androidx.compose.foundation.layout.WindowInsetsSides
+import androidx.compose.foundation.layout.only
+import androidx.compose.foundation.layout.union
+import androidx.compose.foundation.layout.displayCutout
+import androidx.compose.foundation.layout.windowInsetsPadding
+import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.WindowInsets
+import androidx.compose.foundation.layout.asPaddingValues
+import androidx.compose.foundation.layout.fillMaxHeight
+import androidx.compose.foundation.layout.navigationBars
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.navigationBarsPadding
 import androidx.compose.foundation.layout.padding
@@ -36,6 +47,11 @@ import com.penny.wallet.core.ui.components.LocalSnack
 import com.penny.wallet.core.ui.components.NavItem
 import com.penny.wallet.core.ui.components.PennyBottomBar
 import com.penny.wallet.core.ui.components.PennyFab
+import com.penny.wallet.core.ui.components.PennyNavRail
+import com.penny.wallet.core.ui.LocalBottomBarPadding
+import com.penny.wallet.core.ui.LocalWidthClass
+import com.penny.wallet.core.ui.WidthClass
+import com.penny.wallet.core.ui.rememberWidthClass
 import com.penny.wallet.core.ui.components.Snack
 import com.penny.wallet.core.ui.theme.Penny
 import java.time.YearMonth
@@ -116,20 +132,38 @@ fun PennyRoot(container: AppContainer, request: LaunchRequest? = null, onLaunchH
     val showBar = route in tabs.map { it.route }
     val hasAccounts by remember { container.accounts.observe().map { it.isNotEmpty() } }.collectAsStateWithLifecycle(true)
 
-    CompositionLocalProvider(LocalSnack provides snack) {
+    val widthClass = rememberWidthClass()
+    // A phone in landscape is wide but short: the rail would not fit its four tabs, so it keeps the bottom bar.
+    val useRail = widthClass != WidthClass.COMPACT && LocalConfiguration.current.screenHeightDp >= 480
+    val navBottom = WindowInsets.navigationBars.asPaddingValues().calculateBottomPadding()
+    val bottomPadding = if (useRail) navBottom + 24.dp else 120.dp
+
+    CompositionLocalProvider(LocalSnack provides snack, LocalWidthClass provides widthClass, LocalBottomBarPadding provides bottomPadding) {
         Box(Modifier.fillMaxSize().background(Penny.colors.background)) {
-            PennyNavHost(nav, container, root)
-            if (showBar) {
-                PennyBottomBar(tabs, route, onSelect = { nav.switchTab(it) }, modifier = Modifier.align(Alignment.BottomCenter))
-                // Before the first account exists, Home's welcome card is the only action.
-                if (hasAccounts) PennyFab(
-                    onClick = { root.openNew() },
-                    modifier = Modifier.align(Alignment.BottomCenter).navigationBarsPadding().padding(bottom = 10.dp),
+            Row(Modifier.fillMaxSize()) {
+                // Kept on pushed screens too, so the content doesn't jump sideways when a screen opens or closes.
+                if (useRail) PennyNavRail(
+                    tabs, route, onSelect = { nav.switchTab(it) },
+                    header = if (hasAccounts) ({ PennyFab(onClick = { root.openNew() }, modifier = Modifier.padding(top = 8.dp), glow = false) }) else null,
                 )
-            }
-            SnackbarHost(host, Modifier.align(Alignment.BottomCenter).navigationBarsPadding().padding(bottom = if (showBar) 92.dp else 16.dp)) {
-                Snackbar(it, containerColor = Penny.colors.surface2, contentColor = Penny.colors.textPrimary,
-                    actionColor = Penny.colors.accent, shape = Penny.dims.smallShape)
+                Box(
+                    Modifier.weight(1f).fillMaxHeight()
+                        .windowInsetsPadding(WindowInsets.navigationBars.union(WindowInsets.displayCutout).only(WindowInsetsSides.End)),
+                ) {
+                    PennyNavHost(nav, container, root)
+                    if (showBar && !useRail) {
+                        PennyBottomBar(tabs, route, onSelect = { nav.switchTab(it) }, modifier = Modifier.align(Alignment.BottomCenter))
+                        // Before the first account exists, Home's welcome card is the only action.
+                        if (hasAccounts) PennyFab(
+                            onClick = { root.openNew() },
+                            modifier = Modifier.align(Alignment.BottomCenter).navigationBarsPadding().padding(bottom = 10.dp),
+                        )
+                    }
+                    SnackbarHost(host, Modifier.align(Alignment.BottomCenter).navigationBarsPadding().padding(bottom = if (showBar && !useRail) 92.dp else 16.dp)) {
+                        Snackbar(it, containerColor = Penny.colors.surface2, contentColor = Penny.colors.textPrimary,
+                            actionColor = Penny.colors.accent, shape = Penny.dims.smallShape)
+                    }
+                }
             }
             QuickAddHost(root)
         }

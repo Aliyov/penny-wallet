@@ -1,5 +1,7 @@
 package com.penny.wallet.feature.home
 
+import androidx.compose.foundation.lazy.rememberLazyListState
+import androidx.compose.foundation.lazy.LazyListState
 import androidx.compose.foundation.layout.Column
 import androidx.compose.material3.TextButton
 import androidx.compose.ui.platform.LocalContext
@@ -19,6 +21,7 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.statusBarsPadding
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.LazyListScope
 import androidx.compose.foundation.lazy.items
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.rounded.Warning
@@ -34,7 +37,11 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
+import com.penny.wallet.core.ui.LocalBottomBarPadding
+import com.penny.wallet.core.ui.LocalWidthClass
+import com.penny.wallet.core.ui.WidthClass
 import com.penny.wallet.R
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.penny.wallet.data.prefs.HomeSection
@@ -72,14 +79,7 @@ fun HomeScreen(
     var crashReport by remember { mutableStateOf(CrashReporter.pending(context)) }
     val noMailApp = stringResource(R.string.crash_no_mail_app)
 
-    LazyColumn(
-        Modifier.fillMaxSize().statusBarsPadding(),
-        contentPadding = PaddingValues(bottom = 120.dp),
-        verticalArrangement = Arrangement.spacedBy(Penny.dims.gap),
-    ) {
-        // Items composed for the empty loading state would keep their scroll position when the banners and
-        // accounts arrive, so Home opened scrolled past the banner and to the end of the accounts row.
-        if (state.loading) return@LazyColumn
+    val banners: LazyListScope.() -> Unit = {
         if (state.firstRun) {
             item(key = "welcome") {
                 WelcomeCard(
@@ -116,36 +116,64 @@ fun HomeScreen(
                 )
             }
         }
-        if (!state.firstRun) sections.forEach { section ->
-            when (section) {
-                HomeSection.HERO -> item(key = "hero") { HomeHero(state, onOpenSearch, Modifier.padding(horizontal = gutter)) }
-                HomeSection.MONTH -> item(key = "month") { MonthCard(state, Modifier.padding(horizontal = gutter)) }
-                HomeSection.ACCOUNTS -> item(key = "accounts") {
-                    AccountCarousel(state.accounts, onOpenAccount, onAdd = { addAccount = true })
-                }
-                HomeSection.UPCOMING -> if (state.upcoming.isNotEmpty()) item(key = "upcoming") {
-                    UpcomingStrip(state.upcoming, state.overdueCount, onOpenRecurring)
-                }
-                HomeSection.RECENT -> {
-                    item(key = "recent_label") { SectionLabel(recentLabel, Modifier.padding(horizontal = gutter)) }
-                    if (state.recent.isEmpty()) {
-                        item(key = "recent_empty") {
-                            EmptyState(
-                                recentEmpty, Modifier.padding(horizontal = gutter),
-                                action = stringResource(R.string.expenses_add), kind = ButtonKind.PRIMARY, onAction = onAddExpense,
-                            )
-                        }
-                    }
-                    items(state.recent, key = { "tx_" + it.tx.id }) { row ->
-                        TxRowItem(
-                            row,
-                            Modifier.padding(horizontal = gutter).animateItem(),
-                            onClick = { onEditTransaction(row.tx.id) },
-                            onDelete = { vm.delete(row.tx) { t -> snack.undo(deletedText) { vm.restore(t) } } },
+    }
+    val sectionItems: LazyListScope.(HomeSection) -> Unit = { section ->
+        when (section) {
+            HomeSection.HERO -> item(key = "hero") { HomeHero(state, onOpenSearch, Modifier.padding(horizontal = gutter)) }
+            HomeSection.MONTH -> item(key = "month") { MonthCard(state, Modifier.padding(horizontal = gutter)) }
+            HomeSection.ACCOUNTS -> item(key = "accounts") {
+                AccountCarousel(state.accounts, onOpenAccount, onAdd = { addAccount = true })
+            }
+            HomeSection.UPCOMING -> if (state.upcoming.isNotEmpty()) item(key = "upcoming") {
+                UpcomingStrip(state.upcoming, state.overdueCount, onOpenRecurring)
+            }
+            HomeSection.RECENT -> {
+                item(key = "recent_label") { SectionLabel(recentLabel, Modifier.padding(horizontal = gutter)) }
+                if (state.recent.isEmpty()) {
+                    item(key = "recent_empty") {
+                        EmptyState(
+                            recentEmpty, Modifier.padding(horizontal = gutter),
+                            action = stringResource(R.string.expenses_add), kind = ButtonKind.PRIMARY, onAction = onAddExpense,
                         )
                     }
                 }
+                items(state.recent, key = { "tx_" + it.tx.id }) { row ->
+                    TxRowItem(
+                        row,
+                        Modifier.padding(horizontal = gutter).animateItem(),
+                        onClick = { onEditTransaction(row.tx.id) },
+                        onDelete = { vm.delete(row.tx) { t -> snack.undo(deletedText) { vm.restore(t) } } },
+                    )
+                }
             }
+        }
+    }
+    val bottom = LocalBottomBarPadding.current
+    // One saved position shared by both layouts, so rotating between them keeps the scroll.
+    val mainList = rememberLazyListState()
+    val sideList = rememberLazyListState()
+    val left = sections.filter { it in LeftSections }
+    val right = sections.filterNot { it in LeftSections }
+
+    if (LocalWidthClass.current == WidthClass.EXPANDED && right.isNotEmpty() && !state.firstRun) {
+        Row(Modifier.fillMaxSize().statusBarsPadding(), horizontalArrangement = Arrangement.spacedBy(Penny.dims.gap)) {
+            HomeColumn(bottom, Modifier.weight(1f), mainList) {
+                if (state.loading) return@HomeColumn
+                banners()
+                if (!state.firstRun) left.forEach { sectionItems(it) }
+            }
+            HomeColumn(bottom, Modifier.weight(1f), sideList) {
+                if (state.loading) return@HomeColumn
+                right.forEach { sectionItems(it) }
+            }
+        }
+    } else {
+        HomeColumn(bottom, Modifier.statusBarsPadding(), mainList) {
+            // Items composed for the empty loading state would keep their scroll position when the banners and
+            // accounts arrive, so Home opened scrolled past the banner and to the end of the accounts row.
+            if (state.loading) return@HomeColumn
+            banners()
+            if (!state.firstRun) sections.forEach { sectionItems(it) }
         }
     }
 
@@ -167,6 +195,16 @@ fun HomeScreen(
         )
     }
 }
+
+private val LeftSections = setOf(HomeSection.HERO, HomeSection.MONTH, HomeSection.ACCOUNTS)
+
+@Composable
+private fun HomeColumn(bottom: Dp, modifier: Modifier, state: LazyListState, content: LazyListScope.() -> Unit) = LazyColumn(
+    modifier.fillMaxSize(), state,
+    contentPadding = PaddingValues(bottom = bottom),
+    verticalArrangement = Arrangement.spacedBy(Penny.dims.gap),
+    content = content,
+)
 
 @Composable
 private fun CrashBanner(onSend: () -> Unit, onDismiss: () -> Unit, modifier: Modifier = Modifier) {

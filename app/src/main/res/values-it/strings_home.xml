@@ -130,6 +130,7 @@
     <string name="home_bill_name">%1$s · %2$s</string>
     <plurals name="home_bill_body">
         <item quantity="one">Pagata %1$d mese di fila, intorno al giorno %2$d. Aggiungila alle Bollette per i promemoria e il totale del mese.</item>
+        <item quantity="many">Pagata %1$d mesi di fila, intorno al giorno %2$d. Aggiungila alle Bollette per i promemoria e il totale del mese.</item>
         <item quantity="other">Pagata %1$d mesi di fila, intorno al giorno %2$d. Aggiungila alle Bollette per i promemoria e il totale del mese.</item>
     </plurals>
     <string name="home_bill_add">Aggiungi come bolletta</string>
@@ -147,6 +148,7 @@
     <string name="add_error_split_empty">Inserisci un importo per ogni parte.</string>
     <plurals name="add_saved_split">
         <item quantity="one">%1$s diviso in %2$d categoria</item>
+        <item quantity="many">%1$s diviso in %2$d categorie</item>
         <item quantity="other">%1$s diviso in %2$d categorie</item>
     </plurals>
 </resources>

@@ -190,38 +190,47 @@
     <string name="import_undo_confirm">Rimuovi</string>
     <plurals name="import_count_import">
         <item quantity="one">%d da importare</item>
+        <item quantity="many">%d da importare</item>
         <item quantity="other">%d da importare</item>
     </plurals>
     <plurals name="import_count_duplicates">
         <item quantity="one">%d duplicato saltato</item>
+        <item quantity="many">%d duplicati saltati</item>
         <item quantity="other">%d duplicati saltati</item>
     </plurals>
     <plurals name="import_count_errors">
         <item quantity="one">%d riga non leggibile</item>
+        <item quantity="many">%d righe non leggibili</item>
         <item quantity="other">%d righe non leggibili</item>
     </plurals>
     <plurals name="import_more_errors">
         <item quantity="one">e %d altra</item>
+        <item quantity="many">e altre %d</item>
         <item quantity="other">e altre %d</item>
     </plurals>
     <plurals name="import_button">
         <item quantity="one">Importa %d voce</item>
+        <item quantity="many">Importa %d voci</item>
         <item quantity="other">Importa %d voci</item>
     </plurals>
     <plurals name="import_done">
         <item quantity="one">%d voce importata</item>
+        <item quantity="many">%d voci importate</item>
         <item quantity="other">%d voci importate</item>
     </plurals>
     <plurals name="import_undo_last_body">
         <item quantity="one">%1$d voce del %2$s</item>
+        <item quantity="many">%1$d voci del %2$s</item>
         <item quantity="other">%1$d voci del %2$s</item>
     </plurals>
     <plurals name="import_undo_confirm_body">
         <item quantity="one">La voce importata verrà rimossa.</item>
+        <item quantity="many">Le %d voci importate verranno rimosse.</item>
         <item quantity="other">Le %d voci importate verranno rimosse.</item>
     </plurals>
     <plurals name="import_undone">
         <item quantity="one">%d voce rimossa</item>
+        <item quantity="many">%d voci rimosse</item>
         <item quantity="other">%d voci rimosse</item>
     </plurals>
     <string name="summary_setting">Riepilogo mensile</string>

@@ -35,6 +35,7 @@ import com.penny.wallet.core.ui.components.PennyCard
 import com.penny.wallet.core.ui.components.SectionLabel
 import com.penny.wallet.core.ui.pennyViewModel
 import com.penny.wallet.core.ui.theme.ItemPalette
+import com.penny.wallet.core.ui.LocalBottomBarPadding
 import com.penny.wallet.core.ui.theme.Penny
 import com.penny.wallet.core.util.dateText
 
@@ -102,7 +103,7 @@ fun SettingsScreen(onOpen: (String) -> Unit) {
             stringResource(R.string.settings_footer, appVersion()), style = Penny.type.caption, color = c.textSecondary,
             textAlign = TextAlign.Center, modifier = Modifier.fillMaxWidth().padding(top = 24.dp),
         )
-        Spacer(Modifier.height(120.dp))
+        Spacer(Modifier.height(LocalBottomBarPadding.current))
     }
 }
 

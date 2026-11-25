@@ -27,14 +27,15 @@ import com.penny.wallet.core.ui.theme.glow
 
 /** Neon circle, black +, soft glow, spring scale 0.92 on press. */
 @Composable
-fun PennyFab(onClick: () -> Unit, modifier: Modifier = Modifier) {
+fun PennyFab(onClick: () -> Unit, modifier: Modifier = Modifier, glow: Boolean = true) {
     val src = remember { MutableInteractionSource() }
     val pressed by src.collectIsPressedAsState()
     val scale by animateFloatAsState(if (pressed) 0.92f else 1f, Penny.motion.spec(), label = "fab")
     val haptic = rememberHaptic()
     val c = Penny.colors
     Box(
-        modifier.size(64.dp).scale(scale).glow(c.accent, Penny.motion.glowAlpha, 22.dp)
+        // No glow in the 80dp rail: it would be clipped at the rail's edges.
+        modifier.size(64.dp).scale(scale).then(if (glow) Modifier.glow(c.accent, Penny.motion.glowAlpha, 22.dp) else Modifier)
             .clip(CircleShape).background(c.accent)
             .clickable(src, null) { haptic(HapticFeedbackType.LongPress); onClick() },
         contentAlignment = Alignment.Center,

@@ -29,6 +29,7 @@ import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.penny.wallet.data.prefs.GoalLayout
 import com.penny.wallet.core.ui.components.AnimatedAmount
 import com.penny.wallet.core.ui.components.money
+import com.penny.wallet.core.ui.LocalBottomBarPadding
 import com.penny.wallet.core.ui.pennyViewModel
 import com.penny.wallet.core.ui.theme.Penny
 
@@ -44,7 +45,7 @@ fun SavingsScreen(onOpenGoal: (String) -> Unit) {
     LazyVerticalGrid(
         columns = GridCells.Fixed(if (grid) 2 else 1),
         modifier = Modifier.fillMaxSize().background(c.background).statusBarsPadding(),
-        contentPadding = PaddingValues(start = Penny.dims.gutter, end = Penny.dims.gutter, bottom = 120.dp),
+        contentPadding = PaddingValues(start = Penny.dims.gutter, end = Penny.dims.gutter, bottom = LocalBottomBarPadding.current),
         horizontalArrangement = Arrangement.spacedBy(gap),
         verticalArrangement = Arrangement.spacedBy(gap),
     ) {
