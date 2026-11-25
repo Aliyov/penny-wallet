@@ -170,4 +170,33 @@
         <item quantity="many">%d debiti aperti</item>
         <item quantity="other">%d debiti aperti</item>
     </plurals>
+    <string name="search_open">Cerca</string>
+    <string name="search_field_hint">Cerca in tutte le voci</string>
+    <string name="search_hint">Scrivi una parola o scegli un periodo o un importo per cercare in tutte le voci.</string>
+    <string name="search_none">Nessun risultato per questa ricerca.</string>
+    <string name="search_more">Vengono mostrate le %1$d più recenti. Restringi la ricerca per vederne altre.</string>
+    <string name="search_spent">spesi %1$s</string>
+    <string name="search_received">ricevuti %1$s</string>
+    <string name="search_clear">Azzera</string>
+    <string name="search_range">%1$s – %2$s</string>
+    <string name="search_amount">Importo</string>
+    <string name="search_amount_any">Qualsiasi</string>
+    <string name="search_amount_min">Minimo</string>
+    <string name="search_amount_max">Massimo</string>
+    <string name="search_amount_from">Da %1$s</string>
+    <string name="search_amount_up_to">Fino a %1$s</string>
+    <string name="search_period_any">Sempre</string>
+    <string name="search_period_this_month">Questo mese</string>
+    <string name="search_period_last_3_months">Ultimi 3 mesi</string>
+    <string name="search_period_this_year">Quest\'anno</string>
+    <string name="search_period_last_year">L\'anno scorso</string>
+    <string name="search_period_custom">Personalizzato…</string>
+    <string name="search_kind_all">Tutte</string>
+    <string name="search_kind_expenses">Spese</string>
+    <string name="search_kind_income">Entrate</string>
+    <plurals name="search_results">
+        <item quantity="one">%d risultato</item>
+        <item quantity="other">%d risultati</item>
+        <item quantity="many">%d risultati</item>
+    </plurals>
 </resources>

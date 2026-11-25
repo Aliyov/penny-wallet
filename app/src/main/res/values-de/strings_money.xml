@@ -165,4 +165,32 @@
         <item quantity="one">%d offene Schuld</item>
         <item quantity="other">%d offene Schulden</item>
     </plurals>
+    <string name="search_open">Suchen</string>
+    <string name="search_field_hint">Alle Einträge durchsuchen</string>
+    <string name="search_hint">Gib ein Wort ein oder wähle einen Zeitraum oder Betrag, um alle Einträge zu durchsuchen.</string>
+    <string name="search_none">Nichts passt zu dieser Suche.</string>
+    <string name="search_more">Es werden die neuesten %1$d angezeigt. Grenze die Suche ein, um mehr zu sehen.</string>
+    <string name="search_spent">%1$s ausgegeben</string>
+    <string name="search_received">%1$s erhalten</string>
+    <string name="search_clear">Zurücksetzen</string>
+    <string name="search_range">%1$s – %2$s</string>
+    <string name="search_amount">Betrag</string>
+    <string name="search_amount_any">Beliebig</string>
+    <string name="search_amount_min">Mindestens</string>
+    <string name="search_amount_max">Höchstens</string>
+    <string name="search_amount_from">Ab %1$s</string>
+    <string name="search_amount_up_to">Bis %1$s</string>
+    <string name="search_period_any">Jederzeit</string>
+    <string name="search_period_this_month">Dieser Monat</string>
+    <string name="search_period_last_3_months">Letzte 3 Monate</string>
+    <string name="search_period_this_year">Dieses Jahr</string>
+    <string name="search_period_last_year">Letztes Jahr</string>
+    <string name="search_period_custom">Eigener Zeitraum…</string>
+    <string name="search_kind_all">Alle</string>
+    <string name="search_kind_expenses">Ausgaben</string>
+    <string name="search_kind_income">Einnahmen</string>
+    <plurals name="search_results">
+        <item quantity="one">%d Treffer</item>
+        <item quantity="other">%d Treffer</item>
+    </plurals>
 </resources>

@@ -23,6 +23,7 @@ import androidx.compose.material.icons.rounded.Close
 import androidx.compose.material.icons.rounded.Repeat
 import androidx.compose.material.icons.rounded.Search
 import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -43,11 +44,12 @@ import java.time.LocalDate
 import java.time.YearMonth
 
 @Composable
-internal fun ExpensesHeader(onOpenRecurring: () -> Unit, modifier: Modifier = Modifier) {
+internal fun ExpensesHeader(onOpenRecurring: () -> Unit, onOpenSearch: () -> Unit, modifier: Modifier = Modifier) {
     val c = Penny.colors
     val shape = RoundedCornerShape(50)
     Row(modifier.fillMaxWidth().padding(top = 12.dp), verticalAlignment = Alignment.CenterVertically) {
         Text(stringResource(R.string.expenses_title), style = Penny.type.amountLarge, color = c.textPrimary, modifier = Modifier.weight(1f))
+        IconButton(onClick = onOpenSearch) { Icon(Icons.Rounded.Search, stringResource(R.string.search_open), tint = c.textPrimary) }
         Row(
             Modifier.clip(shape).background(c.surface1).border(0.75.dp, c.hairline, shape)
                 .clickableNoRipple(onOpenRecurring).padding(horizontal = 14.dp, vertical = 8.dp),
@@ -95,11 +97,11 @@ internal fun HistoryChart(bars: List<MonthBar>, onSelect: (YearMonth) -> Unit, m
 }
 
 @Composable
-internal fun SearchField(query: String, onChange: (String) -> Unit, modifier: Modifier = Modifier) {
+internal fun SearchField(query: String, onChange: (String) -> Unit, modifier: Modifier = Modifier, placeholder: String? = null) {
     val c = Penny.colors
     OutlinedTextField(
         query, onChange, modifier.fillMaxWidth(),
-        placeholder = { Text(stringResource(R.string.expenses_search_hint), color = c.textSecondary) },
+        placeholder = { Text(placeholder ?: stringResource(R.string.expenses_search_hint), color = c.textSecondary) },
         leadingIcon = { Icon(Icons.Rounded.Search, null, tint = c.textSecondary) },
         trailingIcon = if (query.isNotEmpty()) {
             { Icon(Icons.Rounded.Close, stringResource(R.string.expenses_search_clear), tint = c.textSecondary, modifier = Modifier.clickableNoRipple { onChange("") }) }

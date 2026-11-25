@@ -52,6 +52,7 @@ fun HomeScreen(
     onEditTransaction: (String) -> Unit,
     onOpenBackup: () -> Unit,
     onAddExpense: () -> Unit,
+    onOpenSearch: () -> Unit,
 ) {
     val vm = pennyViewModel { HomeViewModel(it) }
     val state by vm.state.collectAsStateWithLifecycle()
@@ -117,7 +118,7 @@ fun HomeScreen(
         }
         if (!state.firstRun) sections.forEach { section ->
             when (section) {
-                HomeSection.HERO -> item(key = "hero") { HomeHero(state, Modifier.padding(horizontal = gutter)) }
+                HomeSection.HERO -> item(key = "hero") { HomeHero(state, onOpenSearch, Modifier.padding(horizontal = gutter)) }
                 HomeSection.MONTH -> item(key = "month") { MonthCard(state, Modifier.padding(horizontal = gutter)) }
                 HomeSection.ACCOUNTS -> item(key = "accounts") {
                     AccountCarousel(state.accounts, onOpenAccount, onAdd = { addAccount = true })

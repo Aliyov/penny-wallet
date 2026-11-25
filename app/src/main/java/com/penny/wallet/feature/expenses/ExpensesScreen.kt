@@ -29,7 +29,7 @@ import com.penny.wallet.core.ui.pennyViewModel
 import com.penny.wallet.core.ui.theme.Penny
 
 @Composable
-fun ExpensesScreen(onOpenRecurring: () -> Unit, onEditTransaction: (String) -> Unit, onAddExpense: () -> Unit) {
+fun ExpensesScreen(onOpenRecurring: () -> Unit, onEditTransaction: (String) -> Unit, onAddExpense: () -> Unit, onOpenSearch: () -> Unit) {
     val vm = pennyViewModel { ExpensesViewModel(it) }
     val state by vm.state.collectAsStateWithLifecycle()
     val snack = LocalSnack.current
@@ -46,7 +46,7 @@ fun ExpensesScreen(onOpenRecurring: () -> Unit, onEditTransaction: (String) -> U
         contentPadding = PaddingValues(bottom = 120.dp),
         verticalArrangement = Arrangement.spacedBy(Penny.dims.gap),
     ) {
-        item(key = "header") { ExpensesHeader(onOpenRecurring, hPad) }
+        item(key = "header") { ExpensesHeader(onOpenRecurring, onOpenSearch, hPad) }
         item(key = "month") { MonthSwitcher(state, vm::prevMonth, vm::nextMonth) }
         item(key = "chart") { ChartCard(state, selectedIdx, { selected = it }, hPad.animateContentSize()) }
 

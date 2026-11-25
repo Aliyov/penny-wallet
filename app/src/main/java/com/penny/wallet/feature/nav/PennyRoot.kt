@@ -55,6 +55,7 @@ object Routes {
     const val PRIVACY = "privacy"
     const val IMPORT = "import"
     const val DEBTS = "debts"
+    const val SEARCH = "search"
     fun account(id: String) = "account/$id"
     fun goal(id: String) = "goal/$id"
 }

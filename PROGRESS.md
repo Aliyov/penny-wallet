@@ -58,6 +58,13 @@ Step 4 plan (2026-11-25):
 - Category sheet: "Monthly budget" row (set via the amount sheet, remove); stored in `Category.monthlyBudgetCents`, already in DB v2 and backups.
 - Tests: domain edge cases (no budget, zero, exact, over, start day 27, past month, archived), Expenses state, sheet save/remove (UI test).
 P5b: all-time search with amount/date filters; year overview; calendar; FR/ES/PT/PL/TR; opt-in monthly summary on the 1st; tablet/foldable layouts (list-detail, two panes ≥600dp).
+P5b plan (user 2026-11-25: "lets finish product then i will give to testers" — P5b before the closed test):
+1. ✅ (2026-11-25) All-time search: text over note/category/account, filters for period, amount range and kind; results by day with count and sum; tap edits.
+2. Year overview: 12 months of spent/income/saved, top categories of the year, year switcher.
+3. Calendar: month grid with daily spending, tap a day for its entries; respects the first day of week.
+4. Monthly summary: opt-in notification on the 1st with last month's spending vs the month before and the top category.
+5. Tablet/foldable: two panes at ≥600dp (list + detail) for Home/Expenses, nav rail instead of the bottom bar.
+6. FR, ES, PT, PL, TR translations last, once every string is final; translation check extended to all locales.
 
 **Test gate per step (nothing moves on with a red item):**
 - Domain: JUnit for every rule incl. edge cases (month ends, leap years, start day 27, zero/three-decimal currencies, negative and huge amounts, empty data).
@@ -180,6 +187,11 @@ P5b: all-time search with amount/date filters; year overview; calendar; FR/ES/PT
 -  Android SDK at `~/Android/Sdk` (platforms 35/36/37 installed via sdkmanager, no sudo needed), adb at `~/Android/Sdk/platform-tools/adb` (not on PATH).
 
 ## Decisions
+- **P5b step 1 all-time search (2026-11-25):**
+  - `domain/Search`: every typed word must appear in the note, category, account (also the target of a transfer) or goal, ignoring case and accents; filters for period, amount range (on the shown, positive amount) and kind. 20 000 entries well under 400 ms.
+  - Search screen from a search icon in the Expenses header and next to the "Penny" title on Home; the month search in Expenses stays. Results by day, newest first, capped at 300 with a hint to narrow down; an empty filter shows a hint instead of every entry. "This month" uses the budgeting period, the other periods are calendar based. If the user hides the Home hero section, Search is still in Expenses.
+  - Review fixes: delete/undo from Search run in the app scope (Search is a pushed screen; Undo outlived it); "Last 3 months" ends at the end of this month like the other presets; day headers show what was spent that day like Expenses; focus is requested from inside the lazy header item; folding also maps ß/æ/œ/ø/ł/đ/ı; Min or Max alone can be reset (0 = any); rows without a note are found by their kind ("Transfer"). Left: query and filters aren't restored after process death.
+  - UI built by the implementer agent from a written spec. Phone (2026-11-25): "rent" found the three rent payments across Sep–Nov with "3 results · spent $2,250.00".
 - **P5a step 8 CSV import (2026-11-25):**
   - Columns are recognised by header keywords in EN/DE/IT (date/Datum/data, amount/Betrag/importo, debit/credit/Soll/Haben, category, note/Verwendungszweck/payee…) instead of fixed per-app profiles; this covers Monefy, Wallet, Money Manager and most bank exports, and every column can be reassigned on the preview. Without a header the date and amount columns are guessed from the data. Penny's own export is recognised exactly.
   - Amounts: comma/dot decimals, thousands groups (must be groups of 3), signs before/after, parentheses, currency symbols; minor units per currency (0/2/3 decimals). Dates: one pattern per file, the one that reads the most rows (one broken line doesn't hide the format), day-first on a tie. 5 MB limit; windows-1252 fallback for older bank files.

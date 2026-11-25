@@ -21,6 +21,7 @@ import com.penny.wallet.AppContainer
 import com.penny.wallet.feature.home.AccountScreen
 import com.penny.wallet.feature.expenses.ExpensesScreen
 import com.penny.wallet.feature.home.HomeScreen
+import com.penny.wallet.feature.search.SearchScreen
 import com.penny.wallet.feature.recurring.RecurringScreen
 import com.penny.wallet.feature.savings.GoalScreen
 import com.penny.wallet.feature.savings.SavingsScreen
@@ -37,6 +38,7 @@ private val pop: AnimatedContentTransitionScope<NavBackStackEntry>.() -> ExitTra
 @Composable
 fun PennyNavHost(nav: NavHostController, container: AppContainer, root: RootState) {
     val editTx: (String) -> Unit = { root.openEdit(it) }
+    val openSearch: () -> Unit = { nav.navigate(Routes.SEARCH) }
     val scope = rememberCoroutineScope()
     val addExpense: () -> Unit = { scope.launch { if (container.accounts.all().isNotEmpty()) root.openNew() } }
     NavHost(nav, startDestination = Routes.HOME, enterTransition = { fadeIn() }, exitTransition = { fadeOut() }) {
@@ -47,9 +49,10 @@ fun PennyNavHost(nav: NavHostController, container: AppContainer, root: RootStat
                 onEditTransaction = editTx,
                 onOpenBackup = { nav.navigate(Routes.BACKUP) },
                 onAddExpense = addExpense,
+                onOpenSearch = openSearch,
             )
         }
-        composable(Routes.EXPENSES) { ExpensesScreen(onOpenRecurring = { nav.navigate(Routes.RECURRING) }, onEditTransaction = editTx, onAddExpense = addExpense) }
+        composable(Routes.EXPENSES) { ExpensesScreen(onOpenRecurring = { nav.navigate(Routes.RECURRING) }, onEditTransaction = editTx, onAddExpense = addExpense, onOpenSearch = openSearch) }
         composable(Routes.SAVINGS) { SavingsScreen(onOpenGoal = { nav.navigate(Routes.goal(it)) }) }
         composable(Routes.SETTINGS) { SettingsScreen(onOpen = { nav.navigate(it) }) }
         composable(
@@ -72,6 +75,7 @@ fun PennyNavHost(nav: NavHostController, container: AppContainer, root: RootStat
         }
         composable(Routes.SUPPORT, enterTransition = push, popExitTransition = pop) { SupportScreen(onBack = { nav.popBackStack() }) }
         composable(Routes.PRIVACY, enterTransition = push, popExitTransition = pop) { PrivacyScreen(onBack = { nav.popBackStack() }) }
+        composable(Routes.SEARCH, enterTransition = push, popExitTransition = pop) { SearchScreen(onBack = { nav.popBackStack() }, onEditTransaction = editTx) }
         composable(Routes.DEBTS, enterTransition = push, popExitTransition = pop) { DebtsScreen(onBack = { nav.popBackStack() }) }
         composable(Routes.PERSONALISE, enterTransition = push, popExitTransition = pop) { PersonaliseScreen(onBack = { nav.popBackStack() }) }
     }

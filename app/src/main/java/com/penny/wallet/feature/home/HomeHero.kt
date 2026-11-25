@@ -13,7 +13,11 @@ import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
 import androidx.compose.material3.Text
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.rounded.Search
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -31,7 +35,7 @@ import kotlin.math.hypot
 
 /** Hero number with radial accent glow and optional HUD grid. */
 @Composable
-fun HomeHero(state: HomeState, modifier: Modifier = Modifier) {
+fun HomeHero(state: HomeState, onOpenSearch: () -> Unit, modifier: Modifier = Modifier) {
     val c = Penny.colors
     val prefs = Penny.prefs
     val s = state.summary
@@ -48,8 +52,11 @@ fun HomeHero(state: HomeState, modifier: Modifier = Modifier) {
     Box(modifier.fillMaxWidth()) {
         HeroBackdrop(Modifier.matchParentSize(), glowColor = color, grid = prefs.hudGrid)
         Column(Modifier.fillMaxWidth().padding(top = 8.dp, bottom = 20.dp).animateContentSize(sizeSpec())) {
-            Text(stringResource(R.string.home_brand), style = Penny.type.bodyStrong, color = c.accent)
-            Spacer(Modifier.height(28.dp))
+            Row(Modifier.fillMaxWidth(), verticalAlignment = Alignment.CenterVertically) {
+                Text(stringResource(R.string.home_brand), style = Penny.type.bodyStrong, color = c.accent, modifier = Modifier.weight(1f))
+                IconButton(onClick = onOpenSearch) { Icon(Icons.Rounded.Search, stringResource(R.string.search_open), tint = c.textPrimary) }
+            }
+            Spacer(Modifier.height(16.dp))
             Text(label, style = Penny.type.caption, color = c.textSecondary)
             Spacer(Modifier.height(4.dp))
             AnimatedAmount(cents, Penny.type.hero, color)

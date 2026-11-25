@@ -165,4 +165,32 @@
         <item quantity="one">%d open debt</item>
         <item quantity="other">%d open debts</item>
     </plurals>
+    <string name="search_open">Search</string>
+    <string name="search_field_hint">Search all entries</string>
+    <string name="search_hint">Type a word, or pick a time or amount, to search all your entries.</string>
+    <string name="search_none">Nothing matches this search.</string>
+    <string name="search_more">Showing the newest %1$d. Narrow the search to see more.</string>
+    <string name="search_spent">spent %1$s</string>
+    <string name="search_received">received %1$s</string>
+    <string name="search_clear">Clear</string>
+    <string name="search_range">%1$s – %2$s</string>
+    <string name="search_amount">Amount</string>
+    <string name="search_amount_any">Any</string>
+    <string name="search_amount_min">Min</string>
+    <string name="search_amount_max">Max</string>
+    <string name="search_amount_from">From %1$s</string>
+    <string name="search_amount_up_to">Up to %1$s</string>
+    <string name="search_period_any">Any time</string>
+    <string name="search_period_this_month">This month</string>
+    <string name="search_period_last_3_months">Last 3 months</string>
+    <string name="search_period_this_year">This year</string>
+    <string name="search_period_last_year">Last year</string>
+    <string name="search_period_custom">Custom…</string>
+    <string name="search_kind_all">All</string>
+    <string name="search_kind_expenses">Expenses</string>
+    <string name="search_kind_income">Income</string>
+    <plurals name="search_results">
+        <item quantity="one">%d result</item>
+        <item quantity="other">%d results</item>
+    </plurals>
 </resources>
