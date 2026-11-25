@@ -166,6 +166,7 @@ object SampleData {
 
     /** Also removes what the user entered on sample accounts or goals, since those disappear. */
     suspend fun remove(db: PennyDatabase) = db.withTransaction {
+        db.debts().deleteSample()
         db.transactions().deleteSample()
         db.recurring().deleteSample()
         db.goals().deleteSample()

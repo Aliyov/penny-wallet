@@ -20,7 +20,10 @@ object BackupCodec {
     fun encode(b: Backup): String = json.encodeToString(Backup.serializer(), b)
 
     /** The text is parsed once; the version is read before the full decode, so a newer file says "too new" instead of "not a backup". */
-    fun decode(raw: String, password: CharArray?): Backup {
+    fun decode(raw: String, password: CharArray?): Backup = decodeFile(raw, password).first
+
+    /** The upgraded backup and the schema version the file was written with. */
+    fun decodeFile(raw: String, password: CharArray?): Pair<Backup, Int> {
         var obj = parse(raw)
         if (obj["format"]?.jsonPrimitive?.contentOrNull == EncryptedBackup.FORMAT) {
             if (password == null) throw BackupProblem.PasswordNeeded()
@@ -36,7 +39,8 @@ object BackupCodec {
         val version = obj["schemaVersion"]?.jsonPrimitive?.intOrNull ?: throw BackupProblem.NotABackup()
         if (version > Backup.CURRENT_SCHEMA) throw BackupProblem.TooNew(version)
         if (version < 1) throw BackupProblem.NotABackup()
-        return runCatching { json.decodeFromJsonElement(Backup.serializer(), obj) }.getOrElse { throw BackupProblem.NotABackup() }
+        val decoded = runCatching { json.decodeFromJsonElement(Backup.serializer(), obj) }.getOrElse { throw BackupProblem.NotABackup() }
+        return BackupMigrations.upgrade(decoded) to version
     }
 
     private fun parse(text: String): JsonObject =

@@ -1,5 +1,7 @@
 package com.penny.wallet.data.backup
 
+import com.penny.wallet.data.db.FIXED_TODAY
+import com.penny.wallet.data.db.entities.DebtDirection
 import org.junit.Assert.assertEquals
 import org.junit.Assert.assertTrue
 import org.junit.Test
@@ -8,8 +10,9 @@ import org.junit.Test
 class BackupFixturesTest {
     private fun fixture(name: String) = javaClass.getResource("/backups/$name")!!.readText()
 
+    /** The sample data every fixture holds; older versions arrive upgraded to the current schema. */
     private fun assertV1Sample(b: Backup) {
-        assertEquals(1, b.schemaVersion)
+        assertEquals(Backup.CURRENT_SCHEMA, b.schemaVersion)
         assertEquals(2, b.accounts.size)
         assertTrue(b.categories.isNotEmpty())
         assertEquals(2, b.goals.size)
@@ -21,12 +24,35 @@ class BackupFixturesTest {
         assertTrue(b.transactions.all { it.accountId in ids })
     }
 
-    @Test fun plainV1Restores() = assertV1Sample(BackupCodec.decode(fixture("v1-sample.json"), null))
+    @Test fun plainV1Restores() {
+        val b = BackupCodec.decode(fixture("v1-sample.json"), null)
+        assertV1Sample(b)
+        assertTrue(b.debts.isEmpty() && b.debtPayments.isEmpty())
+        assertTrue(b.categories.all { it.monthlyBudgetCents == null })
+        assertTrue(b.transactions.all { it.splitId == null && it.importId == null })
+    }
+
+    private fun assertV2Sample(b: Backup) {
+        assertV1Sample(b)
+        assertEquals(30000L, b.categories.first().monthlyBudgetCents)
+        assertEquals(2, b.transactions.count { it.splitId == "fixture-split" })
+        assertEquals(1, b.transactions.count { it.importId == "fixture-import" })
+        assertEquals(listOf("Anna", "Marco"), b.debts.map { it.person })
+        assertEquals(DebtDirection.I_OWE, b.debts[0].direction)
+        assertTrue(b.debts[0].remind)
+        assertEquals(FIXED_TODAY, b.debts[1].settledOn)
+        assertEquals(listOf(2000L, 4550L), b.debtPayments.map { it.amountCents })
+        assertEquals(b.transactions.first().id, b.debtPayments[1].transactionId)
+    }
+
+    @Test fun plainV2Restores() = assertV2Sample(BackupCodec.decode(fixture("v2-sample.json"), null))
+
+    @Test fun encryptedV2Restores() = assertV2Sample(BackupCodec.decode(fixture("v2-sample-encrypted.json"), "fixture-pass".toCharArray()))
 
     @Test fun encryptedV1Restores() = assertV1Sample(BackupCodec.decode(fixture("v1-sample-encrypted.json"), "fixture-pass".toCharArray()))
 
     @Test fun encodeDecodeIsLossless() {
-        val b = BackupCodec.decode(fixture("v1-sample.json"), null)
+        val b = BackupCodec.decode(fixture("v2-sample.json"), null)
         assertEquals(b, BackupCodec.decode(BackupCodec.encode(b), null))
     }
 

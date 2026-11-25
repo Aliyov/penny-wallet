@@ -98,6 +98,7 @@
     <string name="backup_sum_categories">Kategorien</string>
     <string name="backup_sum_goals">Ziele</string>
     <string name="backup_sum_transactions">Buchungen</string>
+    <string name="backup_sum_debts">Schulden</string>
     <string name="backup_sum_recurring">Rechnungen</string>
     <string name="backup_sum_date_range">Zeitraum</string>
     <string name="backup_date_range_value">%1$s – %2$s</string>

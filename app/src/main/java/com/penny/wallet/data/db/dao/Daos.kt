@@ -8,6 +8,8 @@ import androidx.room.Query
 import androidx.room.Upsert
 import com.penny.wallet.data.db.entities.Account
 import com.penny.wallet.data.db.entities.Category
+import com.penny.wallet.data.db.entities.Debt
+import com.penny.wallet.data.db.entities.DebtPayment
 import com.penny.wallet.data.db.entities.Goal
 import com.penny.wallet.data.db.entities.RecurringExpense
 import com.penny.wallet.data.db.entities.Transaction
@@ -91,4 +93,24 @@ interface RecurringDao {
     @Delete suspend fun delete(r: RecurringExpense)
     @Query("DELETE FROM recurring") suspend fun clear()
     @Query("DELETE FROM recurring WHERE id LIKE 'sample-%' OR accountId LIKE 'sample-%'") suspend fun deleteSample()
+}
+
+@Dao
+interface DebtDao {
+    @Query("SELECT * FROM debts ORDER BY settledOn IS NOT NULL, date DESC, createdAt DESC") fun observeAll(): Flow<List<Debt>>
+    @Query("SELECT * FROM debts ORDER BY date DESC, createdAt DESC") suspend fun getAll(): List<Debt>
+    @Query("SELECT * FROM debts WHERE id = :id") suspend fun get(id: String): Debt?
+    @Upsert suspend fun upsert(d: Debt)
+    @Upsert suspend fun upsertAll(d: List<Debt>)
+    @Query("DELETE FROM debts WHERE id = :id") suspend fun delete(id: String)
+    @Query("DELETE FROM debts") suspend fun clear()
+
+    @Query("SELECT * FROM debt_payments ORDER BY date, createdAt") fun observePayments(): Flow<List<DebtPayment>>
+    @Query("SELECT * FROM debt_payments ORDER BY date, createdAt") suspend fun getAllPayments(): List<DebtPayment>
+    @Upsert suspend fun upsertPayment(p: DebtPayment)
+    @Upsert suspend fun upsertPayments(p: List<DebtPayment>)
+    @Query("DELETE FROM debt_payments WHERE id = :id") suspend fun deletePayment(id: String)
+    @Query("DELETE FROM debt_payments WHERE debtId = :debtId") suspend fun deletePaymentsOf(debtId: String)
+    @Query("DELETE FROM debt_payments") suspend fun clearPayments()
+    @Query("DELETE FROM debts WHERE id LIKE 'sample-%'") suspend fun deleteSample()
 }

@@ -43,6 +43,8 @@ class BackupManager(
             transactions = db.transactions().getAll(),
             recurring = db.recurring().getAll(),
             settings = settings.current(),
+            debts = db.debts().getAll(),
+            debtPayments = db.debts().getAllPayments(),
         )
     }
 
@@ -108,8 +110,8 @@ class BackupManager(
         } catch (_: SecurityException) {
             null
         } ?: throw IllegalArgumentException(context.getString(R.string.backup_err_open_file))
-        val b = try {
-            BackupCodec.decode(raw, pw)
+        val (b, fileVersion) = try {
+            BackupCodec.decodeFile(raw, pw)
         } catch (e: BackupProblem) {
             throw when (e) {
                 is BackupProblem.PasswordNeeded -> PasswordNeededException()
@@ -118,20 +120,23 @@ class BackupManager(
                 is BackupProblem.NotABackup -> IllegalArgumentException(context.getString(R.string.backup_err_not_backup))
             }
         }
-        b to summarize(b)
+        b to summarize(b, fileVersion)
     }
 
-    fun summarize(b: Backup): BackupSummary {
+    fun summarize(b: Backup, fileVersion: Int = b.schemaVersion): BackupSummary {
         val acc = b.accounts.map { it.id }.toSet() + MoneyCalculator.EXTERNAL
         val cat = b.categories.map { it.id }.toSet()
         val goal = b.goals.map { it.id }.toSet()
+        val debt = b.debts.map { it.id }.toSet()
+        val tx = b.transactions.map { it.id }.toSet()
         val dangling = b.transactions.count { t ->
             t.accountId !in acc || (t.toAccountId != null && t.toAccountId !in acc) ||
                 (t.categoryId != null && t.categoryId !in cat) || (t.goalId != null && t.goalId !in goal)
-        } + b.recurring.count { it.accountId !in acc || it.categoryId !in cat }
+        } + b.recurring.count { it.accountId !in acc || it.categoryId !in cat } +
+            b.debtPayments.count { it.debtId !in debt || (it.transactionId != null && it.transactionId !in tx) }
         val dates = b.transactions.map { it.date }
-        return BackupSummary(b.exportedAt, b.schemaVersion, b.accounts.size, b.categories.size, b.goals.size,
-            b.transactions.size, b.recurring.size, dates.minOrNull()?.toString(), dates.maxOrNull()?.toString(), dangling)
+        return BackupSummary(b.exportedAt, fileVersion, b.accounts.size, b.categories.size, b.goals.size,
+            b.transactions.size, b.recurring.size, b.debts.size, dates.minOrNull()?.toString(), dates.maxOrNull()?.toString(), dangling)
     }
 
     /**
@@ -140,12 +145,21 @@ class BackupManager(
      */
     suspend fun restore(b: Backup) {
         db.withTransaction {
+            db.debts().clearPayments(); db.debts().clear()
             db.transactions().clear(); db.recurring().clear(); db.goals().clear(); db.categories().clear(); db.accounts().clear()
             db.accounts().upsertAll(b.accounts)
             db.categories().upsertAll(b.categories)
             db.goals().upsertAll(b.goals)
             db.transactions().upsertAll(b.transactions)
             db.recurring().upsertAll(b.recurring)
+            db.debts().upsertAll(b.debts)
+            // Foreign keys would reject a broken reference; such rows were counted as dangling in the summary.
+            val debtIds = b.debts.map { it.id }.toSet()
+            val txIds = b.transactions.map { it.id }.toSet()
+            db.debts().upsertPayments(
+                b.debtPayments.filter { it.debtId in debtIds }
+                    .map { if (it.transactionId != null && it.transactionId !in txIds) it.copy(transactionId = null) else it }
+            )
         }
         b.settings?.let { restored ->
             settings.update { cur ->
@@ -162,6 +176,7 @@ class BackupManager(
     /** Wipes everything (Settings → Reset all data). Settings are kept; seed is not re-run. */
     suspend fun resetAll() {
         db.withTransaction {
+            db.debts().clearPayments(); db.debts().clear()
             db.transactions().clear(); db.recurring().clear(); db.goals().clear(); db.categories().clear(); db.accounts().clear()
         }
         settings.update { it.copy(lastAccountId = null, lastCategoryId = null, fixedAccountId = null) }

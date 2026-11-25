@@ -98,6 +98,7 @@
     <string name="backup_sum_categories">Categories</string>
     <string name="backup_sum_goals">Goals</string>
     <string name="backup_sum_transactions">Transactions</string>
+    <string name="backup_sum_debts">Debts</string>
     <string name="backup_sum_recurring">Bills</string>
     <string name="backup_sum_date_range">Date range</string>
     <string name="backup_date_range_value">%1$s – %2$s</string>

@@ -36,6 +36,7 @@ internal fun RestoreSummarySheet(sum: BackupSummary, onDismiss: () -> Unit, onRe
             SummaryLine(stringResource(R.string.backup_sum_goals), sum.goals.toString())
             SummaryLine(stringResource(R.string.backup_sum_transactions), sum.transactions.toString())
             SummaryLine(stringResource(R.string.backup_sum_recurring), sum.recurring.toString())
+            SummaryLine(stringResource(R.string.backup_sum_debts), sum.debts.toString())
             if (sum.firstDate != null && sum.lastDate != null) {
                 SummaryLine(stringResource(R.string.backup_sum_date_range), stringResource(R.string.backup_date_range_value, isoToDate(sum.firstDate, dates), isoToDate(sum.lastDate, dates)))
             }
